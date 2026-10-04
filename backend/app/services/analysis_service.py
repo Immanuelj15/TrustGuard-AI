@@ -5,10 +5,18 @@ from fastapi import HTTPException, status
 from app.models import Evidence, AnalysisJob, AnalysisResult, AnalysisStatus, User, EvidenceType
 from app.core.storage import storage_client
 from app.core.config import settings
-from app.ai.text_analyzer import analyze_scam_text
-from app.ai.audio_analyzer import analyze_audio_file
-from app.ai.video_analyzer import analyze_video_file
+from app.services.ml_services import (
+    ScamTextAnalysisService,
+    AudioAnalysisService,
+    VideoAnalysisService,
+    ModelRegistryService
+)
 from app.services.audit_service import log_audit_event
+
+# Initialize services
+text_service = ScamTextAnalysisService()
+audio_service = AudioAnalysisService()
+video_service = VideoAnalysisService()
 
 def create_and_run_analysis(
     db: Session,
@@ -30,13 +38,16 @@ def create_and_run_analysis(
         else:
             atype = "text"
 
+    # Fetch model registry metadata
+    meta = ModelRegistryService.get_instance().get_metadata(atype)
+
     # Create job entry
     job = AnalysisJob(
         evidence_id=evidence_id,
         analysis_type=atype,
         status=AnalysisStatus.PROCESSING.value,
-        model_name="TrustGuard-ForensicEngine",
-        model_version="1.0"
+        model_name=meta.get("model_name", "TrustGuard-Engine"),
+        model_version=meta.get("model_version", "1.0")
     )
     db.add(job)
     db.commit()
@@ -45,35 +56,36 @@ def create_and_run_analysis(
     # Perform analysis
     try:
         if atype == "text":
-            # Read text content from storage
             raw_bytes = storage_client.get_bytes(evidence.stored_object_key)
             text_content = raw_bytes.decode("utf-8", errors="replace") if raw_bytes else ""
-            analysis_output = analyze_scam_text(text_content)
+            analysis_output = text_service.analyze(text_content)
         elif atype == "audio":
             local_path = storage_client.get_local_path(evidence.stored_object_key)
-            analysis_output = analyze_audio_file(local_path or "", is_demo_mode=settings.DEMO_MODE)
+            analysis_output = audio_service.analyze(local_path or "", is_demo_mode=settings.DEMO_MODE)
         elif atype == "video":
             local_path = storage_client.get_local_path(evidence.stored_object_key)
-            analysis_output = analyze_video_file(local_path or "", is_demo_mode=settings.DEMO_MODE)
+            analysis_output = video_service.analyze(local_path or "", is_demo_mode=settings.DEMO_MODE)
         else:
-            # Fallback text analysis
             raw_bytes = storage_client.get_bytes(evidence.stored_object_key)
             text_content = raw_bytes.decode("utf-8", errors="replace") if raw_bytes else ""
-            analysis_output = analyze_scam_text(text_content)
+            analysis_output = text_service.analyze(text_content)
 
         # Update Job
         job.status = AnalysisStatus.COMPLETED.value
-        job.model_name = analysis_output.get("model_name", "TrustGuard-Engine")
-        job.model_version = analysis_output.get("model_version", "1.0")
+        job.model_name = analysis_output.get("model_name", meta.get("model_name"))
+        job.model_version = analysis_output.get("model_version", meta.get("model_version"))
         job.completed_at = datetime.now(timezone.utc)
 
         # Create Result
+        findings = analysis_output.get("findings", {})
+        findings["dataset_version_used_for_training"] = analysis_output.get("dataset_version_used_for_training", "Benchmark")
+
         result = AnalysisResult(
             analysis_job_id=job.id,
             risk_level=analysis_output["risk_level"],
             risk_score=analysis_output["risk_score"],
             model_confidence=analysis_output.get("model_confidence", 0.8),
-            findings_json=analysis_output.get("findings", {}),
+            findings_json=findings,
             limitations_json=analysis_output.get("limitations", [])
         )
         db.add(result)
@@ -92,7 +104,8 @@ def create_and_run_analysis(
                 "job_id": job.id,
                 "analysis_type": atype,
                 "risk_level": result.risk_level,
-                "risk_score": result.risk_score
+                "risk_score": result.risk_score,
+                "dataset_trained_on": findings["dataset_version_used_for_training"]
             }
         )
         return job

@@ -1,0 +1,29 @@
+{
+  "dataset_key": "faceforensics",
+  "name": "FaceForensics++ (Video Manipulation Benchmark)",
+  "official_url": "https://github.com/ondyari/FaceForensics",
+  "version": "1.0",
+  "license": "TUM FaceForensics Terms of Use",
+  "modality": "video",
+  "local_directory": "datasets\\raw\\video\\faceforensics",
+  "availability_status": "available",
+  "total_files": 1,
+  "total_size_bytes": 206,
+  "total_size_mb": 0.0,
+  "file_types": [
+    ".json"
+  ],
+  "label_mapping": {
+    "original": 0,
+    "manipulated": 1
+  },
+  "label_summary": {
+    "status_note": "Directory initialized with 1 files"
+  },
+  "missing_files": [],
+  "preprocessing_status": "ready",
+  "limitations": [
+    "Requires executing the official download-FaceForensics.py script with official authorization token.",
+    "Video-level separation must be maintained to prevent frame leakage."
+  ]
+}

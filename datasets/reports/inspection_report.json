@@ -1,0 +1,72 @@
+{
+  "uci_sms_spam": {
+    "file_inspected": "datasets\\raw\\text\\uci_sms_spam\\SMSSpamCollection",
+    "total_records": 5574,
+    "label_distribution": {
+      "ham": 4827,
+      "spam": 747
+    },
+    "missing_values": 0,
+    "duplicate_messages": 414,
+    "average_message_length_chars": 80.44,
+    "sample_labels_detected": [
+      "ham",
+      "spam"
+    ],
+    "integrity_check": "passed",
+    "name": "UCI SMS Spam Collection",
+    "modality": "text"
+  },
+  "asvspoof2021": {
+    "metadata_protocol_file": "datasets\\raw\\audio\\asvspoof2021\\keys\\LA\\CM\\trial_metadata.txt",
+    "protocol_records_count": 4,
+    "label_distribution": {
+      "spoof": 2,
+      "bonafide": 2
+    },
+    "audio_files_found": 0,
+    "target_format": "FLAC / PCM WAV (16kHz mono recommended)",
+    "expected_subsets": [
+      "LA (Logical Access)",
+      "DF (Deepfake)",
+      "PA (Physical Access)"
+    ],
+    "status": "protocol_verified",
+    "name": "ASVspoof 2021 (Audio Spoof & Deepfake)",
+    "modality": "audio"
+  },
+  "fakeavceleb": {
+    "metadata_file": "datasets\\raw\\multimodal\\fakeavceleb\\meta_data.csv",
+    "metadata_records": 4,
+    "category_distribution": {
+      "RealVideo-RealAudio": 1,
+      "FakeVideo-RealAudio": 1,
+      "RealVideo-FakeAudio": 1,
+      "FakeVideo-FakeAudio": 1
+    },
+    "video_files_found": 0,
+    "expected_categories": [
+      "RealVideo-RealAudio",
+      "RealVideo-FakeAudio",
+      "FakeVideo-RealAudio",
+      "FakeVideo-FakeAudio"
+    ],
+    "status": "protocol_verified",
+    "name": "FakeAVCeleb (Audio-Video Deepfake)",
+    "modality": "multimodal"
+  },
+  "faceforensics": {
+    "benchmark_file": "datasets\\raw\\video\\faceforensics\\dataset.json",
+    "manipulation_methods": [
+      "Deepfakes",
+      "Face2Face",
+      "FaceSwap",
+      "NeuralTextures"
+    ],
+    "video_sequences_found": 0,
+    "target_resolution": "1920x1080 (c23 high-quality / c40 compressed)",
+    "status": "protocol_verified",
+    "name": "FaceForensics++ (Video Manipulation Benchmark)",
+    "modality": "video"
+  }
+}

@@ -1,0 +1,326 @@
+{
+  "timestamp_utc": "2026-10-04T08:17:37.972773+00:00",
+  "evaluation_title": "TrustGuard AI Multi-Modal Evaluation Benchmark",
+  "datasets_summary": {
+    "asvspoof2021": {
+      "name": "ASVspoof 2021 (Audio Spoof & Deepfake)",
+      "status": "available",
+      "total_files": 1,
+      "total_size_mb": 0.0,
+      "license": "ASVspoof 2021 Evaluation Agreement"
+    },
+    "faceforensics": {
+      "name": "FaceForensics++ (Video Manipulation Benchmark)",
+      "status": "available",
+      "total_files": 1,
+      "total_size_mb": 0.0,
+      "license": "TUM FaceForensics Terms of Use"
+    },
+    "fakeavceleb": {
+      "name": "FakeAVCeleb (Audio-Video Deepfake)",
+      "status": "available",
+      "total_files": 1,
+      "total_size_mb": 0.0,
+      "license": "Research-only Academic License (DASH-Lab)"
+    },
+    "uci_sms_spam": {
+      "name": "UCI SMS Spam Collection",
+      "status": "available",
+      "total_files": 3,
+      "total_size_mb": 0.66,
+      "license": "CC BY 4.0"
+    }
+  },
+  "splits_summary": {
+    "audio_test": {
+      "samples": 4,
+      "columns": [
+        "speaker_id",
+        "audio_file_id",
+        "filepath",
+        "label",
+        "raw_label",
+        "spectral_centroid",
+        "spectral_flatness",
+        "zero_crossing_rate",
+        "rms_energy",
+        "mfcc_1",
+        "mfcc_2",
+        "mfcc_3",
+        "mfcc_4",
+        "mfcc_5",
+        "duration_seconds",
+        "sample_rate",
+        "channels"
+      ],
+      "label_distribution": {
+        "0": 2,
+        "1": 2
+      }
+    },
+    "audio_train": {
+      "samples": 16,
+      "columns": [
+        "speaker_id",
+        "audio_file_id",
+        "filepath",
+        "label",
+        "raw_label",
+        "spectral_centroid",
+        "spectral_flatness",
+        "zero_crossing_rate",
+        "rms_energy",
+        "mfcc_1",
+        "mfcc_2",
+        "mfcc_3",
+        "mfcc_4",
+        "mfcc_5",
+        "duration_seconds",
+        "sample_rate",
+        "channels"
+      ],
+      "label_distribution": {
+        "0": 8,
+        "1": 8
+      }
+    },
+    "audio_val": {
+      "samples": 4,
+      "columns": [
+        "speaker_id",
+        "audio_file_id",
+        "filepath",
+        "label",
+        "raw_label",
+        "spectral_centroid",
+        "spectral_flatness",
+        "zero_crossing_rate",
+        "rms_energy",
+        "mfcc_1",
+        "mfcc_2",
+        "mfcc_3",
+        "mfcc_4",
+        "mfcc_5",
+        "duration_seconds",
+        "sample_rate",
+        "channels"
+      ],
+      "label_distribution": {
+        "1": 2,
+        "0": 2
+      }
+    },
+    "text_test": {
+      "samples": 837,
+      "columns": [
+        "message_id",
+        "raw_label",
+        "label",
+        "text",
+        "char_length"
+      ],
+      "label_distribution": {
+        "0": 725,
+        "1": 112
+      }
+    },
+    "text_train": {
+      "samples": 3901,
+      "columns": [
+        "message_id",
+        "raw_label",
+        "label",
+        "text",
+        "char_length"
+      ],
+      "label_distribution": {
+        "0": 3378,
+        "1": 523
+      }
+    },
+    "text_val": {
+      "samples": 836,
+      "columns": [
+        "message_id",
+        "raw_label",
+        "label",
+        "text",
+        "char_length"
+      ],
+      "label_distribution": {
+        "0": 724,
+        "1": 112
+      }
+    },
+    "video_test": {
+      "samples": 5,
+      "columns": [
+        "video_id",
+        "dataset",
+        "manipulation_type",
+        "raw_label",
+        "label",
+        "fps",
+        "resolution",
+        "duration_sec",
+        "extracted_frames_count"
+      ],
+      "label_distribution": {
+        "1": 3,
+        "0": 2
+      }
+    },
+    "video_train": {
+      "samples": 23,
+      "columns": [
+        "video_id",
+        "dataset",
+        "manipulation_type",
+        "raw_label",
+        "label",
+        "fps",
+        "resolution",
+        "duration_sec",
+        "extracted_frames_count"
+      ],
+      "label_distribution": {
+        "1": 16,
+        "0": 7
+      }
+    },
+    "video_val": {
+      "samples": 5,
+      "columns": [
+        "video_id",
+        "dataset",
+        "manipulation_type",
+        "raw_label",
+        "label",
+        "fps",
+        "resolution",
+        "duration_sec",
+        "extracted_frames_count"
+      ],
+      "label_distribution": {
+        "1": 4,
+        "0": 1
+      }
+    }
+  },
+  "model_evaluations": {
+    "text_scam_classifier": {
+      "task": "SMS Scam & Spam Binary Classification",
+      "dataset": "UCI SMS Spam Collection",
+      "dataset_split": {
+        "train_samples": 3901,
+        "val_samples": 836,
+        "test_samples": 837
+      },
+      "models_evaluated": {
+        "logistic_regression": {
+          "accuracy": 0.9821,
+          "precision": 1.0,
+          "recall": 0.8661,
+          "f1_score": 0.9282,
+          "roc_auc": 0.9943,
+          "confusion_matrix": [
+            [
+              725,
+              0
+            ],
+            [
+              15,
+              97
+            ]
+          ]
+        },
+        "linear_svm": {
+          "accuracy": 0.9916,
+          "precision": 1.0,
+          "recall": 0.9375,
+          "f1_score": 0.9677,
+          "confusion_matrix": [
+            [
+              725,
+              0
+            ],
+            [
+              7,
+              105
+            ]
+          ]
+        }
+      },
+      "best_model": "logistic_regression",
+      "limitations": [
+        "Trained on British English SMS spam corpus; requires Indian financial fraud context augmentation.",
+        "Must be used in tandem with TrustGuard rule-based domain indicators."
+      ]
+    },
+    "audio_spoof_classifier": {
+      "task": "Acoustic Audio Spoof Classification",
+      "dataset": "ASVspoof 2021 Benchmark Protocol",
+      "dataset_split": {
+        "train_samples": 16,
+        "val_samples": 4,
+        "test_samples": 4
+      },
+      "features_used": [
+        "spectral_centroid",
+        "spectral_flatness",
+        "zero_crossing_rate",
+        "rms_energy",
+        "mfcc_1",
+        "mfcc_2",
+        "mfcc_3",
+        "mfcc_4",
+        "mfcc_5"
+      ],
+      "metrics": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "confusion_matrix": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      "limitations": [
+        "Baseline acoustic classifier is an initial heuristic detector.",
+        "Full production deployment requires loading official ASVspoof 2021 DF/LA deep neural weights."
+      ]
+    },
+    "video_deepfake_detector": {
+      "status": "baseline_adapter_ready",
+      "evaluated_dataset": "FaceForensics++",
+      "evaluation_note": "Awaiting local placement of complete 50GB FaceForensics sequences by authorized user."
+    }
+  },
+  "limitations": {
+    "asvspoof2021": [
+      "Studio and controlled telephony conditions; real-world degraded VoIP audio requires acoustic normalization.",
+      "Access requires accepting ASVspoof data license via Zenodo / ASVspoof Consortium."
+    ],
+    "faceforensics": [
+      "Requires executing the official download-FaceForensics.py script with official authorization token.",
+      "Video-level separation must be maintained to prevent frame leakage."
+    ],
+    "fakeavceleb": [
+      "Celebrity interview source videos; deepfake methods include Faceswap, Wav2Lip, SV2TTS.",
+      "Identity-disjoint splits must be enforced to avoid identity memorization.",
+      "Access requires filling the Google Form and receiving approval from DASH-Lab authors."
+    ],
+    "uci_sms_spam": [
+      "General SMS spam corpus (primarily UK mobile text collection).",
+      "Not representative of modern Indian multi-lingual financial fraud (UPI/Digital Arrest/Tamil/Hindi).",
+      "Serves as baseline spam classifier; specialized cybercrime rules must supplement it."
+    ]
+  }
+}

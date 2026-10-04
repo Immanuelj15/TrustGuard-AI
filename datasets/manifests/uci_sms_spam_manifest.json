@@ -1,0 +1,32 @@
+{
+  "dataset_key": "uci_sms_spam",
+  "name": "UCI SMS Spam Collection",
+  "official_url": "https://archive.ics.uci.edu/dataset/228/sms+spam+collection",
+  "version": "1.0",
+  "license": "CC BY 4.0",
+  "modality": "text",
+  "local_directory": "datasets\\raw\\text\\uci_sms_spam",
+  "availability_status": "available",
+  "total_files": 3,
+  "total_size_bytes": 687190,
+  "total_size_mb": 0.66,
+  "file_types": [
+    "none",
+    ".zip"
+  ],
+  "label_mapping": {
+    "ham": 0,
+    "spam": 1
+  },
+  "label_summary": {
+    "ham": 4827,
+    "spam": 747
+  },
+  "missing_files": [],
+  "preprocessing_status": "ready",
+  "limitations": [
+    "General SMS spam corpus (primarily UK mobile text collection).",
+    "Not representative of modern Indian multi-lingual financial fraud (UPI/Digital Arrest/Tamil/Hindi).",
+    "Serves as baseline spam classifier; specialized cybercrime rules must supplement it."
+  ]
+}

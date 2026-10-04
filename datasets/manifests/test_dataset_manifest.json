@@ -1,0 +1,29 @@
+{
+  "dataset_key": "test_dataset",
+  "name": "Synthetic Test Dataset",
+  "official_url": "https://test.trustguard.ai",
+  "version": "1.0",
+  "license": "MIT",
+  "modality": "text",
+  "local_directory": "C:\\Users\\imman\\AppData\\Local\\Temp\\tmpdlzhtpr8",
+  "availability_status": "available",
+  "total_files": 5,
+  "total_size_bytes": 1024,
+  "total_size_mb": 0.0,
+  "file_types": [
+    ".txt"
+  ],
+  "label_mapping": {
+    "ham": 0,
+    "spam": 1
+  },
+  "label_summary": {
+    "ham": 3,
+    "spam": 2
+  },
+  "missing_files": [],
+  "preprocessing_status": "ready",
+  "limitations": [
+    "Unit test fixture"
+  ]
+}

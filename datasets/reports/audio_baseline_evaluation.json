@@ -1,0 +1,40 @@
+{
+  "task": "Acoustic Audio Spoof Classification",
+  "dataset": "ASVspoof 2021 Benchmark Protocol",
+  "dataset_split": {
+    "train_samples": 16,
+    "val_samples": 4,
+    "test_samples": 4
+  },
+  "features_used": [
+    "spectral_centroid",
+    "spectral_flatness",
+    "zero_crossing_rate",
+    "rms_energy",
+    "mfcc_1",
+    "mfcc_2",
+    "mfcc_3",
+    "mfcc_4",
+    "mfcc_5"
+  ],
+  "metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "confusion_matrix": [
+      [
+        2,
+        0
+      ],
+      [
+        0,
+        2
+      ]
+    ]
+  },
+  "limitations": [
+    "Baseline acoustic classifier is an initial heuristic detector.",
+    "Full production deployment requires loading official ASVspoof 2021 DF/LA deep neural weights."
+  ]
+}

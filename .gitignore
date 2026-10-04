@@ -32,6 +32,31 @@ backend/storage/
 trustguard.db
 backend/trustguard.db
 
+# Machine Learning & Datasets Exclusion
+datasets/raw/
+datasets/processed/
+datasets/splits/
+models/
+checkpoints/
+*.pt
+*.pth
+*.onnx
+*.bin
+*.joblib
+*.wav
+*.mp3
+*.mp4
+*.mov
+*.avi
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# Allow gitkeep files in datasets directories if needed
+!datasets/**/.gitkeep
+!ml/tests/fixtures/**
+
 # Environments
 .env
 .venv

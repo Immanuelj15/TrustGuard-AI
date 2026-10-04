@@ -1,0 +1,32 @@
+{
+  "dataset_key": "fakeavceleb",
+  "name": "FakeAVCeleb (Audio-Video Deepfake)",
+  "official_url": "https://github.com/DASH-Lab/FakeAVCeleb",
+  "version": "1.0",
+  "license": "Research-only Academic License (DASH-Lab)",
+  "modality": "multimodal",
+  "local_directory": "datasets\\raw\\multimodal\\fakeavceleb",
+  "availability_status": "available",
+  "total_files": 1,
+  "total_size_bytes": 267,
+  "total_size_mb": 0.0,
+  "file_types": [
+    ".csv"
+  ],
+  "label_mapping": {
+    "RealVideo-RealAudio": 0,
+    "RealVideo-FakeAudio": 1,
+    "FakeVideo-RealAudio": 1,
+    "FakeVideo-FakeAudio": 1
+  },
+  "label_summary": {
+    "status_note": "Directory initialized with 1 files"
+  },
+  "missing_files": [],
+  "preprocessing_status": "ready",
+  "limitations": [
+    "Celebrity interview source videos; deepfake methods include Faceswap, Wav2Lip, SV2TTS.",
+    "Identity-disjoint splits must be enforced to avoid identity memorization.",
+    "Access requires filling the Google Form and receiving approval from DASH-Lab authors."
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "dataset_key": "asvspoof2021",
+  "name": "ASVspoof 2021 (Audio Spoof & Deepfake)",
+  "official_url": "https://www.asvspoof.org/index2021.html",
+  "version": "1.0",
+  "license": "ASVspoof 2021 Evaluation Agreement",
+  "modality": "audio",
+  "local_directory": "datasets\\raw\\audio\\asvspoof2021",
+  "availability_status": "available",
+  "total_files": 1,
+  "total_size_bytes": 238,
+  "total_size_mb": 0.0,
+  "file_types": [
+    ".txt"
+  ],
+  "label_mapping": {
+    "bonafide": 0,
+    "spoof": 1
+  },
+  "label_summary": {
+    "status_note": "Directory initialized with 1 files"
+  },
+  "missing_files": [],
+  "preprocessing_status": "ready",
+  "limitations": [
+    "Studio and controlled telephony conditions; real-world degraded VoIP audio requires acoustic normalization.",
+    "Access requires accepting ASVspoof data license via Zenodo / ASVspoof Consortium."
+  ]
+}

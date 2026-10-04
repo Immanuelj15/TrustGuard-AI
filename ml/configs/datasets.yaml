@@ -1,0 +1,136 @@
+# TrustGuard AI — Dataset Configuration Registry
+# Configures official dataset endpoints, directory paths, access requirements, and pipeline parameters.
+
+random_seed: 42
+
+datasets:
+  uci_sms_spam:
+    name: "UCI SMS Spam Collection"
+    official_url: "https://archive.ics.uci.edu/dataset/228/sms+spam+collection"
+    download_url: "https://archive.ics.uci.edu/static/public/228/sms+spam+collection.zip"
+    access_status: "public_direct_download"
+    license: "CC BY 4.0"
+    modality: "text"
+    raw_dir: "datasets/raw/text/uci_sms_spam"
+    processed_dir: "datasets/processed/text"
+    raw_archive: "sms_spam_collection.zip"
+    expected_files:
+      - "SMSSpamCollection"
+      - "readme"
+    label_mapping:
+      ham: 0
+      spam: 1
+    split_ratio:
+      train: 0.70
+      val: 0.15
+      test: 0.15
+    limitations:
+      - "General SMS spam corpus (primarily UK mobile text collection)."
+      - "Not representative of modern Indian multi-lingual financial fraud (UPI/Digital Arrest/Tamil/Hindi)."
+      - "Serves as baseline spam classifier; specialized cybercrime rules must supplement it."
+
+  asvspoof2021:
+    name: "ASVspoof 2021 (Audio Spoof & Deepfake)"
+    official_url: "https://www.asvspoof.org/index2021.html"
+    portal_url: "https://zenodo.org/communities/asvspoof"
+    access_status: "manual_registration_required"
+    license: "ASVspoof 2021 Evaluation Agreement"
+    modality: "audio"
+    raw_dir: "datasets/raw/audio/asvspoof2021"
+    processed_dir: "datasets/processed/audio"
+    subsets:
+      - "LA" # Logical Access (synthetic speech, voice conversion)
+      - "DF" # Deepfake audio
+      - "PA" # Physical Access (replay attacks)
+    expected_files:
+      - "keys/LA/CM/trial_metadata.txt"
+      - "flac/"
+    label_mapping:
+      bonafide: 0
+      spoof: 1
+    audio_preprocessing:
+      target_sample_rate: 16000
+      max_duration_seconds: 5.0
+      features:
+        - "spectral_centroid"
+        - "spectral_flatness"
+        - "zero_crossing_rate"
+        - "mfcc"
+        - "chroma"
+    split_ratio:
+      train: 0.70
+      val: 0.15
+      test: 0.15
+    limitations:
+      - "Studio and controlled telephony conditions; real-world degraded VoIP audio requires acoustic normalization."
+      - "Access requires accepting ASVspoof data license via Zenodo / ASVspoof Consortium."
+
+  fakeavceleb:
+    name: "FakeAVCeleb (Audio-Video Deepfake)"
+    official_url: "https://github.com/DASH-Lab/FakeAVCeleb"
+    request_form_url: "https://forms.gle/4KxLpWpZ6G9k9k8a6"
+    access_status: "manual_request_required"
+    license: "Research-only Academic License (DASH-Lab)"
+    modality: "multimodal"
+    raw_dir: "datasets/raw/multimodal/fakeavceleb"
+    processed_dir: "datasets/processed/multimodal"
+    expected_files:
+      - "meta_data.csv"
+      - "FakeVideo-FakeAudio"
+      - "FakeVideo-RealAudio"
+      - "RealVideo-FakeAudio"
+      - "RealVideo-RealAudio"
+    label_mapping:
+      RealVideo-RealAudio: 0
+      RealVideo-FakeAudio: 1
+      FakeVideo-RealAudio: 1
+      FakeVideo-FakeAudio: 1
+    video_preprocessing:
+      sample_fps: 1.0 # 1 frame per second to conserve compute & disk
+      target_resolution: [224, 224]
+      face_detection: "opencv_haar" # or mediapipe if available
+    split_ratio:
+      train: 0.70
+      val: 0.15
+      test: 0.15
+    limitations:
+      - "Celebrity interview source videos; deepfake methods include Faceswap, Wav2Lip, SV2TTS."
+      - "Identity-disjoint splits must be enforced to avoid identity memorization."
+      - "Access requires filling the Google Form and receiving approval from DASH-Lab authors."
+
+  faceforensics:
+    name: "FaceForensics++ (Video Manipulation Benchmark)"
+    official_url: "https://github.com/ondyari/FaceForensics"
+    terms_form_url: "https://docs.google.com/forms/d/e/1FAIpQLSdRR5Csv6HSfl250bF0yLq5LJyJzA_SK2KaFis04mMVrd0x2g/viewform"
+    access_status: "manual_request_required"
+    license: "TUM FaceForensics Terms of Use"
+    modality: "video"
+    raw_dir: "datasets/raw/video/faceforensics"
+    processed_dir: "datasets/processed/video"
+    compression_levels:
+      - "c23" # high quality compressed
+      - "c40" # low quality compressed
+    manipulation_types:
+      - "original"
+      - "Deepfakes"
+      - "Face2Face"
+      - "FaceSwap"
+      - "NeuralTextures"
+    expected_files:
+      - "dataset.json"
+      - "manipulated_sequences"
+      - "original_sequences"
+    label_mapping:
+      original: 0
+      manipulated: 1
+    video_preprocessing:
+      sample_fps: 1.0
+      target_resolution: [224, 224]
+      max_frames_per_video: 10
+    split_ratio:
+      train: 0.70
+      val: 0.15
+      test: 0.15
+    limitations:
+      - "Requires executing the official download-FaceForensics.py script with official authorization token."
+      - "Video-level separation must be maintained to prevent frame leakage."
