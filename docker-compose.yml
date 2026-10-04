@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: trustguard_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: trustguard
+      POSTGRES_USER: trustguard_user
+      POSTGRES_PASSWORD: trustguard_secure_db_pass_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trustguard_user -d trustguard"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis for Background Tasks and Job Polling
+  redis:
+    image: redis:7-alpine
+    container_name: trustguard_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # MinIO S3-Compatible Object Storage for Evidence Files
+  minio:
+    image: minio/minio:latest
+    container_name: trustguard_minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: trustguard_minio
+      MINIO_ROOT_PASSWORD: trustguard_secret_2026
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend FastAPI Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../infrastructure/docker/Dockerfile.backend
+    container_name: trustguard_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://trustguard_user:trustguard_secure_db_pass_2026@postgres:5432/trustguard
+      REDIS_URL: redis://redis:6379/0
+      STORAGE_TYPE: local
+      SECRET_KEY: trustguard_forensic_super_secret_jwt_key_2026_x!9qZ
+      DEMO_MODE: "true"
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: trustguard_minio
+      MINIO_SECRET_KEY: trustguard_secret_2026
+      MINIO_BUCKET_NAME: trustguard-evidence
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend_storage:/app/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Frontend React SPA Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../infrastructure/docker/Dockerfile.frontend
+    container_name: trustguard_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  backend_storage:
