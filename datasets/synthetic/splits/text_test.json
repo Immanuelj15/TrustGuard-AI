@@ -1,0 +1,1097 @@
+[
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0351",
+    "message_text": "FINAL WARNING: Earn INR 5,000 to 15,000 daily working part-time from home! Only 30 minutes daily reviewing travel videos. Join WhatsApp mentor: https://wa.example/84395",
+    "label": "suspicious_demo",
+    "category": "Task Job Scam",
+    "risk_indicators": [
+      "daily income",
+      "part time",
+      "review videos",
+      "WhatsApp mentor"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 83.5,
+    "explanation": "Contains social engineering patterns matching Task Job Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0399",
+    "message_text": "FINAL WARNING: Congratulations! Your mobile number won 1st prize of INR 25,00,000 in KBC Lucky Draw 2026. Contact lottery manager Rana at +91 97777 68838",
+    "label": "suspicious_demo",
+    "category": "Lottery Fraud",
+    "risk_indicators": [
+      "KBC lucky draw",
+      "won 25 lakhs",
+      "lottery manager"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 86.1,
+    "explanation": "Contains social engineering patterns matching Lottery Fraud with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0426",
+    "message_text": "Earn INR 5,000 to 15,000 daily working part-time from home! Only 30 minutes daily reviewing travel videos. Join WhatsApp mentor: https://wa.example/16863",
+    "label": "suspicious_demo",
+    "category": "Task Job Scam",
+    "risk_indicators": [
+      "daily income",
+      "part time",
+      "review videos",
+      "WhatsApp mentor"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 89.5,
+    "explanation": "Contains social engineering patterns matching Task Job Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0090",
+    "message_text": "Your recurring auto-debit of INR 5999.00 for utility bill payment has been processed.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 14.2,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0330",
+    "message_text": "Income Tax Notice: Discrepancy detected in FY24 assessment. Avoid asset freeze and criminal penalty by verifying ITR immediately: https://incometax-filing-alert.example/37884",
+    "label": "suspicious_demo",
+    "category": "Tax Authority Scam",
+    "risk_indicators": [
+      "asset freeze",
+      "criminal penalty",
+      "immediate action"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 69.8,
+    "explanation": "Contains social engineering patterns matching Tax Authority Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0417",
+    "message_text": "URGENT: Delhi High Court has issued a non-bailable arrest warrant against your phone number. Report online in 30 minutes at https://ecourt-warrant.example/18109",
+    "label": "suspicious_demo",
+    "category": "Authority Impersonation",
+    "risk_indicators": [
+      "Court warrant",
+      "non-bailable",
+      "urgent arrest"
+    ],
+    "risk_level": "HIGH",
+    "risk_score": 79.0,
+    "explanation": "Contains social engineering patterns matching Authority Impersonation with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0174",
+    "message_text": "Your train ticket PNR 23006 is confirmed. Coach B2, Seat 45. Departure scheduled 22-Oct at 06:15 AM.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 5.4,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0280",
+    "message_text": "Fast Personal Loan Approved: INR 5,00,000 pre-approved with zero interest for 6 months. Pay 2% processing fee to disburse: https://instant-loan-hub.example/28964",
+    "label": "suspicious_demo",
+    "category": "Loan Processing Fraud",
+    "risk_indicators": [
+      "pre-approved loan",
+      "zero interest",
+      "pay processing fee"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 95.6,
+    "explanation": "Contains social engineering patterns matching Loan Processing Fraud with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0478",
+    "message_text": "Customs Seizure Alert: A FedEx courier containing illegal narcotics and fake passports under your name was seized. Pay verification deposit at https://customs-nodal.example/31012",
+    "label": "suspicious_demo",
+    "category": "Customs Seizure",
+    "risk_indicators": [
+      "customs seized",
+      "narcotics",
+      "verification deposit"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 73.5,
+    "explanation": "Contains social engineering patterns matching Customs Seizure with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0457",
+    "message_text": "Exclusive Crypto Trading Opportunity: Guaranteed 300% return in 48 hours using automated arbitrage algorithm. Deposit minimum $100 to wallet: https://crypto-growth.example/33703",
+    "label": "suspicious_demo",
+    "category": "Crypto Fraud",
+    "risk_indicators": [
+      "guaranteed 300%",
+      "automated arbitrage",
+      "deposit wallet"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 90.8,
+    "explanation": "Contains social engineering patterns matching Crypto Fraud with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0069",
+    "message_text": "UPI transaction of INR 1250.00 to Grocery Store was successful on 25-Oct. Ref: 19016.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 4.1,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0171",
+    "message_text": "Reminder: Your scheduled dental consultation with Dr. Mehta is on 22-Oct at 11:30 AM. Call clinic to reschedule. Helpline: 1800-000-000.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 12.1,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0388",
+    "message_text": "Customs Seizure Alert: A FedEx courier containing illegal narcotics and fake passports under your name was seized. Pay verification deposit at https://customs-nodal.example/32037",
+    "label": "suspicious_demo",
+    "category": "Customs Seizure",
+    "risk_indicators": [
+      "customs seized",
+      "narcotics",
+      "verification deposit"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 67.4,
+    "explanation": "Contains social engineering patterns matching Customs Seizure with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0377",
+    "message_text": "HDFC Alert: Your bank debit card is temporarily suspended. Submit OTP and unfreeze account immediately at https://hdfc-unfreeze-secure.example/85156 Do not ignore this statutory notice.",
+    "label": "suspicious_demo",
+    "category": "Card Suspension",
+    "risk_indicators": [
+      "card suspended",
+      "submit OTP",
+      "unfreeze"
+    ],
+    "risk_level": "HIGH",
+    "risk_score": 77.5,
+    "explanation": "Contains social engineering patterns matching Card Suspension with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0298",
+    "message_text": "Customs Seizure Alert: A FedEx courier containing illegal narcotics and fake passports under your name was seized. Pay verification deposit at https://customs-nodal.example/65872",
+    "label": "suspicious_demo",
+    "category": "Customs Seizure",
+    "risk_indicators": [
+      "customs seized",
+      "narcotics",
+      "verification deposit"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 86.3,
+    "explanation": "Contains social engineering patterns matching Customs Seizure with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0396",
+    "message_text": "Earn INR 5,000 to 15,000 daily working part-time from home! Only 30 minutes daily reviewing travel videos. Join WhatsApp mentor: https://wa.example/95918",
+    "label": "suspicious_demo",
+    "category": "Task Job Scam",
+    "risk_indicators": [
+      "daily income",
+      "part time",
+      "review videos",
+      "WhatsApp mentor"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 67.3,
+    "explanation": "Contains social engineering patterns matching Task Job Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0054",
+    "message_text": "Your train ticket PNR 82132 is confirmed. Coach B2, Seat 45. Departure scheduled 12-Oct at 06:15 AM.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 14.6,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0322",
+    "message_text": "Exclusive Crypto Trading Opportunity: Guaranteed 300% return in 48 hours using automated arbitrage algorithm. Deposit minimum $100 to wallet: https://crypto-growth.example/82924",
+    "label": "suspicious_demo",
+    "category": "Crypto Fraud",
+    "risk_indicators": [
+      "guaranteed 300%",
+      "automated arbitrage",
+      "deposit wallet"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 66.9,
+    "explanation": "Contains social engineering patterns matching Crypto Fraud with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0337",
+    "message_text": "Exclusive Crypto Trading Opportunity: Guaranteed 300% return in 48 hours using automated arbitrage algorithm. Deposit minimum $100 to wallet: https://crypto-growth.example/94239",
+    "label": "suspicious_demo",
+    "category": "Crypto Fraud",
+    "risk_indicators": [
+      "guaranteed 300%",
+      "automated arbitrage",
+      "deposit wallet"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 82.3,
+    "explanation": "Contains social engineering patterns matching Crypto Fraud with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0376",
+    "message_text": "Dear SBI Customer, your YONO account will be blocked today due to pending PAN KYC. Update PAN card now at https://sbi-kyc-verify.example/51033",
+    "label": "suspicious_demo",
+    "category": "Banking KYC Scam",
+    "risk_indicators": [
+      "account blocked",
+      "pending KYC",
+      "update PAN",
+      "urgent"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 82.8,
+    "explanation": "Contains social engineering patterns matching Banking KYC Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0477",
+    "message_text": "URGENT: Delhi High Court has issued a non-bailable arrest warrant against your phone number. Report online in 30 minutes at https://ecourt-warrant.example/47363",
+    "label": "suspicious_demo",
+    "category": "Authority Impersonation",
+    "risk_indicators": [
+      "Court warrant",
+      "non-bailable",
+      "urgent arrest"
+    ],
+    "risk_level": "HIGH",
+    "risk_score": 67.6,
+    "explanation": "Contains social engineering patterns matching Authority Impersonation with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0177",
+    "message_text": "Support ticket #71592 has been resolved. If you require further assistance, reply directly to this thread.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 5.7,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0468",
+    "message_text": "ICICI Bank: Unrecognized login attempt from Russia. If this was not you, block card and share cancellation OTP: 70513",
+    "label": "suspicious_demo",
+    "category": "Fake Security Alert",
+    "risk_indicators": [
+      "unrecognized login",
+      "share OTP",
+      "block card"
+    ],
+    "risk_level": "HIGH",
+    "risk_score": 88.9,
+    "explanation": "Contains social engineering patterns matching Fake Security Alert with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0404",
+    "message_text": "National Cyber Crime Bureau: Your device IP was traced in criminal operations. Call Investigating Inspector Verma immediately at +91 99999 67961 or face police raid.",
+    "label": "suspicious_demo",
+    "category": "Police Impersonation",
+    "risk_indicators": [
+      "police raid",
+      "cyber crime bureau",
+      "criminal operation"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 84.6,
+    "explanation": "Contains social engineering patterns matching Police Impersonation with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0183",
+    "message_text": "Your grocery order #71433 is packed and scheduled for delivery between 4 PM and 6 PM today.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 14.3,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0489",
+    "message_text": "Congratulations! Your mobile number won 1st prize of INR 25,00,000 in KBC Lucky Draw 2026. Contact lottery manager Rana at +91 97777 29142",
+    "label": "suspicious_demo",
+    "category": "Lottery Fraud",
+    "risk_indicators": [
+      "KBC lucky draw",
+      "won 25 lakhs",
+      "lottery manager"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 69.3,
+    "explanation": "Contains social engineering patterns matching Lottery Fraud with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0383",
+    "message_text": "FINAL WARNING: Share Market Insider VIP Group: 100% accurate SEBI multi-bagger calls. Join private Telegram channel before link expires: https://t.example/23875",
+    "label": "suspicious_demo",
+    "category": "Stock Market Scam",
+    "risk_indicators": [
+      "100% accurate",
+      "insider VIP",
+      "multi-bagger",
+      "expires"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 72.5,
+    "explanation": "Contains social engineering patterns matching Stock Market Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0130",
+    "message_text": "Your recurring auto-debit of INR 5999.00 for utility bill payment has been processed.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 7.9,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0192",
+    "message_text": "Your vehicle routine service is scheduled for 02-Nov at Service Hub Center. Kindly bring your warranty book.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 12.6,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0199",
+    "message_text": "Your feedback matters: How was your service experience at Branch #92578? Rate us from 1 to 5.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 11.2,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0326",
+    "message_text": "Digital Arrest Notice: CBI Cyber Cell has flagged your Aadhaar in money laundering. Connect via Skype immediately to avoid arrest: https://cbi-investigation.example/65435",
+    "label": "suspicious_demo",
+    "category": "Authority Impersonation",
+    "risk_indicators": [
+      "CBI",
+      "Digital Arrest",
+      "warrant",
+      "immediate arrest"
+    ],
+    "risk_level": "HIGH",
+    "risk_score": 91.9,
+    "explanation": "Contains social engineering patterns matching Authority Impersonation with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0023",
+    "message_text": "Your grocery order #42325 is packed and scheduled for delivery between 4 PM and 6 PM today.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 11.7,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0241",
+    "message_text": "Your package with tracking number TRK-27322 from Courier Express is out for delivery with driver Rahul.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 8.9,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0448",
+    "message_text": "Customs Seizure Alert: A FedEx courier containing illegal narcotics and fake passports under your name was seized. Pay verification deposit at https://customs-nodal.example/73736",
+    "label": "suspicious_demo",
+    "category": "Customs Seizure",
+    "risk_indicators": [
+      "customs seized",
+      "narcotics",
+      "verification deposit"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 71.0,
+    "explanation": "Contains social engineering patterns matching Customs Seizure with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0200",
+    "message_text": "Thank you for attending today's webinar on digital governance. Workshop slides have been emailed.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 3.2,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0011",
+    "message_text": "Reminder: Your scheduled dental consultation with Dr. Mehta is on 28-Oct at 11:30 AM. Call clinic to reschedule. Helpline: 1800-000-000.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 9.5,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0284",
+    "message_text": "National Cyber Crime Bureau: Your device IP was traced in criminal operations. Call Investigating Inspector Verma immediately at +91 99999 56955 or face police raid.",
+    "label": "suspicious_demo",
+    "category": "Police Impersonation",
+    "risk_indicators": [
+      "police raid",
+      "cyber crime bureau",
+      "criminal operation"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 89.5,
+    "explanation": "Contains social engineering patterns matching Police Impersonation with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0465",
+    "message_text": "Income Tax Notice: Discrepancy detected in FY24 assessment. Avoid asset freeze and criminal penalty by verifying ITR immediately: https://incometax-filing-alert.example/71474",
+    "label": "suspicious_demo",
+    "category": "Tax Authority Scam",
+    "risk_indicators": [
+      "asset freeze",
+      "criminal penalty",
+      "immediate action"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 93.0,
+    "explanation": "Contains social engineering patterns matching Tax Authority Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0403",
+    "message_text": "FINAL WARNING: Customs Seizure Alert: A FedEx courier containing illegal narcotics and fake passports under your name was seized. Pay verification deposit at https://customs-nodal.example/67640",
+    "label": "suspicious_demo",
+    "category": "Customs Seizure",
+    "risk_indicators": [
+      "customs seized",
+      "narcotics",
+      "verification deposit"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 67.1,
+    "explanation": "Contains social engineering patterns matching Customs Seizure with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0260",
+    "message_text": "Bank Alert: Your reward points worth INR 9,850 are expiring tonight. Redeem cash directly to bank account at https://bank-reward-redeem.example/74139",
+    "label": "suspicious_demo",
+    "category": "Points Expiry Scam",
+    "risk_indicators": [
+      "reward points expiring",
+      "redeem cash",
+      "tonight only"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 84.1,
+    "explanation": "Contains social engineering patterns matching Points Expiry Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0279",
+    "message_text": "FINAL WARNING: Congratulations! Your mobile number won 1st prize of INR 25,00,000 in KBC Lucky Draw 2026. Contact lottery manager Rana at +91 97777 88116",
+    "label": "suspicious_demo",
+    "category": "Lottery Fraud",
+    "risk_indicators": [
+      "KBC lucky draw",
+      "won 25 lakhs",
+      "lottery manager"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 65.1,
+    "explanation": "Contains social engineering patterns matching Lottery Fraud with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0270",
+    "message_text": "Income Tax Notice: Discrepancy detected in FY24 assessment. Avoid asset freeze and criminal penalty by verifying ITR immediately: https://incometax-filing-alert.example/37801",
+    "label": "suspicious_demo",
+    "category": "Tax Authority Scam",
+    "risk_indicators": [
+      "asset freeze",
+      "criminal penalty",
+      "immediate action"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 84.9,
+    "explanation": "Contains social engineering patterns matching Tax Authority Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0035",
+    "message_text": "Hotel booking confirmed at Grand Residency for check-in on 28-Oct. Reservation ID: 74042.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 13.4,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0185",
+    "message_text": "Your requested invoice for purchase #15224 is available for download in your customer account.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 9.8,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0269",
+    "message_text": "National Cyber Crime Bureau: Your device IP was traced in criminal operations. Call Investigating Inspector Verma immediately at +91 99999 69600 or face police raid. Do not ignore this statutory notice.",
+    "label": "suspicious_demo",
+    "category": "Police Impersonation",
+    "risk_indicators": [
+      "police raid",
+      "cyber crime bureau",
+      "criminal operation"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 67.8,
+    "explanation": "Contains social engineering patterns matching Police Impersonation with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0044",
+    "message_text": "Shipment update: Package #10942 has cleared the regional hub and is moving on schedule.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 5.0,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0343",
+    "message_text": "FINAL WARNING: Customs Seizure Alert: A FedEx courier containing illegal narcotics and fake passports under your name was seized. Pay verification deposit at https://customs-nodal.example/28776",
+    "label": "suspicious_demo",
+    "category": "Customs Seizure",
+    "risk_indicators": [
+      "customs seized",
+      "narcotics",
+      "verification deposit"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 82.6,
+    "explanation": "Contains social engineering patterns matching Customs Seizure with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0341",
+    "message_text": "Digital Arrest Notice: CBI Cyber Cell has flagged your Aadhaar in money laundering. Connect via Skype immediately to avoid arrest: https://cbi-investigation.example/50499 Do not ignore this statutory notice.",
+    "label": "suspicious_demo",
+    "category": "Authority Impersonation",
+    "risk_indicators": [
+      "CBI",
+      "Digital Arrest",
+      "warrant",
+      "immediate arrest"
+    ],
+    "risk_level": "HIGH",
+    "risk_score": 93.6,
+    "explanation": "Contains social engineering patterns matching Authority Impersonation with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0096",
+    "message_text": "Your broadband connection has been renewed successfully. Next billing cycle commences on 25-Oct. Helpline: 1800-000-000.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 10.7,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0214",
+    "message_text": "Your train ticket PNR 67711 is confirmed. Coach B2, Seat 45. Departure scheduled 05-Nov at 06:15 AM.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 2.2,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0293",
+    "message_text": "Share Market Insider VIP Group: 100% accurate SEBI multi-bagger calls. Join private Telegram channel before link expires: https://t.example/15683 Do not ignore this statutory notice.",
+    "label": "suspicious_demo",
+    "category": "Stock Market Scam",
+    "risk_indicators": [
+      "100% accurate",
+      "insider VIP",
+      "multi-bagger",
+      "expires"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 87.5,
+    "explanation": "Contains social engineering patterns matching Stock Market Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0485",
+    "message_text": "Bank Alert: Your reward points worth INR 9,850 are expiring tonight. Redeem cash directly to bank account at https://bank-reward-redeem.example/60615 Do not ignore this statutory notice.",
+    "label": "suspicious_demo",
+    "category": "Points Expiry Scam",
+    "risk_indicators": [
+      "reward points expiring",
+      "redeem cash",
+      "tonight only"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 95.8,
+    "explanation": "Contains social engineering patterns matching Points Expiry Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0181",
+    "message_text": "Your package with tracking number TRK-28643 from Courier Express is out for delivery with driver Rahul.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 12.3,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0315",
+    "message_text": "FINAL WARNING: Income Tax Notice: Discrepancy detected in FY24 assessment. Avoid asset freeze and criminal penalty by verifying ITR immediately: https://incometax-filing-alert.example/22463",
+    "label": "suspicious_demo",
+    "category": "Tax Authority Scam",
+    "risk_indicators": [
+      "asset freeze",
+      "criminal penalty",
+      "immediate action"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 74.7,
+    "explanation": "Contains social engineering patterns matching Tax Authority Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0001",
+    "message_text": "Your package with tracking number TRK-93810 from Courier Express is out for delivery with driver Rahul.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 5.2,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0220",
+    "message_text": "Thank you for attending today's webinar on digital governance. Workshop slides have been emailed.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 7.6,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0150",
+    "message_text": "Your recurring auto-debit of INR 12450.00 for utility bill payment has been processed.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 6.4,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0074",
+    "message_text": "Your train ticket PNR 36685 is confirmed. Coach B2, Seat 45. Departure scheduled 25-Oct at 06:15 AM.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 8.6,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0368",
+    "message_text": "Share Market Insider VIP Group: 100% accurate SEBI multi-bagger calls. Join private Telegram channel before link expires: https://t.example/11013",
+    "label": "suspicious_demo",
+    "category": "Stock Market Scam",
+    "risk_indicators": [
+      "100% accurate",
+      "insider VIP",
+      "multi-bagger",
+      "expires"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 80.4,
+    "explanation": "Contains social engineering patterns matching Stock Market Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0124",
+    "message_text": "Shipment update: Package #64921 has cleared the regional hub and is moving on schedule.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 8.3,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0295",
+    "message_text": "FINAL WARNING: Fast Personal Loan Approved: INR 5,00,000 pre-approved with zero interest for 6 months. Pay 2% processing fee to disburse: https://instant-loan-hub.example/70036",
+    "label": "suspicious_demo",
+    "category": "Loan Processing Fraud",
+    "risk_indicators": [
+      "pre-approved loan",
+      "zero interest",
+      "pay processing fee"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 84.9,
+    "explanation": "Contains social engineering patterns matching Loan Processing Fraud with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0264",
+    "message_text": "Congratulations! Your mobile number won 1st prize of INR 25,00,000 in KBC Lucky Draw 2026. Contact lottery manager Rana at +91 97777 57537",
+    "label": "suspicious_demo",
+    "category": "Lottery Fraud",
+    "risk_indicators": [
+      "KBC lucky draw",
+      "won 25 lakhs",
+      "lottery manager"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 68.1,
+    "explanation": "Contains social engineering patterns matching Lottery Fraud with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0324",
+    "message_text": "Congratulations! Your mobile number won 1st prize of INR 25,00,000 in KBC Lucky Draw 2026. Contact lottery manager Rana at +91 97777 97819",
+    "label": "suspicious_demo",
+    "category": "Lottery Fraud",
+    "risk_indicators": [
+      "KBC lucky draw",
+      "won 25 lakhs",
+      "lottery manager"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 68.8,
+    "explanation": "Contains social engineering patterns matching Lottery Fraud with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0009",
+    "message_text": "UPI transaction of INR 12450.00 to Grocery Store was successful on 12-Oct. Ref: 55082.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 11.5,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0275",
+    "message_text": "FINAL WARNING: Bank Alert: Your reward points worth INR 9,850 are expiring tonight. Redeem cash directly to bank account at https://bank-reward-redeem.example/82641",
+    "label": "suspicious_demo",
+    "category": "Points Expiry Scam",
+    "risk_indicators": [
+      "reward points expiring",
+      "redeem cash",
+      "tonight only"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 71.4,
+    "explanation": "Contains social engineering patterns matching Points Expiry Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0306",
+    "message_text": "Earn INR 5,000 to 15,000 daily working part-time from home! Only 30 minutes daily reviewing travel videos. Join WhatsApp mentor: https://wa.example/88301",
+    "label": "suspicious_demo",
+    "category": "Task Job Scam",
+    "risk_indicators": [
+      "daily income",
+      "part time",
+      "review videos",
+      "WhatsApp mentor"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 81.4,
+    "explanation": "Contains social engineering patterns matching Task Job Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0256",
+    "message_text": "Dear SBI Customer, your YONO account will be blocked today due to pending PAN KYC. Update PAN card now at https://sbi-kyc-verify.example/58629",
+    "label": "suspicious_demo",
+    "category": "Banking KYC Scam",
+    "risk_indicators": [
+      "account blocked",
+      "pending KYC",
+      "update PAN",
+      "urgent"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 85.8,
+    "explanation": "Contains social engineering patterns matching Banking KYC Scam with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0464",
+    "message_text": "National Cyber Crime Bureau: Your device IP was traced in criminal operations. Call Investigating Inspector Verma immediately at +91 99999 41348 or face police raid.",
+    "label": "suspicious_demo",
+    "category": "Police Impersonation",
+    "risk_indicators": [
+      "police raid",
+      "cyber crime bureau",
+      "criminal operation"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 74.6,
+    "explanation": "Contains social engineering patterns matching Police Impersonation with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0429",
+    "message_text": "Congratulations! Your mobile number won 1st prize of INR 25,00,000 in KBC Lucky Draw 2026. Contact lottery manager Rana at +91 97777 98916",
+    "label": "suspicious_demo",
+    "category": "Lottery Fraud",
+    "risk_indicators": [
+      "KBC lucky draw",
+      "won 25 lakhs",
+      "lottery manager"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 77.0,
+    "explanation": "Contains social engineering patterns matching Lottery Fraud with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0057",
+    "message_text": "Support ticket #61173 has been resolved. If you require further assistance, reply directly to this thread.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 5.7,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0033",
+    "message_text": "Your flight AI-76540 from Delhi to Bengaluru departs on 18-Oct at 14:20. Web check-in opens 48 hours prior.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 6.9,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_LEGIT_0235",
+    "message_text": "Hotel booking confirmed at Grand Residency for check-in on 22-Oct. Reservation ID: 75107.",
+    "label": "legitimate_demo",
+    "category": "Customer Notification",
+    "risk_indicators": [],
+    "risk_level": "LOW",
+    "risk_score": 9.9,
+    "explanation": "Standard benign notification containing no social engineering or urgency markers.",
+    "generation_method": "programmatic_fictional_template_variation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0319",
+    "message_text": "FINAL WARNING: Urgent: Your bank electricity power will be disconnected at 9:30 PM due to unpaid bill. Call nodal power officer at +91 98888 21188 immediately.",
+    "label": "suspicious_demo",
+    "category": "Utility Disconnection",
+    "risk_indicators": [
+      "electricity disconnected",
+      "call officer",
+      "immediate payment"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 67.9,
+    "explanation": "Contains social engineering patterns matching Utility Disconnection with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0407",
+    "message_text": "FINAL WARNING: HDFC Alert: Your bank debit card is temporarily suspended. Submit OTP and unfreeze account immediately at https://hdfc-unfreeze-secure.example/50685",
+    "label": "suspicious_demo",
+    "category": "Card Suspension",
+    "risk_indicators": [
+      "card suspended",
+      "submit OTP",
+      "unfreeze"
+    ],
+    "risk_level": "HIGH",
+    "risk_score": 79.3,
+    "explanation": "Contains social engineering patterns matching Card Suspension with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  },
+  {
+    "sample_id": "SYNTH_TXT_SCAM_0328",
+    "message_text": "Customs Seizure Alert: A FedEx courier containing illegal narcotics and fake passports under your name was seized. Pay verification deposit at https://customs-nodal.example/88696",
+    "label": "suspicious_demo",
+    "category": "Customs Seizure",
+    "risk_indicators": [
+      "customs seized",
+      "narcotics",
+      "verification deposit"
+    ],
+    "risk_level": "MEDIUM",
+    "risk_score": 74.7,
+    "explanation": "Contains social engineering patterns matching Customs Seizure with artificial urgency.",
+    "generation_method": "programmatic_fictional_threat_pattern_generation",
+    "synthetic_data": true
+  }
+]

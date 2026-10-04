@@ -82,6 +82,27 @@ def analyze_audio_file(file_path: str, is_demo_mode: bool = True) -> Dict[str, A
         ]
         transcription = "[Demo Transcription] Hello, this is an automated security verification call regarding your recent account activity."
 
+    # Attempt Hugging Face Speech-to-Text Transcription if available
+    hf_asr_meta = None
+    spoken_scam_indicators = []
+    try:
+        from .hf.audio_transcriber import HuggingFaceAudioTranscriber
+        from .text_analyzer import analyze_scam_text
+        hf_asr_res = HuggingFaceAudioTranscriber.get_instance().transcribe(file_path)
+        if hf_asr_res and "transcription" in hf_asr_res and hf_asr_res["transcription"]:
+            transcription = hf_asr_res["transcription"]
+            hf_asr_meta = hf_asr_res
+            # Analyze spoken words for scam/fraud cues
+            text_analysis = analyze_scam_text(transcription)
+            if text_analysis.get("findings", {}).get("indicators"):
+                spoken_scam_indicators = text_analysis["findings"]["indicators"]
+                # Elevate risk if fraudulent cues are spoken
+                if text_analysis.get("risk_score", 0) > risk_score:
+                    risk_score = text_analysis["risk_score"]
+                    risk_level = text_analysis["risk_level"]
+    except Exception:
+        hf_asr_meta = None
+
     findings = {
         "metadata": metadata,
         "acoustic_features": {
@@ -92,13 +113,20 @@ def analyze_audio_file(file_path: str, is_demo_mode: bool = True) -> Dict[str, A
         },
         "synthetic_speech_indicators": indicators,
         "transcription": transcription,
-        "is_model_mock": not model_configured,
+        "is_model_mock": not model_configured and hf_asr_meta is None,
         "model_status_note": (
-            "AASIST / RawNet2 deep-learning weights not loaded in current environment. "
-            "Acoustic telemetry and signal envelope metrics generated. Voice clone detection marked as unverified."
-            if not model_configured else "Neural voice manipulation model inference active."
+            f"Hugging Face ASR Active ({hf_asr_meta['model_name']}). Acoustic telemetry and speech-to-text forensic transcription completed."
+            if hf_asr_meta else (
+                "AASIST / RawNet2 deep-learning weights not loaded in current environment. "
+                "Acoustic telemetry and signal envelope metrics generated. Voice clone detection marked as unverified."
+                if not model_configured else "Neural voice manipulation model inference active."
+            )
         )
     }
+    if hf_asr_meta:
+        findings["hf_asr_inference"] = hf_asr_meta
+    if spoken_scam_indicators:
+        findings["spoken_scam_indicators"] = spoken_scam_indicators
 
     limitations = [
         "Acoustic anomalies alone do not definitively prove synthetic speech or voice cloning.",

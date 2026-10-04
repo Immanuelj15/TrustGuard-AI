@@ -34,7 +34,7 @@ INDICATOR_RULES = [
         "severity": "HIGH",
         "weight": 25.0,
         "patterns": [
-            r"\b(transfer|send|pay|deposit)\s+(immediately|urgently|within\s+\d+\s*(minutes|hours|mins))\b",
+            r"\b(transfer|send|pay|deposit)\s+(?:(?:rs\.?|inr|\$|€|£)?\s*\d+[\d,.]*\s+)?(immediately|urgently|within\s+\d+\s*(minutes|hours|mins))\b",
             r"\b(account\s+will\s+be\s+(suspended|blocked|frozen|deactivated|closed))\b",
             r"\b(turant|jaldi)\s+(paise|bhejo|transfer karo)\b",
             r"\b(udane|panam)\s+(anuppu|katta vendum)\b"
@@ -133,17 +133,38 @@ def analyze_scam_text(text: str) -> Dict[str, Any]:
         "Investigation notes and corroborating telemetry should be reviewed before taking administrative or legal action."
     ]
 
+    # Optional Hugging Face transformer classification
+    hf_metadata = None
+    try:
+        from .hf.text_classifier import HuggingFaceTextClassifier
+        hf_pred = HuggingFaceTextClassifier.get_instance().predict(text)
+        if hf_pred and "predicted_label" in hf_pred:
+            hf_metadata = hf_pred
+            # If transformer also flags suspicious and risk is low, bump to medium for review
+            if hf_pred["predicted_label"] == "suspicious" and final_score < 40.0:
+                final_score = max(final_score, round(hf_pred["risk_score"] * 0.5, 1))
+                if final_score >= 40.0:
+                    risk_level = "MEDIUM"
+    except Exception:
+        hf_metadata = None
+
+    model_name = "TrustGuard-Ensemble-SocialEng" if hf_metadata else "TrustGuard-RuleEngine-SocialEng"
+
+    findings_payload = {
+        "total_indicators_found": sum(len(f["matches"]) for f in findings),
+        "distinct_indicator_categories": list(matched_categories),
+        "indicators": findings
+    }
+    if hf_metadata:
+        findings_payload["hf_transformer_inference"] = hf_metadata
+
     return {
         "analysis_type": "text",
-        "model_name": "TrustGuard-RuleEngine-SocialEng",
+        "model_name": model_name,
         "model_version": "v1.4-multilingual",
         "risk_level": risk_level,
         "risk_score": final_score,
         "model_confidence": 0.88 if len(findings) > 0 else 0.95,
-        "findings": {
-            "total_indicators_found": sum(len(f["matches"]) for f in findings),
-            "distinct_indicator_categories": list(matched_categories),
-            "indicators": findings
-        },
+        "findings": findings_payload,
         "limitations": limitations
     }

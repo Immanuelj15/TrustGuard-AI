@@ -1,0 +1,32 @@
+{
+  "dataset_name": "TrustGuard-AI-Synthetic-Demo-Benchmark",
+  "version": "1.0.0",
+  "created_timestamp": "2026-10-04T20:45:00Z",
+  "license": "CC0-1.0-Universal / Academic-Demo-Only",
+  "description": "Synthetic demonstration dataset created programmatically for academic prototyping without real-world PII or copyright restrictions.",
+  "counts": {
+    "audio_samples": 21,
+    "video_samples": 6,
+    "multimodal_pairs": 3,
+    "text_samples": 500
+  },
+  "modalities": {
+    "audio": {
+      "clean_count": 15,
+      "transformed_count": 6
+    },
+    "video": {
+      "original_count": 3,
+      "transformed_count": 3
+    },
+    "multimodal": {
+      "pair_count": 3
+    },
+    "text": {
+      "legitimate_count": 250,
+      "suspicious_count": 250
+    }
+  },
+  "synthetic_data": true,
+  "warning": "ACADEMIC DEMO PURPOSE ONLY. NEVER USE AS REAL EVIDENCE OR CLAIM ACCURACY OVER REAL-WORLD THREATS."
+}

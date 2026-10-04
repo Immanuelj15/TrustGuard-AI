@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { apiClient } from '../api/client';
 import { Case, EvidenceItem, AnalysisJob } from '../types';
+import { Badge } from '../components/common/Badge';
+import { LoadingState } from '../components/common/LoadingState';
+import { EmptyState } from '../components/common/EmptyState';
+import { SyntheticGalleryModal } from '../components/common/SyntheticGalleryModal';
+import { SyntheticSample } from '../types';
 import {
   Cpu,
   Play,
@@ -14,7 +20,11 @@ import {
   Clock,
   ShieldAlert,
   Sliders,
-  Check
+  Check,
+  Activity,
+  Layers,
+  Sparkles,
+  FlaskConical
 } from 'lucide-react';
 
 export const AnalysisWorkspacePage: React.FC = () => {
@@ -31,6 +41,11 @@ export const AnalysisWorkspacePage: React.FC = () => {
   const [runningAnalysis, setRunningAnalysis] = useState(false);
   const [currentJob, setCurrentJob] = useState<AnalysisJob | null>(null);
   const [jobHistory, setJobHistory] = useState<AnalysisJob[]>([]);
+
+  // Synthetic Demo Asset State
+  const [showGalleryModal, setShowGalleryModal] = useState(false);
+  const [selectedDemoSample, setSelectedDemoSample] = useState<SyntheticSample | null>(null);
+  const [directDemoAnalyzing, setDirectDemoAnalyzing] = useState(false);
 
   // Load cases
   useEffect(() => {
@@ -104,34 +119,77 @@ export const AnalysisWorkspacePage: React.FC = () => {
     }
   };
 
+  const handleDirectAnalyzeDemo = async (sample: SyntheticSample) => {
+    setDirectDemoAnalyzing(true);
+    setSelectedDemoSample(sample);
+    setShowGalleryModal(false);
+    try {
+      const res = await apiClient.post<any>(`/demo/direct-analyze/${sample.sample_id}`);
+      if (res.data && res.data.analysis_job) {
+        setCurrentJob(res.data.analysis_job);
+      }
+    } catch (err) {
+      console.error('Failed to run direct demo analysis', err);
+    } finally {
+      setDirectDemoAnalyzing(false);
+    }
+  };
+
   const selectedEvidence = evidenceList.find((e) => e.id === selectedEvidenceId);
+
+  const isSynthetic = Boolean(
+    selectedDemoSample !== null ||
+    selectedEvidence?.original_filename.startsWith('[SYNTHETIC-DEMO]') ||
+    currentJob?.result?.findings_json?.is_synthetic_demo === true ||
+    currentJob?.model_name?.includes('Synthetic') ||
+    currentJob?.result?.findings_json?.banner?.includes('SYNTHETIC')
+  );
+
+  const hasHuggingFace = Boolean(
+    currentJob?.result?.findings_json?.hf_transformer_inference ||
+    currentJob?.result?.findings_json?.hf_asr_inference ||
+    currentJob?.model_name?.includes('HuggingFace') ||
+    currentJob?.model_name?.includes('Whisper')
+  );
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="pb-2 border-b border-[#17223b]">
-        <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-          <Cpu className="w-5 h-5 text-cyan-400" />
-          <span>Multi-Modal AI Digital Evidence Analysis Workspace</span>
-        </h1>
-        <p className="text-xs text-slate-400 font-mono">
-          EXPLAINABLE SOCIAL-ENGINEERING DETECTION, ACOUSTIC TELEMETRY & DEEPFAKE CUES
-        </p>
+      <div className="pb-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
+            <Cpu className="w-6 h-6 text-blue-600" />
+            <span>Multi-Modal AI Evidence Analysis Workspace</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+            Explainable social-engineering detection, acoustic voice cloning cues, and deepfake telemetry.
+          </p>
+        </div>
+
+        <button
+          onClick={() => setShowGalleryModal(true)}
+          className="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-xs transition self-start sm:self-auto"
+        >
+          <Sparkles className="w-4 h-4 text-amber-300" />
+          <span>Synthetic Benchmark Assets (530)</span>
+        </button>
       </div>
 
       {/* Target Selector & Config Bar */}
-      <div className="p-5 rounded-xl bg-[#0c1222] border border-[#17223b] shadow-xl space-y-4">
+      <div className="surface-card p-5 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Case Selector */}
           <div>
-            <label className="block text-xs font-mono text-slate-400 mb-1">SELECT INVESTIGATION CASE</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider text-[10px]">
+              Select Investigation Case
+            </label>
             <select
               value={selectedCaseId}
               onChange={(e) => {
                 setSelectedCaseId(e.target.value);
                 setSelectedEvidenceId('');
               }}
-              className="w-full px-3 py-2 bg-[#070b14] border border-[#1e2e4e] rounded-lg text-xs text-slate-200 focus:outline-none focus:border-cyan-400 font-mono"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
             >
               {cases.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -143,11 +201,13 @@ export const AnalysisWorkspacePage: React.FC = () => {
 
           {/* Evidence Selector */}
           <div>
-            <label className="block text-xs font-mono text-slate-400 mb-1">TARGET DIGITAL EVIDENCE</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider text-[10px]">
+              Target Digital Evidence
+            </label>
             <select
               value={selectedEvidenceId}
               onChange={(e) => setSelectedEvidenceId(e.target.value)}
-              className="w-full px-3 py-2 bg-[#070b14] border border-[#1e2e4e] rounded-lg text-xs text-slate-200 focus:outline-none focus:border-cyan-400 font-mono"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
             >
               {evidenceList.map((e) => (
                 <option key={e.id} value={e.id}>
@@ -162,11 +222,13 @@ export const AnalysisWorkspacePage: React.FC = () => {
 
           {/* Pipeline Type */}
           <div>
-            <label className="block text-xs font-mono text-slate-400 mb-1">FORENSIC PIPELINE</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider text-[10px]">
+              Forensic Analysis Pipeline
+            </label>
             <select
               value={analysisType}
               onChange={(e) => setAnalysisType(e.target.value)}
-              className="w-full px-3 py-2 bg-[#070b14] border border-[#1e2e4e] rounded-lg text-xs text-slate-200 focus:outline-none focus:border-cyan-400 font-mono"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
             >
               <option value="auto">Auto-Detect by Media Type</option>
               <option value="text">Scam Text & Social Engineering Engine</option>
@@ -178,11 +240,11 @@ export const AnalysisWorkspacePage: React.FC = () => {
 
         {/* Selected Evidence Item Summary */}
         {selectedEvidence && (
-          <div className="p-3 rounded-lg bg-[#070b14] border border-[#17223b] flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-3">
-              <span className="font-semibold text-slate-200">{selectedEvidence.original_filename}</span>
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2.5">
+              <span className="font-bold text-slate-900">{selectedEvidence.original_filename}</span>
               <span className="text-slate-500 font-mono">({Math.round(selectedEvidence.file_size / 1024)} KB)</span>
-              <span className="px-2 py-0.5 rounded bg-slate-800 text-cyan-300 font-mono text-[10px]">
+              <span className="px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 font-mono text-[10px] font-semibold">
                 {selectedEvidence.mime_type}
               </span>
             </div>
@@ -190,16 +252,16 @@ export const AnalysisWorkspacePage: React.FC = () => {
             <button
               onClick={handleStartAnalysis}
               disabled={runningAnalysis}
-              className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-lg text-xs font-medium flex items-center gap-2 shadow-lg shadow-cyan-950 disabled:opacity-50"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm transition disabled:opacity-50"
             >
               {runningAnalysis ? (
                 <>
-                  <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                  <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   <span>Executing Pipeline...</span>
                 </>
               ) : (
                 <>
-                  <Play className="w-3.5 h-3.5" />
+                  <Play className="w-3.5 h-3.5 fill-current" />
                   <span>Execute AI Analysis</span>
                 </>
               )}
@@ -208,69 +270,141 @@ export const AnalysisWorkspacePage: React.FC = () => {
         )}
       </div>
 
+      {/* Direct Demo Analyzing Spinner */}
+      {directDemoAnalyzing && (
+        <div className="surface-card p-8 flex flex-col items-center justify-center gap-3 text-center">
+          <div className="w-8 h-8 border-3 border-blue-600/30 border-t-blue-600 rounded-full animate-spin" />
+          <p className="text-sm font-semibold text-slate-800">
+            Running Forensic Telemetry Pipeline on Synthetic Demo Sample...
+          </p>
+          <span className="text-xs font-mono text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
+            DEMO EXECUTION — SAFE SYNTHETIC PIPELINE
+          </span>
+        </div>
+      )}
+
       {/* Analysis Results Display */}
       {currentJob?.result ? (
-        <div className="space-y-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="space-y-6"
+        >
+          {/* Prominent Synthetic Warning Banner */}
+          {isSynthetic && (
+            <div className="p-4 rounded-xl bg-amber-50 border-2 border-amber-400 text-amber-950 shadow-sm flex items-start gap-3.5">
+              <AlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div className="space-y-1.5 flex-1">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-extrabold text-sm tracking-wide text-amber-900 uppercase">
+                      DEMO RESULT — GENERATED SYNTHETIC DATA
+                    </span>
+                    <span className="px-2 py-0.5 rounded bg-amber-200 text-amber-900 font-mono text-[10px] font-bold">
+                      ACADEMIC BENCHMARK ONLY
+                    </span>
+                  </div>
+                  {selectedDemoSample && (
+                    <span className="text-[11px] font-mono text-amber-800 bg-amber-100 px-2 py-0.5 rounded border border-amber-300">
+                      Sample: {selectedDemoSample.sample_id} ({selectedDemoSample.modality.toUpperCase()})
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-amber-900 leading-relaxed font-medium">
+                  This analysis was executed on a safe synthetic demonstration asset generated programmatically for TrustGuard AI testing.
+                  <strong> It does not contain genuine victim evidence or real human facial/vocal biometric data</strong>, and must not be used to claim real-world operational accuracy or legal findings.
+                </p>
+                {selectedDemoSample && (
+                  <div className="mt-2 pt-2 border-t border-amber-200 flex flex-wrap items-center gap-4 text-[11px] font-mono text-amber-900">
+                    <span>Method: <strong>{selectedDemoSample.generation_method}</strong></span>
+                    <span>Ground Truth Label: <strong>{selectedDemoSample.label}</strong></span>
+                    <span>Synthetic Provenance: <strong>VERIFIED PROGRAMMATIC</strong></span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Score & Model Attribution Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Risk Gauge Card */}
-            <div className="p-5 rounded-xl bg-[#0c1222] border border-[#17223b] shadow-xl">
-              <div className="text-xs font-mono text-slate-400 mb-1">AGGREGATED RISK ASSESSMENT</div>
+            <div className="surface-card p-5">
+              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider text-[10px]">
+                Aggregated Risk Assessment
+              </div>
               <div className="flex items-baseline gap-3 my-2">
-                <span className={`text-3xl font-extrabold font-mono ${
-                  currentJob.result.risk_level === 'CRITICAL' ? 'text-red-400' :
-                  currentJob.result.risk_level === 'HIGH' ? 'text-orange-400' :
-                  currentJob.result.risk_level === 'MEDIUM' ? 'text-amber-400' :
-                  'text-emerald-400'
+                <span className={`text-3xl font-extrabold ${
+                  currentJob.result.risk_level === 'CRITICAL' ? 'text-rose-600' :
+                  currentJob.result.risk_level === 'HIGH' ? 'text-orange-600' :
+                  currentJob.result.risk_level === 'MEDIUM' ? 'text-amber-600' :
+                  'text-emerald-600'
                 }`}>
                   {currentJob.result.risk_level}
                 </span>
-                <span className="text-sm font-mono text-slate-400">
+                <span className="text-sm font-bold text-slate-500">
                   {currentJob.result.risk_score} / 100
                 </span>
               </div>
-              <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+              <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
                 <div
-                  className={`h-full ${
-                    currentJob.result.risk_score > 70 ? 'bg-red-500' :
+                  className={`h-full transition-all duration-500 ${
+                    currentJob.result.risk_score > 70 ? 'bg-rose-500' :
                     currentJob.result.risk_score > 40 ? 'bg-amber-500' : 'bg-emerald-500'
                   }`}
                   style={{ width: `${currentJob.result.risk_score}%` }}
-                ></div>
+                />
               </div>
             </div>
 
             {/* Model Card */}
-            <div className="p-5 rounded-xl bg-[#0c1222] border border-[#17223b] shadow-xl">
-              <div className="text-xs font-mono text-slate-400 mb-1">INSPECTION ENGINE ATTRIBUTION</div>
-              <div className="font-semibold text-slate-100 text-sm mt-1">{currentJob.model_name}</div>
-              <div className="text-xs font-mono text-cyan-400 mt-0.5">Version: {currentJob.model_version}</div>
-              <div className="text-[11px] text-slate-400 font-mono mt-2">
-                Completed: {currentJob.completed_at ? new Date(currentJob.completed_at).toLocaleTimeString() : 'N/A'}
+            <div className="surface-card p-5">
+              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider text-[10px] flex items-center justify-between">
+                <span>Inspection Engine Attribution</span>
+                {hasHuggingFace ? (
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold font-mono bg-purple-100 text-purple-800 border border-purple-200">
+                    LIVE HUGGING FACE
+                  </span>
+                ) : isSynthetic ? (
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold font-mono bg-amber-100 text-amber-800 border border-amber-200">
+                    SYNTHETIC DEMO
+                  </span>
+                ) : (
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold font-mono bg-blue-100 text-blue-800 border border-blue-200">
+                    RULE-BASED
+                  </span>
+                )}
+              </div>
+              <div className="font-bold text-slate-900 text-sm mt-1">{currentJob.model_name}</div>
+              <div className="text-xs font-mono text-blue-600 mt-0.5">Version: {currentJob.model_version}</div>
+              <div className="text-[11px] text-slate-500 font-medium mt-2">
+                Execution Completed: {currentJob.completed_at ? new Date(currentJob.completed_at).toLocaleTimeString() : 'N/A'}
               </div>
             </div>
 
             {/* Confidence Calibration */}
-            <div className="p-5 rounded-xl bg-[#0c1222] border border-[#17223b] shadow-xl">
-              <div className="text-xs font-mono text-slate-400 mb-1">MODEL CALIBRATED CONFIDENCE</div>
-              <div className="text-3xl font-bold font-mono text-cyan-300 my-2">
+            <div className="surface-card p-5">
+              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider text-[10px]">
+                Calibrated Confidence Level
+              </div>
+              <div className="text-3xl font-bold text-blue-600 my-2">
                 {currentJob.result.model_confidence ? `${Math.round(currentJob.result.model_confidence * 100)}%` : 'N/A'}
               </div>
-              <div className="text-[10px] text-slate-400 font-mono">
-                Evaluated against forensic test benchmarks
+              <div className="text-[11px] text-slate-500">
+                Calibrated across forensic test benchmarks & cue detectors
               </div>
             </div>
           </div>
 
           {/* Model Status Note (Transparent capability disclaimer) */}
           {currentJob.result.findings_json?.model_status_note && (
-            <div className="p-4 rounded-xl bg-amber-950/40 border border-amber-500/50 text-amber-300 text-xs flex items-start gap-3">
-              <Info className="w-5 h-5 flex-shrink-0 text-amber-400 mt-0.5" />
+            <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-3 shadow-sm">
+              <Info className="w-5 h-5 flex-shrink-0 text-amber-600 mt-0.5" />
               <div>
-                <div className="font-semibold uppercase tracking-wider font-mono text-[11px]">
-                  CAPABILITY & MODEL INTEGRATION NOTICE
+                <div className="font-bold uppercase tracking-wider text-[11px] text-amber-900">
+                  Forensic Capability & Scientific Transparency Notice
                 </div>
-                <p className="mt-1 leading-relaxed text-slate-200">
+                <p className="mt-1 leading-relaxed text-slate-700 font-medium">
                   {currentJob.result.findings_json.model_status_note}
                 </p>
               </div>
@@ -278,37 +412,73 @@ export const AnalysisWorkspacePage: React.FC = () => {
           )}
 
           {/* Detailed Findings Breakdown */}
-          <div className="p-5 rounded-xl bg-[#0c1222] border border-[#17223b] shadow-xl space-y-4">
-            <h2 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-cyan-400" />
-              <span>Granular Explainable Findings</span>
+          <div className="surface-card p-5 space-y-4">
+            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-blue-600" />
+              <span>Granular Explainable Findings & Cue Indicators</span>
             </h2>
 
             {/* If Text Scam Analysis */}
+            {currentJob.result.findings_json?.hf_transformer_inference && (
+              <div className="p-4 rounded-xl bg-gradient-to-br from-purple-50/70 to-indigo-50/70 border border-purple-200 space-y-3 shadow-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-purple-600" />
+                    <span className="font-bold text-purple-950 text-xs uppercase tracking-wider">
+                      Live Hugging Face Transformer Inference
+                    </span>
+                  </div>
+                  <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-semibold border border-purple-200">
+                    {currentJob.result.findings_json.hf_transformer_inference.model_name}
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                  <div className="p-3 bg-white rounded-lg border border-purple-100">
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Classification</span>
+                    <span className={`font-bold uppercase text-sm ${
+                      currentJob.result.findings_json.hf_transformer_inference.predicted_label === 'suspicious' ? 'text-rose-600' : 'text-emerald-600'
+                    }`}>
+                      {currentJob.result.findings_json.hf_transformer_inference.predicted_label}
+                    </span>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg border border-purple-100">
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Transformer Confidence</span>
+                    <span className="font-bold text-purple-700 text-sm">
+                      {Math.round(currentJob.result.findings_json.hf_transformer_inference.confidence * 100)}%
+                    </span>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg border border-purple-100">
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Calibrated Risk</span>
+                    <span className="font-bold text-slate-800 text-sm">
+                      {currentJob.result.findings_json.hf_transformer_inference.risk_score} / 100
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {currentJob.result.findings_json?.indicators && (
               <div className="space-y-3">
                 {currentJob.result.findings_json.indicators.map((ind: any, idx: number) => (
-                  <div key={idx} className="p-4 rounded-lg bg-[#070b14] border border-[#17223b] space-y-2">
+                  <div key={idx} className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase ${
-                          ind.severity === 'CRITICAL' ? 'bg-red-950 text-red-400 border border-red-800' :
-                          ind.severity === 'HIGH' ? 'bg-orange-950 text-orange-400 border border-orange-800' :
-                          'bg-amber-950 text-amber-400 border border-amber-800'
-                        }`}>
-                          {ind.severity}
-                        </span>
-                        <span className="font-semibold text-slate-200 text-xs">{ind.category}</span>
+                        <Badge variant="risk" value={ind.severity} />
+                        <span className="font-bold text-slate-900 text-xs">{ind.category}</span>
                       </div>
-                      <span className="text-[10px] font-mono text-slate-400">Score Weight: +{ind.weight_contribution}</span>
+                      <span className="text-[11px] font-mono text-slate-500">Weight Contribution: +{ind.weight_contribution}</span>
                     </div>
 
-                    <p className="text-xs text-slate-300">{ind.description}</p>
+                    <p className="text-xs text-slate-700 font-medium">{ind.description}</p>
 
                     {ind.matches?.map((m: any, mIdx: number) => (
-                      <div key={mIdx} className="p-2.5 rounded bg-[#0c1222] border border-[#1e2e4e] text-xs font-mono">
-                        <div className="text-slate-400 text-[10px] mb-0.5">MATCHED PATTERN: <span className="text-red-400 font-bold">"{m.matched_text}"</span></div>
-                        <div className="text-slate-300 text-[11px] italic">"...{m.context_snippet}..."</div>
+                      <div key={mIdx} className="p-3 rounded-lg bg-white border border-slate-200 text-xs font-mono">
+                        <div className="text-slate-500 text-[10px] mb-1">
+                          MATCHED PHRASE: <span className="text-rose-600 font-bold">"{m.matched_text}"</span>
+                        </div>
+                        <div className="text-slate-700 text-[11px] italic bg-slate-50 p-2 rounded">
+                          "...{m.context_snippet}..."
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -318,31 +488,65 @@ export const AnalysisWorkspacePage: React.FC = () => {
 
             {/* If Audio Analysis */}
             {currentJob.result.findings_json?.acoustic_features && (
-              <div className="p-4 rounded-lg bg-[#070b14] border border-[#17223b] space-y-3">
-                <h3 className="text-xs font-mono text-cyan-400 uppercase">Acoustic Signal Telemetry</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs font-mono">
-                  <div className="p-2 rounded bg-[#0c1222]">
-                    <span className="text-slate-500 block text-[10px]">SPECTRAL CENTROID</span>
-                    <span className="text-slate-200">{currentJob.result.findings_json.acoustic_features.spectral_centroid_hz} Hz</span>
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                <h3 className="text-xs font-bold text-blue-700 uppercase tracking-wider text-[11px]">
+                  Acoustic Signal Telemetry
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                  <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Spectral Centroid</span>
+                    <span className="text-slate-900 font-bold">{currentJob.result.findings_json.acoustic_features.spectral_centroid_hz} Hz</span>
                   </div>
-                  <div className="p-2 rounded bg-[#0c1222]">
-                    <span className="text-slate-500 block text-[10px]">SPECTRAL FLATNESS</span>
-                    <span className="text-slate-200">{currentJob.result.findings_json.acoustic_features.spectral_flatness}</span>
+                  <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Spectral Flatness</span>
+                    <span className="text-slate-900 font-bold">{currentJob.result.findings_json.acoustic_features.spectral_flatness}</span>
                   </div>
-                  <div className="p-2 rounded bg-[#0c1222]">
-                    <span className="text-slate-500 block text-[10px]">ZERO CROSSING RATE</span>
-                    <span className="text-slate-200">{currentJob.result.findings_json.acoustic_features.zero_crossing_rate}</span>
+                  <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Zero Crossing Rate</span>
+                    <span className="text-slate-900 font-bold">{currentJob.result.findings_json.acoustic_features.zero_crossing_rate}</span>
                   </div>
-                  <div className="p-2 rounded bg-[#0c1222]">
-                    <span className="text-slate-500 block text-[10px]">ESTIMATED SNR</span>
-                    <span className="text-slate-200">{currentJob.result.findings_json.acoustic_features.estimated_snr_db} dB</span>
+                  <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Estimated SNR</span>
+                    <span className="text-slate-900 font-bold">{currentJob.result.findings_json.acoustic_features.estimated_snr_db} dB</span>
                   </div>
                 </div>
 
                 {currentJob.result.findings_json.transcription && (
-                  <div className="p-3 rounded bg-[#0c1222] border border-[#1e2e4e] text-xs">
-                    <span className="font-mono text-cyan-400 text-[10px] block mb-1">SPEECH-TO-TEXT TRANSCRIPT:</span>
-                    <p className="text-slate-200 italic">"{currentJob.result.findings_json.transcription}"</p>
+                  <div className="p-3.5 rounded-xl bg-white border border-slate-200 text-xs space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-blue-600 text-[10px] uppercase block">
+                        Speech-to-Text Forensic Transcription:
+                      </span>
+                      {currentJob.result.findings_json.hf_asr_inference ? (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-purple-100 text-purple-800 border border-purple-200">
+                          Hugging Face Whisper-tiny ASR
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-slate-100 text-slate-700">
+                          Baseline ASR
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-slate-800 italic bg-slate-50 p-2.5 rounded-lg">
+                      "{currentJob.result.findings_json.transcription}"
+                    </p>
+
+                    {/* Spoken Scam Indicators */}
+                    {currentJob.result.findings_json.spoken_scam_indicators && currentJob.result.findings_json.spoken_scam_indicators.length > 0 && (
+                      <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 space-y-2 mt-2">
+                        <div className="flex items-center gap-1.5 text-rose-800 font-bold text-xs">
+                          <AlertTriangle className="w-4 h-4 text-rose-600" />
+                          <span>Spoken Social-Engineering & Vishing Cues Detected</span>
+                        </div>
+                        <div className="space-y-1">
+                          {currentJob.result.findings_json.spoken_scam_indicators.map((sInd: any, sIdx: number) => (
+                            <div key={sIdx} className="text-[11px] text-rose-950 font-medium">
+                              • <span className="font-bold">{sInd.category}:</span> {sInd.description}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -350,24 +554,26 @@ export const AnalysisWorkspacePage: React.FC = () => {
 
             {/* If Video Analysis */}
             {currentJob.result.findings_json?.technical_metadata && (
-              <div className="p-4 rounded-lg bg-[#070b14] border border-[#17223b] space-y-3">
-                <h3 className="text-xs font-mono text-cyan-400 uppercase">Video Forensic Stream Metadata</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs font-mono">
-                  <div className="p-2 rounded bg-[#0c1222]">
-                    <span className="text-slate-500 block text-[10px]">RESOLUTION</span>
-                    <span className="text-slate-200">{currentJob.result.findings_json.technical_metadata.resolution_estimate}</span>
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                <h3 className="text-xs font-bold text-blue-700 uppercase tracking-wider text-[11px]">
+                  Video Forensic Stream Metadata
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                  <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Resolution</span>
+                    <span className="text-slate-900 font-bold">{currentJob.result.findings_json.technical_metadata.resolution_estimate}</span>
                   </div>
-                  <div className="p-2 rounded bg-[#0c1222]">
-                    <span className="text-slate-500 block text-[10px]">CONTAINER</span>
-                    <span className="text-slate-200">{currentJob.result.findings_json.technical_metadata.container_format}</span>
+                  <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Container</span>
+                    <span className="text-slate-900 font-bold">{currentJob.result.findings_json.technical_metadata.container_format}</span>
                   </div>
-                  <div className="p-2 rounded bg-[#0c1222]">
-                    <span className="text-slate-500 block text-[10px]">FPS</span>
-                    <span className="text-slate-200">{currentJob.result.findings_json.technical_metadata.estimated_fps}</span>
+                  <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Frame Rate</span>
+                    <span className="text-slate-900 font-bold">{currentJob.result.findings_json.technical_metadata.estimated_fps} FPS</span>
                   </div>
-                  <div className="p-2 rounded bg-[#0c1222]">
-                    <span className="text-slate-500 block text-[10px]">FACES OBSERVED</span>
-                    <span className="text-slate-200">{currentJob.result.findings_json.face_detection?.faces_detected || 0}</span>
+                  <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                    <span className="text-slate-400 block text-[10px] font-semibold uppercase">Faces Tracked</span>
+                    <span className="text-slate-900 font-bold">{currentJob.result.findings_json.face_detection?.faces_detected || 0}</span>
                   </div>
                 </div>
               </div>
@@ -375,24 +581,36 @@ export const AnalysisWorkspacePage: React.FC = () => {
           </div>
 
           {/* Limitations and Disclaimers */}
-          <div className="p-5 rounded-xl bg-[#0c1222] border border-[#17223b] shadow-xl space-y-2">
-            <h3 className="text-xs font-mono text-slate-400 uppercase">Methodological Limitations</h3>
-            <ul className="list-disc list-inside space-y-1 text-xs text-slate-400 leading-relaxed font-sans">
+          <div className="surface-card p-5 space-y-2">
+            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider text-[11px]">
+              Forensic Methodological Limitations
+            </h3>
+            <ul className="list-disc list-inside space-y-1.5 text-xs text-slate-600 leading-relaxed font-normal">
               {currentJob.result.limitations_json.map((lim, i) => (
                 <li key={i}>{lim}</li>
               ))}
             </ul>
           </div>
-        </div>
+        </motion.div>
       ) : (
-        <div className="p-12 rounded-xl bg-[#0c1222] border border-[#17223b] text-center">
-          <Cpu className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-          <h3 className="text-sm font-medium text-slate-200">No analysis has been run for this evidence item</h3>
-          <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-            Select a digital evidence file above and click "Execute AI Analysis" to trigger explainable forensic scoring.
-          </p>
+        <div className="surface-card py-16">
+          <EmptyState
+            icon={Cpu}
+            title="No analysis execution on record for this evidence"
+            message="Select a digital evidence file above and click 'Execute AI Analysis' to initiate multi-modal explainable scoring."
+            actionLabel={selectedEvidence ? "Run AI Analysis Now" : undefined}
+            onAction={selectedEvidence ? handleStartAnalysis : undefined}
+          />
         </div>
       )}
+
+      {/* Synthetic Demonstration Asset Gallery Modal */}
+      <SyntheticGalleryModal
+        isOpen={showGalleryModal}
+        onClose={() => setShowGalleryModal(false)}
+        caseId={selectedCaseId || undefined}
+        onSelectForAnalysis={handleDirectAnalyzeDemo}
+      />
     </div>
   );
 };

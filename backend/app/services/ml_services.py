@@ -99,9 +99,14 @@ class ScamTextAnalysisService:
 
         risk_level = "CRITICAL" if combined_score >= 80 else "HIGH" if combined_score >= 50 else "MEDIUM" if combined_score >= 30 else "LOW"
 
+        model_name = rule_output.get("model_name", meta["model_name"])
+        if "hf_transformer_inference" in rule_output.get("findings", {}):
+            hf_info = rule_output["findings"]["hf_transformer_inference"]
+            model_name = f"TrustGuard-Ensemble ({hf_info.get('model_name')})"
+
         return {
             "analysis_type": "text",
-            "model_name": meta["model_name"],
+            "model_name": model_name,
             "model_version": meta["model_version"],
             "dataset_version_used_for_training": meta["dataset_used_for_training"],
             "risk_level": risk_level,
@@ -156,31 +161,74 @@ class AudioAnalysisService:
             except Exception:
                 pass
 
+        # Attempt live Hugging Face Whisper ASR transcription
+        hf_asr_res = None
+        transcription = None
+        spoken_scam_indicators = []
+        try:
+            from app.ai.hf.audio_transcriber import HuggingFaceAudioTranscriber
+            from app.ai.text_analyzer import analyze_scam_text
+            transcriber = HuggingFaceAudioTranscriber.get_instance()
+            if transcriber.is_available():
+                hf_asr_res = transcriber.transcribe(audio_path)
+                if hf_asr_res and "transcription" in hf_asr_res and hf_asr_res["transcription"]:
+                    transcription = hf_asr_res["transcription"]
+                    # Feed Whisper transcript directly into text scam analyzer
+                    text_eval = analyze_scam_text(transcription)
+                    if text_eval.get("findings", {}).get("indicators"):
+                        spoken_scam_indicators = text_eval["findings"]["indicators"]
+                        # Correlate acoustic score with spoken scam severity
+                        if text_eval.get("risk_score", 0) > score:
+                            score = max(score, text_eval["risk_score"])
+                            risk_level = text_eval["risk_level"]
+        except Exception:
+            hf_asr_res = None
+
+        model_name = meta["model_name"]
+        if hf_asr_res:
+            model_name = f"TrustGuard-Acoustic-Telemetry + Whisper-ASR ({hf_asr_res.get('model_name')})"
+
+        status_note = (
+            f"Acoustic telemetry and live Hugging Face Whisper Speech-to-Text active ({hf_asr_res.get('model_name')}). Spoken content audited for social-engineering indicators."
+            if hf_asr_res else
+            (
+                "Acoustic telemetry classifier evaluated on ASVspoof 2021 feature representations. "
+                "Voice cloning classification marked as screening heuristic."
+            )
+        )
+
+        findings_payload = {
+            "acoustic_features": feats,
+            "synthetic_speech_indicators": [
+                {
+                    "indicator": "Spectral flatness baseline",
+                    "severity": "LOW" if score < 50 else "HIGH",
+                    "detail": f"Calculated flatness: {feats.get('spectral_flatness')}"
+                }
+            ],
+            "transcription": transcription or (
+                "[Demo Audio] Good morning. This is an automated update regarding your account security settings." if is_demo_mode else None
+            ),
+            "model_status_note": status_note
+        }
+        if hf_asr_res:
+            findings_payload["hf_asr_inference"] = hf_asr_res
+        if spoken_scam_indicators:
+            findings_payload["spoken_scam_indicators"] = spoken_scam_indicators
+
         return {
             "analysis_type": "audio",
-            "model_name": meta["model_name"],
+            "model_name": model_name,
             "model_version": meta["model_version"],
             "dataset_version_used_for_training": meta["dataset_used_for_training"],
             "risk_level": risk_level,
             "risk_score": score,
             "model_confidence": confidence,
-            "findings": {
-                "acoustic_features": feats,
-                "synthetic_speech_indicators": [
-                    {
-                        "indicator": "Spectral flatness baseline",
-                        "severity": "LOW" if score < 50 else "HIGH",
-                        "detail": f"Calculated flatness: {feats.get('spectral_flatness')}"
-                    }
-                ],
-                "model_status_note": (
-                    "Acoustic telemetry classifier evaluated on ASVspoof 2021 feature representations. "
-                    "Voice cloning classification marked as screening heuristic."
-                )
-            },
+            "findings": findings_payload,
             "limitations": [
                 "Acoustic anomalies alone do not definitively prove synthetic speech or voice cloning.",
-                "Lossy codec recompression from mobile telephony distorts higher harmonic frequencies."
+                "Lossy codec recompression from mobile telephony distorts higher harmonic frequencies.",
+                "Speech-to-text transcripts should be reviewed by an investigator for accents and phonetic ambiguity."
             ]
         }
 

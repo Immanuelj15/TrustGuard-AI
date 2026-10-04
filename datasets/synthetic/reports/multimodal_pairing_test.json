@@ -1,0 +1,39 @@
+{
+  "pipeline": "Multimodal Cross-Track Duration & Synchronization Telemetry",
+  "pairs_tested": 3,
+  "synthetic_data": true,
+  "results": [
+    {
+      "pair_id": "SYNTH_PAIR_001",
+      "audio_sample_id": "SYNTH_AUD_CLEAN_001",
+      "video_sample_id": "SYNTH_VID_ORIG_001",
+      "audio_duration_s": 5.94,
+      "video_duration_s": 3.0,
+      "duration_delta_s": 2.94,
+      "expected_status": "synchronized",
+      "observed_alignment": "discrepancy_detected"
+    },
+    {
+      "pair_id": "SYNTH_PAIR_002",
+      "audio_sample_id": "SYNTH_AUD_TRANS_016",
+      "video_sample_id": "SYNTH_VID_TRANS_004",
+      "audio_duration_s": 5.83,
+      "video_duration_s": 3.0,
+      "duration_delta_s": 2.83,
+      "expected_status": "synchronized",
+      "observed_alignment": "discrepancy_detected"
+    },
+    {
+      "pair_id": "SYNTH_PAIR_003_MISMATCHED",
+      "audio_sample_id": "SYNTH_AUD_CLEAN_002",
+      "video_sample_id": "SYNTH_VID_TRANS_006",
+      "audio_duration_s": 5.39,
+      "video_duration_s": 3.0,
+      "duration_delta_s": 2.39,
+      "expected_status": "mismatched",
+      "observed_alignment": "discrepancy_detected"
+    }
+  ],
+  "status": "PASS",
+  "disclaimer": "Multimodal synchronization testing evaluates stream alignment and duration discrepancies. It does not replace face-voice cross-correlation deepfake neural models."
+}

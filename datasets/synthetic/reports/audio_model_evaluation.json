@@ -1,0 +1,23 @@
+{
+  "model_name": "TrustGuard-Synthetic-Audio-RandomForest",
+  "algorithm": "Acoustic Telemetry + Random Forest",
+  "training_dataset": "TrustGuard Synthetic Audio Demo (21 samples)",
+  "synthetic_data": true,
+  "feature_columns": [
+    "spectral_centroid",
+    "spectral_flatness",
+    "zero_crossing_rate",
+    "rms_energy",
+    "mfcc_1",
+    "mfcc_2",
+    "mfcc_3",
+    "mfcc_4",
+    "mfcc_5"
+  ],
+  "metrics": {
+    "samples_count": 21,
+    "accuracy": 1.0,
+    "f1_score": 1.0
+  },
+  "disclaimer": "Demonstration acoustic model trained on synthetic TTS and scipy audio transformations. Does NOT prove real-world deepfake detection."
+}

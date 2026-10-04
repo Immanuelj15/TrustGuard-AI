@@ -1,0 +1,63 @@
+{
+  "pipeline": "OpenCV Video Decoding & Keyframe Telemetry",
+  "videos_tested": 6,
+  "synthetic_data": true,
+  "results": [
+    {
+      "sample_id": "SYNTH_VID_ORIG_001",
+      "filename": "SYNTH_VID_ORIG_001.mp4",
+      "label": "synthetic_original_demo",
+      "total_frames": 30,
+      "fps": 10.0,
+      "sampled_frames_count": 3,
+      "pipeline_status": "SUCCESS"
+    },
+    {
+      "sample_id": "SYNTH_VID_ORIG_002",
+      "filename": "SYNTH_VID_ORIG_002.mp4",
+      "label": "synthetic_original_demo",
+      "total_frames": 30,
+      "fps": 10.0,
+      "sampled_frames_count": 3,
+      "pipeline_status": "SUCCESS"
+    },
+    {
+      "sample_id": "SYNTH_VID_ORIG_003",
+      "filename": "SYNTH_VID_ORIG_003.mp4",
+      "label": "synthetic_original_demo",
+      "total_frames": 30,
+      "fps": 10.0,
+      "sampled_frames_count": 3,
+      "pipeline_status": "SUCCESS"
+    },
+    {
+      "sample_id": "SYNTH_VID_TRANS_004",
+      "filename": "SYNTH_VID_TRANS_004.mp4",
+      "label": "synthetic_transformed_demo",
+      "total_frames": 30,
+      "fps": 10.0,
+      "sampled_frames_count": 3,
+      "pipeline_status": "SUCCESS"
+    },
+    {
+      "sample_id": "SYNTH_VID_TRANS_005",
+      "filename": "SYNTH_VID_TRANS_005.mp4",
+      "label": "synthetic_transformed_demo",
+      "total_frames": 30,
+      "fps": 10.0,
+      "sampled_frames_count": 3,
+      "pipeline_status": "SUCCESS"
+    },
+    {
+      "sample_id": "SYNTH_VID_TRANS_006",
+      "filename": "SYNTH_VID_TRANS_006.mp4",
+      "label": "synthetic_transformed_demo",
+      "total_frames": 30,
+      "fps": 10.0,
+      "sampled_frames_count": 3,
+      "pipeline_status": "SUCCESS"
+    }
+  ],
+  "status": "PASS",
+  "disclaimer": "Video pipeline test validates ingestion and frame extraction. Ordinary compression artifacts are NOT labelled as confirmed deepfakes."
+}

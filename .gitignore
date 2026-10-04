@@ -56,6 +56,7 @@ checkpoints/
 # Allow gitkeep files in datasets directories if needed
 !datasets/**/.gitkeep
 !ml/tests/fixtures/**
+!datasets/synthetic/**
 
 # Environments
 .env

@@ -1,0 +1,44 @@
+[
+  {
+    "pair_id": "SYNTH_PAIR_001",
+    "audio_sample_id": "SYNTH_AUD_CLEAN_001",
+    "audio_path": "datasets/synthetic/audio/bona_fide/SYNTH_AUD_CLEAN_001.wav",
+    "video_sample_id": "SYNTH_VID_ORIG_001",
+    "video_path": "datasets/synthetic/video/original/SYNTH_VID_ORIG_001.mp4",
+    "synchronization_status": "synchronized",
+    "audio_duration": 5.94,
+    "video_duration": 3.0,
+    "duration_delta": 2.94,
+    "label": "synthetic_multimodal_synchronized",
+    "generation_method": "paired_audio_video_telemetry",
+    "synthetic_data": true
+  },
+  {
+    "pair_id": "SYNTH_PAIR_002",
+    "audio_sample_id": "SYNTH_AUD_TRANS_016",
+    "audio_path": "datasets/synthetic/audio/synthetic_or_transformed/SYNTH_AUD_TRANS_016.wav",
+    "video_sample_id": "SYNTH_VID_TRANS_004",
+    "video_path": "datasets/synthetic/video/synthetic_or_transformed/SYNTH_VID_TRANS_004.mp4",
+    "synchronization_status": "synchronized",
+    "audio_duration": 5.83,
+    "video_duration": 3.0,
+    "duration_delta": 2.83,
+    "label": "synthetic_multimodal_transformed",
+    "generation_method": "paired_audio_video_telemetry",
+    "synthetic_data": true
+  },
+  {
+    "pair_id": "SYNTH_PAIR_003_MISMATCHED",
+    "audio_sample_id": "SYNTH_AUD_CLEAN_002",
+    "audio_path": "datasets/synthetic/audio/bona_fide/SYNTH_AUD_CLEAN_002.wav",
+    "video_sample_id": "SYNTH_VID_TRANS_006",
+    "video_path": "datasets/synthetic/video/synthetic_or_transformed/SYNTH_VID_TRANS_006.mp4",
+    "synchronization_status": "mismatched",
+    "audio_duration": 5.39,
+    "video_duration": 3.0,
+    "duration_delta": 2.39,
+    "label": "synthetic_multimodal_mismatched",
+    "generation_method": "deliberate_desynchronized_pairing",
+    "synthetic_data": true
+  }
+]

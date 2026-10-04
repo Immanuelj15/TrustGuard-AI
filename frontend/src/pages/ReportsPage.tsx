@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { apiClient } from '../api/client';
 import { Case, GeneratedReport } from '../types';
+import { Badge } from '../components/common/Badge';
+import { LoadingState } from '../components/common/LoadingState';
+import { EmptyState } from '../components/common/EmptyState';
 import {
   FileText,
   Download,
@@ -8,7 +12,8 @@ import {
   FolderLock,
   Clock,
   ShieldCheck,
-  Check
+  Check,
+  AlertCircle
 } from 'lucide-react';
 
 export const ReportsPage: React.FC = () => {
@@ -88,31 +93,40 @@ export const ReportsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="pb-2 border-b border-[#17223b]">
-        <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-          <FileText className="w-5 h-5 text-cyan-400" />
+      <div className="pb-4 border-b border-slate-200">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
+          <FileText className="w-6 h-6 text-blue-600" />
           <span>Investigation Reports Repository</span>
         </h1>
-        <p className="text-xs text-slate-400 font-mono">
-          DIGITALLY CERTIFIED INVESTIGATION ADVISORY REPORTS & FORENSIC EVIDENCE EXHIBITS
+        <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          Digitally certified investigation advisory reports, evidence exhibits, and court-ready documentation.
         </p>
       </div>
 
-      {successMsg && (
-        <div className="p-3 rounded-lg bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-xs flex items-center gap-2">
-          <Check className="w-4 h-4" />
-          <span>{successMsg}</span>
-        </div>
-      )}
+      <AnimatePresence>
+        {successMsg && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2 shadow-sm font-semibold"
+          >
+            <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <span>{successMsg}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Case Selector and Generator Banner */}
-      <div className="p-5 rounded-xl bg-[#0c1222] border border-[#17223b] shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="surface-card p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="w-full md:w-96">
-          <label className="block text-xs font-mono text-slate-400 mb-1">SELECT INVESTIGATION CASE</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider text-[10px]">
+            Select Investigation Case
+          </label>
           <select
             value={selectedCaseId}
             onChange={(e) => setSelectedCaseId(e.target.value)}
-            className="w-full px-3 py-2 bg-[#070b14] border border-[#1e2e4e] rounded-lg text-xs text-slate-200 focus:outline-none focus:border-cyan-400 font-mono"
+            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
           >
             {cases.map((c) => (
               <option key={c.id} value={c.id}>
@@ -125,11 +139,11 @@ export const ReportsPage: React.FC = () => {
         <button
           onClick={handleGenerate}
           disabled={generating || !selectedCaseId}
-          className="px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-lg text-xs font-medium flex items-center justify-center gap-2 shadow-lg shadow-cyan-950 disabled:opacity-50"
+          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow-sm transition disabled:opacity-50"
         >
           {generating ? (
             <>
-              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               <span>Compiling PDF Report...</span>
             </>
           ) : (
@@ -142,20 +156,24 @@ export const ReportsPage: React.FC = () => {
       </div>
 
       {/* Reports Table */}
-      <div className="p-5 rounded-xl bg-[#0c1222] border border-[#17223b] shadow-xl space-y-4">
-        <h2 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-cyan-400" />
+      <div className="surface-card p-5 space-y-4">
+        <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4 text-blue-600" />
           <span>Generated PDF Reports Archive</span>
         </h2>
 
         {reports.length === 0 ? (
-          <div className="p-8 text-center text-xs text-slate-500 font-mono">
-            No PDF reports generated for this case yet. Click above to compile an investigation report.
-          </div>
+          <EmptyState
+            icon={FileText}
+            title="No PDF reports generated for this case yet"
+            message="Compile a verified investigation report containing chain of custody, evidence hashes, and AI cues."
+            actionLabel="Generate Report Now"
+            onAction={handleGenerate}
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#070b14] text-slate-400 uppercase font-mono border-b border-[#17223b]">
+              <thead className="bg-slate-50 text-slate-600 uppercase font-semibold text-[10px] tracking-wider border-b border-slate-200">
                 <tr>
                   <th className="py-2.5 px-3">Report Document</th>
                   <th className="py-2.5 px-3">Assessed Case Risk</th>
@@ -164,30 +182,33 @@ export const ReportsPage: React.FC = () => {
                   <th className="py-2.5 px-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#17223b]/60">
+              <tbody className="divide-y divide-slate-100">
                 {reports.map((r) => (
-                  <tr key={r.id} className="hover:bg-[#11192e]/60 transition">
+                  <tr key={r.id} className="hover:bg-slate-50/80 transition group">
                     <td className="py-3 px-3">
                       <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-cyan-400" />
-                        <span className="font-medium text-slate-200">{r.file_name}</span>
+                        <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition">
+                          <FileText className="w-4 h-4" />
+                        </div>
+                        <span className="font-semibold text-slate-900">{r.file_name}</span>
                       </div>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="font-mono text-xs text-amber-400">
-                        {r.report_metadata_json?.risk_level || 'NEEDS_REVIEW'}
-                      </span>
+                      <Badge 
+                        variant="risk" 
+                        value={r.report_metadata_json?.risk_level || 'NEEDS_REVIEW'} 
+                      />
                     </td>
-                    <td className="py-3 px-3 font-mono text-slate-400">
+                    <td className="py-3 px-3 font-semibold text-slate-600">
                       {r.report_metadata_json?.evidence_count ?? 0} files
                     </td>
-                    <td className="py-3 px-3 font-mono text-slate-500">
+                    <td className="py-3 px-3 font-mono text-slate-500 text-[11px]">
                       {new Date(r.created_at).toLocaleString()}
                     </td>
                     <td className="py-3 px-3 text-right">
                       <button
                         onClick={() => handleDownload(r.id, r.file_name)}
-                        className="px-3 py-1.5 rounded bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-900/60 text-xs inline-flex items-center gap-1.5 font-medium"
+                        className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs inline-flex items-center gap-1.5 font-semibold transition"
                       >
                         <Download className="w-3.5 h-3.5" />
                         <span>Download PDF</span>

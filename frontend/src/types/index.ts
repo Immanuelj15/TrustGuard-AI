@@ -139,3 +139,36 @@ export interface DashboardCharts {
   risk_distribution: Record<string, number>;
   recent_activity: AuditLog[];
 }
+
+export interface SyntheticSample {
+  sample_id: string;
+  modality: 'text' | 'audio' | 'video' | 'multimodal';
+  label: string;
+  title: string;
+  summary: string;
+  category: string;
+  risk_score?: number;
+  risk_level?: string;
+  duration_seconds?: number;
+  sample_rate?: number;
+  resolution?: string;
+  transformation?: string;
+  generation_method?: string;
+  synthetic_data: boolean;
+  filename?: string;
+  file_path?: string;
+}
+
+export interface SyntheticManifest {
+  dataset_name: string;
+  version: string;
+  created_timestamp: string;
+  counts: {
+    audio_samples: number;
+    video_samples: number;
+    multimodal_pairs: number;
+    text_samples: number;
+  };
+  synthetic_data: boolean;
+  warning: string;
+}

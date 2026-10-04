@@ -1,0 +1,39 @@
+{
+  "validation_timestamp": "2026-10-04T20:50:00Z",
+  "overall_status": "PASS",
+  "checks": {
+    "audio": {
+      "status": "PASS",
+      "total_manifest_records": 21,
+      "verified_playable_files": 21,
+      "errors": []
+    },
+    "video": {
+      "status": "PASS",
+      "total_manifest_records": 6,
+      "verified_playable_files": 6,
+      "errors": []
+    },
+    "multimodal": {
+      "status": "PASS",
+      "total_manifest_pairs": 3,
+      "verified_intact_pairs": 3,
+      "errors": []
+    },
+    "text": {
+      "status": "PASS",
+      "total_manifest_records": 500,
+      "verified_valid_texts": 500,
+      "pii_violations": [],
+      "errors": []
+    }
+  },
+  "summary": {
+    "total_audio_verified": 21,
+    "total_video_verified": 6,
+    "total_multimodal_pairs_verified": 3,
+    "total_text_samples_verified": 500,
+    "pii_violations_found": 0,
+    "total_errors": 0
+  }
+}

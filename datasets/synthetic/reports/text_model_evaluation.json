@@ -1,0 +1,55 @@
+{
+  "model_name": "TrustGuard-Synthetic-Text-Classifier-Demo",
+  "algorithm": "TF-IDF + Logistic Regression",
+  "training_dataset": "TrustGuard Synthetic Text Demo (500 samples)",
+  "synthetic_data": true,
+  "sample_splits": {
+    "train": 350,
+    "val": 75,
+    "test": 75
+  },
+  "metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "confusion_matrix": [
+      [
+        29,
+        0
+      ],
+      [
+        0,
+        46
+      ]
+    ]
+  },
+  "classification_report": {
+    "legitimate_demo": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 29.0
+    },
+    "suspicious_demo": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 46.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 75.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 75.0
+    }
+  },
+  "disclaimer": "Academic demo evaluation on synthetic text. Does not guarantee real-world fraud detection."
+}

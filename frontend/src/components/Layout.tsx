@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Shield,
   LayoutDashboard,
@@ -10,17 +11,20 @@ import {
   FileText,
   ShieldAlert,
   LogOut,
-  UserCheck,
   Search,
   CheckCircle2,
   AlertTriangle,
   Menu,
-  X
+  X,
+  ChevronRight,
+  UserCheck,
+  Sparkles
 } from 'lucide-react';
 
 export const Layout: React.FC = () => {
   const { user, logout, isDemo } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -41,21 +45,38 @@ export const Layout: React.FC = () => {
     { to: '/audit-logs', label: 'Audit Trail', icon: ShieldAlert },
   ];
 
+  // Helper for dynamic breadcrumbs
+  const getBreadcrumbTitle = () => {
+    const path = location.pathname;
+    if (path === '/') return 'Dashboard Overview';
+    if (path.startsWith('/cases/') && path.length > 7) return 'Case Investigation File';
+    if (path.startsWith('/cases')) return 'Case Directory';
+    if (path.startsWith('/analysis')) return 'Evidence Analysis Workspace';
+    if (path.startsWith('/caller-check')) return 'Caller Threat Intelligence';
+    if (path.startsWith('/reports')) return 'Certified Investigation Reports';
+    if (path.startsWith('/audit-logs')) return 'Immutable Security Audit Trail';
+    return 'Digital Forensics';
+  };
+
   return (
-    <div className="flex h-screen bg-[#070b14] text-slate-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#F8FAFC] text-slate-900 overflow-hidden font-sans">
       {/* Sidebar - Desktop */}
-      <aside className="hidden md:flex flex-col w-64 bg-[#0c1222] border-r border-[#17223b] flex-shrink-0 z-20">
+      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 flex-shrink-0 z-20 shadow-xs">
         {/* Brand Header */}
-        <div className="flex items-center gap-3 px-6 h-16 border-b border-[#17223b]">
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-cyan-950/80 border border-cyan-500/50 text-cyan-400">
-            <Shield className="w-5 h-5 text-cyan-400" />
+        <div className="flex items-center gap-3 px-6 h-16 border-b border-slate-200">
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-500/20">
+            <Shield className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-bold tracking-wider text-white text-base">TRUSTGUARD</span>
-              <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono">AI</span>
+              <span className="font-bold tracking-tight text-slate-900 text-base">TRUSTGUARD</span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-mono">
+                AI
+              </span>
             </div>
-            <p className="text-[10px] text-slate-400 tracking-tight font-mono">CYBER FORENSICS SUITE</p>
+            <p className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase font-mono">
+              Digital Forensics
+            </p>
           </div>
         </div>
 
@@ -69,43 +90,51 @@ export const Layout: React.FC = () => {
                 to={item.to}
                 end={item.to === '/'}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
+                  `flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium transition-all duration-150 relative ${
                     isActive
-                      ? 'bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-950'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-[#11192e]'
+                      ? 'bg-blue-50 text-blue-700 font-semibold shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`
                 }
               >
-                <Icon className="w-4 h-4 flex-shrink-0" />
-                <span>{item.label}</span>
+                {({ isActive }) => (
+                  <>
+                    <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-400'}`} />
+                    <span>{item.label}</span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activePill"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-blue-600 rounded-l"
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                      />
+                    )}
+                  </>
+                )}
               </NavLink>
             );
           })}
         </nav>
 
-        {/* Chain of Custody System Status */}
-        <div className="p-4 mx-3 mb-3 rounded-lg bg-[#070b14]/70 border border-[#17223b] text-xs">
-          <div className="flex items-center gap-2 text-emerald-400 font-mono text-[11px] mb-1">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>INTEGRITY SEAL INTACT</span>
+        {/* Evidence Integrity Status Card */}
+        <div className="p-3.5 mx-3 mb-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+          <div className="flex items-center gap-1.5 text-emerald-700 font-mono font-semibold text-[11px] mb-1">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            <span>CHAIN OF CUSTODY INTACT</span>
           </div>
-          <p className="text-[10px] text-slate-400 font-mono leading-tight">
-            SHA-256 Storage: Secure
-          </p>
-          <p className="text-[10px] text-slate-400 font-mono leading-tight">
-            DB: SQLite/Postgres Ready
+          <p className="text-[11px] text-slate-500 font-sans leading-tight">
+            SHA-256 evidence hashing active on ingestion.
           </p>
         </div>
 
-        {/* User Profile Bar */}
-        <div className="p-3 border-t border-[#17223b] bg-[#090e1a] flex items-center justify-between">
+        {/* User Profile Footer */}
+        <div className="p-3.5 border-t border-slate-200 bg-slate-50/50 flex items-center justify-between">
           <div className="flex items-center gap-2.5 overflow-hidden">
-            <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0 text-cyan-400 font-semibold text-xs">
+            <div className="w-8 h-8 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center flex-shrink-0 text-blue-700 font-bold text-xs">
               {user?.full_name?.charAt(0) || 'U'}
             </div>
             <div className="overflow-hidden">
-              <p className="text-xs font-medium text-slate-200 truncate">{user?.full_name}</p>
-              <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-400">
+              <p className="text-xs font-semibold text-slate-800 truncate">{user?.full_name}</p>
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white border border-slate-200 text-slate-500 uppercase">
                 {user?.role}
               </span>
             </div>
@@ -113,7 +142,7 @@ export const Layout: React.FC = () => {
           <button
             onClick={logout}
             title="Log Out"
-            className="p-1.5 rounded text-slate-400 hover:text-red-400 hover:bg-red-950/40 transition"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
           >
             <LogOut className="w-4 h-4" />
           </button>
@@ -122,79 +151,105 @@ export const Layout: React.FC = () => {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header Bar */}
-        <header className="h-16 bg-[#0c1222]/90 border-b border-[#17223b] flex items-center justify-between px-4 md:px-8 z-10 backdrop-blur-md">
-          {/* Mobile Menu Toggle & Title */}
+        {/* Top Header Bar */}
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 z-10 shadow-xs">
+          {/* Breadcrumb / Title */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded text-slate-400 hover:text-white"
+              className="md:hidden p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-            <div className="hidden sm:block">
-              <span className="text-xs text-slate-400 font-mono">WORKSPACE // </span>
-              <span className="text-xs text-cyan-400 font-mono font-semibold">DIGITAL EVIDENCE ANALYSIS</span>
+            <div className="hidden sm:flex items-center gap-1.5 text-xs">
+              <span className="text-slate-400 font-medium">TrustGuard AI</span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
+              <span className="text-blue-600 font-semibold">{getBreadcrumbTitle()}</span>
             </div>
           </div>
 
-          {/* Quick Case Search */}
+          {/* Quick Search & Status Indicators */}
           <div className="flex items-center gap-4">
             <form onSubmit={handleSearch} className="relative hidden md:block">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 placeholder="Search Case ID / Keyword..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-64 pl-9 pr-3 py-1.5 bg-[#070b14] border border-[#17223b] rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/60 font-mono"
+                className="w-64 pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-sans transition"
               />
             </form>
 
-            {/* Demo Mode Indicator */}
+            {/* Synthetic Benchmark Indicator */}
+            <div 
+              onClick={() => navigate('/analysis')}
+              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-mono font-medium cursor-pointer hover:bg-blue-100 transition shadow-xs"
+              title="530 Safe Synthetic Demonstration Assets Loaded for Academic Testing"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+              <span>SYNTHETIC BENCHMARK: 530 ASSETS</span>
+            </div>
+
+            {/* Demo Mode Badge */}
             {isDemo && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-950/60 border border-amber-500/50 text-amber-400 text-xs font-mono">
-                <AlertTriangle className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline font-semibold">DEMO MODE ACTIVE</span>
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-mono font-medium">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+                <span className="hidden sm:inline">DEMO MODE ACTIVE</span>
               </div>
             )}
 
-            <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
-              <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="hidden sm:inline">ENGINE ONLINE</span>
+            {/* Online Indicator */}
+            <div className="flex items-center gap-2 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-full font-mono">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="hidden sm:inline">SYSTEM ONLINE</span>
             </div>
           </div>
         </header>
 
         {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-[#0c1222] border-b border-[#17223b] p-4 space-y-2 z-30">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2 rounded text-slate-300 hover:bg-[#11192e]"
-                >
-                  <Icon className="w-4 h-4 text-cyan-400" />
-                  <span>{item.label}</span>
-                </NavLink>
-              );
-            })}
-            <button
-              onClick={() => { logout(); setMobileMenuOpen(false); }}
-              className="flex items-center gap-3 px-3 py-2 text-red-400 w-full hover:bg-red-950/40 rounded"
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="md:hidden bg-white border-b border-slate-200 p-4 space-y-1 z-30 shadow-md"
             >
-              <LogOut className="w-4 h-4" />
-              <span>Log Out</span>
-            </button>
-          </div>
-        )}
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium ${
+                        isActive ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-slate-600 hover:bg-slate-50'
+                      }`
+                    }
+                  >
+                    <Icon className="w-4 h-4 text-blue-600" />
+                    <span>{item.label}</span>
+                  </NavLink>
+                );
+              })}
+              <button
+                onClick={() => {
+                  logout();
+                  setMobileMenuOpen(false);
+                }}
+                className="flex items-center gap-3 px-3 py-2.5 text-red-600 w-full hover:bg-red-50 rounded-lg text-xs font-medium"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Log Out</span>
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Page Content Body */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#070b14]">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#F8FAFC]">
           <Outlet />
         </main>
       </div>

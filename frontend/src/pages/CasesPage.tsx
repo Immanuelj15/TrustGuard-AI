@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { apiClient } from '../api/client';
 import { Case } from '../types';
+import { Badge } from '../components/common/Badge';
+import { LoadingState } from '../components/common/LoadingState';
+import { EmptyState } from '../components/common/EmptyState';
 import {
   FolderLock,
   PlusCircle,
   Search,
-  Filter,
   ArrowRight,
   X,
   FileSpreadsheet,
-  AlertCircle
+  AlertCircle,
+  Calendar,
+  Layers,
+  FileText
 } from 'lucide-react';
 
 const COMPLAINT_CATEGORIES = [
@@ -99,20 +105,20 @@ export const CasesPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Page Title & Add Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-[#17223b]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-            <FolderLock className="w-5 h-5 text-cyan-400" />
-            <span>Cybercrime Case Management</span>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
+            <FolderLock className="w-6 h-6 text-blue-600" />
+            <span>Case Management Registry</span>
           </h1>
-          <p className="text-xs text-slate-400 font-mono">
-            DIGITAL EVIDENCE REPOSITORY & ACTIVE INVESTIGATION REGISTRY
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+            Digital evidence repository, case chronology, and official cyber investigation registry.
           </p>
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-medium transition shadow-md shadow-cyan-950"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition self-start sm:self-auto"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Register New Case</span>
@@ -120,15 +126,15 @@ export const CasesPage: React.FC = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="p-4 rounded-xl bg-[#0c1222] border border-[#17223b] flex flex-col md:flex-row gap-3 items-center justify-between">
+      <div className="surface-card p-4 flex flex-col md:flex-row gap-3 items-center justify-between">
         <form onSubmit={handleSearchSubmit} className="relative w-full md:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
-            placeholder="Search Title, Case ID, Description..."
+            placeholder="Search by Title, ID, or Keywords..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 bg-[#070b14] border border-[#1e2e4e] rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-mono"
+            className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
           />
         </form>
 
@@ -137,7 +143,7 @@ export const CasesPage: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-2.5 py-1.5 bg-[#070b14] border border-[#1e2e4e] rounded-lg text-xs text-slate-300 focus:outline-none focus:border-cyan-400 font-mono"
+            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
           >
             <option value="all">All Statuses</option>
             <option value="open">Open</option>
@@ -150,7 +156,7 @@ export const CasesPage: React.FC = () => {
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="px-2.5 py-1.5 bg-[#070b14] border border-[#1e2e4e] rounded-lg text-xs text-slate-300 focus:outline-none focus:border-cyan-400 font-mono"
+            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
           >
             <option value="all">All Priorities</option>
             <option value="critical">Critical</option>
@@ -163,7 +169,7 @@ export const CasesPage: React.FC = () => {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-2.5 py-1.5 bg-[#070b14] border border-[#1e2e4e] rounded-lg text-xs text-slate-300 focus:outline-none focus:border-cyan-400 font-mono max-w-[200px]"
+            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition max-w-[220px]"
           >
             {COMPLAINT_CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
@@ -173,64 +179,68 @@ export const CasesPage: React.FC = () => {
       </div>
 
       {/* Cases Table */}
-      <div className="p-4 rounded-xl bg-[#0c1222] border border-[#17223b] shadow-xl overflow-hidden">
+      <div className="surface-card overflow-hidden">
         {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="py-20">
+            <LoadingState message="Querying case registry..." />
           </div>
         ) : cases.length === 0 ? (
-          <div className="text-center py-16">
-            <FileSpreadsheet className="w-10 h-10 mx-auto text-slate-600 mb-2" />
-            <h3 className="text-sm font-medium text-slate-300">No matching investigation cases</h3>
-            <p className="text-xs text-slate-500 mt-1">Try modifying filter criteria or create a new case file.</p>
+          <div className="py-16">
+            <EmptyState
+              icon={FileSpreadsheet}
+              title="No matching investigation cases"
+              message="No incident records match the active search or filter parameters."
+              actionLabel="Reset Filters"
+              onAction={() => {
+                setSearch('');
+                setStatusFilter('all');
+                setPriorityFilter('all');
+                setCategoryFilter('all');
+              }}
+            />
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#070b14] text-slate-400 uppercase font-mono border-b border-[#17223b]">
+              <thead className="bg-slate-50 text-slate-600 uppercase font-semibold text-[10px] tracking-wider border-b border-slate-200">
                 <tr>
                   <th className="py-3 px-4">Case Number</th>
                   <th className="py-3 px-4">Title & Complaint Category</th>
                   <th className="py-3 px-4">Priority</th>
                   <th className="py-3 px-4">Current Status</th>
                   <th className="py-3 px-4">Evidence Vault</th>
-                  <th className="py-3 px-4">Created</th>
+                  <th className="py-3 px-4">Created Date</th>
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#17223b]/60">
+              <tbody className="divide-y divide-slate-100">
                 {cases.map((c) => (
-                  <tr key={c.id} className="hover:bg-[#11192e]/60 transition">
-                    <td className="py-3.5 px-4 font-mono font-semibold text-cyan-400">
+                  <tr key={c.id} className="hover:bg-slate-50/80 transition group">
+                    <td className="py-3.5 px-4 font-mono font-semibold text-blue-600">
                       {c.case_number}
                     </td>
                     <td className="py-3.5 px-4 max-w-xs">
-                      <div className="font-medium text-slate-100 truncate">{c.title}</div>
-                      <div className="text-[11px] text-slate-400 font-mono mt-0.5">{c.complaint_category}</div>
+                      <div className="font-semibold text-slate-900 group-hover:text-blue-600 transition truncate">
+                        {c.title}
+                      </div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">{c.complaint_category}</div>
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className={`px-2.5 py-0.5 rounded text-[10px] font-mono uppercase ${
-                        c.priority === 'critical' ? 'bg-red-950 text-red-400 border border-red-800' :
-                        c.priority === 'high' ? 'bg-orange-950 text-orange-400 border border-orange-800' :
-                        c.priority === 'medium' ? 'bg-amber-950 text-amber-400 border border-amber-800' :
-                        'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                      }`}>
-                        {c.priority}
-                      </span>
+                      <Badge variant="priority" value={c.priority} />
                     </td>
-                    <td className="py-3.5 px-4 font-mono text-slate-300">
-                      {c.status.replace('_', ' ').toUpperCase()}
+                    <td className="py-3.5 px-4">
+                      <Badge variant="status" value={c.status} />
                     </td>
-                    <td className="py-3.5 px-4 font-mono text-slate-400">
+                    <td className="py-3.5 px-4 font-medium text-slate-600">
                       {c.evidence_count || 0} items
                     </td>
-                    <td className="py-3.5 px-4 text-slate-500 font-mono">
+                    <td className="py-3.5 px-4 text-slate-500 font-mono text-[11px]">
                       {new Date(c.created_at).toLocaleDateString()}
                     </td>
                     <td className="py-3.5 px-4 text-right">
                       <button
                         onClick={() => navigate(`/cases/${c.id}`)}
-                        className="px-3 py-1.5 rounded bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-900/60 transition inline-flex items-center gap-1.5"
+                        className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold transition inline-flex items-center gap-1.5"
                       >
                         <span>Open File</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -245,106 +255,122 @@ export const CasesPage: React.FC = () => {
       </div>
 
       {/* Create Case Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg bg-[#0c1222] border border-[#17223b] rounded-2xl p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#17223b]">
-              <h2 className="text-base font-semibold text-slate-100 flex items-center gap-2">
-                <PlusCircle className="w-5 h-5 text-cyan-400" />
-                <span>Register New Cybercrime Investigation Case</span>
-              </h2>
-              <button
-                onClick={() => setShowCreateModal(false)}
-                className="text-slate-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {createError && (
-              <div className="p-3 rounded-lg bg-red-950/60 border border-red-500/50 text-red-300 text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                <span>{createError}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleCreateCase} className="space-y-4">
-              <div>
-                <label className="block text-xs font-mono text-slate-400 mb-1">CASE TITLE *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. CBI Impersonation & Digital Arrest Scam"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#070b14] border border-[#1e2e4e] rounded-lg text-sm text-slate-100 focus:outline-none focus:border-cyan-400 font-sans"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-mono text-slate-400 mb-1">COMPLAINT CATEGORY *</label>
-                  <select
-                    value={newCategory}
-                    onChange={(e) => setNewCategory(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#070b14] border border-[#1e2e4e] rounded-lg text-xs text-slate-200 focus:outline-none focus:border-cyan-400"
-                  >
-                    {COMPLAINT_CATEGORIES.slice(1).map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-mono text-slate-400 mb-1">INVESTIGATION PRIORITY *</label>
-                  <select
-                    value={newPriority}
-                    onChange={(e) => setNewPriority(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#070b14] border border-[#1e2e4e] rounded-lg text-xs text-slate-200 focus:outline-none focus:border-cyan-400"
-                  >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                    <option value="critical">Critical</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono text-slate-400 mb-1">INCIDENT SUMMARY / COMPLAINANT STATEMENT</label>
-                <textarea
-                  rows={3}
-                  placeholder="Briefly state incident facts, monetary loss amount, suspect phone number or contact channel..."
-                  value={newDesc}
-                  onChange={(e) => setNewDesc(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#070b14] border border-[#1e2e4e] rounded-lg text-sm text-slate-100 focus:outline-none focus:border-cyan-400 font-sans"
-                />
-              </div>
-
-              <div className="flex justify-end gap-3 pt-3 border-t border-[#17223b]">
+      <AnimatePresence>
+        {showCreateModal && (
+          <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.2 }}
+              className="w-full max-w-lg bg-white border border-slate-200 rounded-2xl p-6 shadow-2xl space-y-4"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <PlusCircle className="w-5 h-5 text-blue-600" />
+                  <span>Register New Cybercrime Investigation Case</span>
+                </h2>
                 <button
-                  type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 rounded-lg bg-[#11192e] text-slate-400 hover:text-white text-xs font-medium"
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={createLoading}
-                  className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-medium flex items-center gap-2"
-                >
-                  {createLoading ? (
-                    <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                  ) : (
-                    <span>Create Case Record</span>
-                  )}
+                  <X className="w-5 h-5" />
                 </button>
               </div>
-            </form>
+
+              {createError && (
+                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
+                  <span>{createError}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleCreateCase} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    CASE TITLE *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. CBI Impersonation & Digital Arrest Scam"
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                      COMPLAINT CATEGORY *
+                    </label>
+                    <select
+                      value={newCategory}
+                      onChange={(e) => setNewCategory(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
+                    >
+                      {COMPLAINT_CATEGORIES.slice(1).map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                      INVESTIGATION PRIORITY *
+                    </label>
+                    <select
+                      value={newPriority}
+                      onChange={(e) => setNewPriority(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
+                    >
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                      <option value="critical">Critical</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    INCIDENT SUMMARY / COMPLAINANT STATEMENT
+                  </label>
+                  <textarea
+                    rows={3}
+                    placeholder="Briefly state incident facts, monetary loss amount, suspect phone number or contact channel..."
+                    value={newDesc}
+                    onChange={(e) => setNewDesc(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateModal(false)}
+                    className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-semibold transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={createLoading}
+                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-2 shadow-sm transition disabled:opacity-50"
+                  >
+                    {createLoading ? (
+                      <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <span>Create Case Record</span>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 };

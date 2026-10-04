@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import Base, engine, SessionLocal
-from app.api.v1 import auth, cases, evidence, analysis, caller, reports, audit, dashboard
+from app.api.v1 import auth, cases, evidence, analysis, caller, reports, audit, dashboard, demo, models
 from app.core.security import get_password_hash
 from app.models import (
     User, UserRole, Case, Evidence, AnalysisJob, AnalysisResult,
@@ -198,6 +198,8 @@ app.include_router(caller.router, prefix=settings.API_V1_STR)
 app.include_router(reports.router, prefix=settings.API_V1_STR)
 app.include_router(audit.router, prefix=settings.API_V1_STR)
 app.include_router(dashboard.router, prefix=settings.API_V1_STR)
+app.include_router(demo.router, prefix=settings.API_V1_STR)
+app.include_router(models.router, prefix=f"{settings.API_V1_STR}/models", tags=["Model Registry"])
 
 @app.get("/api/v1/health", tags=["Health"])
 def health_check():
