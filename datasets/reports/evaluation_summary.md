@@ -1,6 +1,6 @@
 # TrustGuard AI — Comprehensive Model & Dataset Evaluation Summary
 
-**Generated:** 2026-10-04T08:17:37.972773+00:00
+**Generated:** 2026-10-04T13:43:41.968328+00:00
 
 ## 1. Dataset Status
 | Dataset Key | Name | Status | Files | Size (MB) | License |
@@ -8,6 +8,7 @@
 | `asvspoof2021` | ASVspoof 2021 (Audio Spoof & Deepfake) | **available** | 1 | 0.0 | ASVspoof 2021 Evaluation Agreement |
 | `faceforensics` | FaceForensics++ (Video Manipulation Benchmark) | **available** | 1 | 0.0 | TUM FaceForensics Terms of Use |
 | `fakeavceleb` | FakeAVCeleb (Audio-Video Deepfake) | **available** | 1 | 0.0 | Research-only Academic License (DASH-Lab) |
+| `test_dataset` | Synthetic Test Dataset | **available** | 5 | 0.0 | MIT |
 | `uci_sms_spam` | UCI SMS Spam Collection | **available** | 3 | 0.66 | CC BY 4.0 |
 
 ## 2. Model Performance on Held-Out Test Sets
@@ -36,6 +37,8 @@
 - Celebrity interview source videos; deepfake methods include Faceswap, Wav2Lip, SV2TTS.
 - Identity-disjoint splits must be enforced to avoid identity memorization.
 - Access requires filling the Google Form and receiving approval from DASH-Lab authors.
+### `test_dataset`
+- Unit test fixture
 ### `uci_sms_spam`
 - General SMS spam corpus (primarily UK mobile text collection).
 - Not representative of modern Indian multi-lingual financial fraud (UPI/Digital Arrest/Tamil/Hindi).

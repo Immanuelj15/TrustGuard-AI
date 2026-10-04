@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-04T08:17:37.972773+00:00",
+  "timestamp_utc": "2026-10-04T13:43:41.968328+00:00",
   "evaluation_title": "TrustGuard AI Multi-Modal Evaluation Benchmark",
   "datasets_summary": {
     "asvspoof2021": {
@@ -22,6 +22,13 @@
       "total_files": 1,
       "total_size_mb": 0.0,
       "license": "Research-only Academic License (DASH-Lab)"
+    },
+    "test_dataset": {
+      "name": "Synthetic Test Dataset",
+      "status": "available",
+      "total_files": 5,
+      "total_size_mb": 0.0,
+      "license": "MIT"
     },
     "uci_sms_spam": {
       "name": "UCI SMS Spam Collection",
@@ -316,6 +323,9 @@
       "Celebrity interview source videos; deepfake methods include Faceswap, Wav2Lip, SV2TTS.",
       "Identity-disjoint splits must be enforced to avoid identity memorization.",
       "Access requires filling the Google Form and receiving approval from DASH-Lab authors."
+    ],
+    "test_dataset": [
+      "Unit test fixture"
     ],
     "uci_sms_spam": [
       "General SMS spam corpus (primarily UK mobile text collection).",
