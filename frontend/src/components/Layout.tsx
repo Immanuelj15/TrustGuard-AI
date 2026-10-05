@@ -122,7 +122,7 @@ export const Layout: React.FC = () => {
           title: 'ANALYSIS',
           items: [
             { to: '/analysis', label: 'Analysis Results', icon: Binary },
-            { to: '/cases?view=correlations', label: 'Evidence Correlation', icon: Network }
+            { to: '/cases?tab=correlations', label: 'Evidence Correlation', icon: Network }
           ]
         },
         {
@@ -180,6 +180,35 @@ export const Layout: React.FC = () => {
 
   const navSections = getNavSections();
 
+  const isLinkActive = (to?: string) => {
+    if (!to) return false;
+    const currentPath = location.pathname;
+    const currentSearch = location.search;
+
+    if (to.includes('?')) {
+      const [targetPath, targetQuery] = to.split('?');
+      if (currentPath !== targetPath) return false;
+      const targetParams = new URLSearchParams(targetQuery);
+      const currentParams = new URLSearchParams(currentSearch);
+      for (const [key, val] of targetParams.entries()) {
+        if (currentParams.get(key) !== val) return false;
+      }
+      return true;
+    }
+
+    if (to === '/cases') {
+      const currentParams = new URLSearchParams(currentSearch);
+      if (currentParams.get('tab') || currentParams.get('view')) return false;
+      return currentPath === '/cases';
+    }
+
+    if (to === '/') {
+      return currentPath === '/' && !currentSearch;
+    }
+
+    return currentPath === to || currentPath.startsWith(to + '/');
+  };
+
   const getBreadcrumbTitle = () => {
     const path = location.pathname;
     if (path === '/') {
@@ -189,7 +218,12 @@ export const Layout: React.FC = () => {
       return 'Forensic Investigation Dashboard';
     }
     if (path.startsWith('/cases/') && path.length > 7) return 'Case Investigation File';
-    if (path.startsWith('/cases')) return 'Case Directory';
+    if (path.startsWith('/cases')) {
+      const search = new URLSearchParams(location.search);
+      if (search.get('tab') === 'iocs') return 'Indicators of Compromise (IOC) Explorer';
+      if (search.get('tab') === 'correlations' || search.get('view') === 'correlations') return 'Evidence Correlation & Threat Graph';
+      return 'Case Directory';
+    }
     if (path.startsWith('/analysis')) return 'Evidence Analysis Workspace';
     if (path.startsWith('/caller-check')) return 'Caller Threat Intelligence';
     if (path.startsWith('/reports')) return 'Certified Investigation Reports';
@@ -271,33 +305,28 @@ export const Layout: React.FC = () => {
                   );
                 }
 
+                const active = isLinkActive(item.to);
+
                 return (
                   <NavLink
                     key={item.label}
                     to={item.to || '/'}
-                    end={item.to === '/'}
-                    className={({ isActive }) =>
-                      `flex items-center justify-between px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 relative group ${
-                        isActive
-                          ? 'bg-blue-50 text-blue-700 font-semibold shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                      }`
-                    }
+                    className={`flex items-center justify-between px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 relative group ${
+                      active
+                        ? 'bg-blue-50 text-blue-700 font-semibold shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    }`}
                   >
-                    {({ isActive }) => (
-                      <>
-                        <div className="flex items-center gap-3">
-                          <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
-                          <span>{item.label}</span>
-                        </div>
-                        {isActive && (
-                          <motion.div
-                            layoutId="activePill"
-                            className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-blue-600 rounded-l"
-                            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                          />
-                        )}
-                      </>
+                    <div className="flex items-center gap-3">
+                      <Icon className={`w-4 h-4 flex-shrink-0 ${active ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
+                      <span>{item.label}</span>
+                    </div>
+                    {active && (
+                      <motion.div
+                        layoutId="activePill"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-blue-600 rounded-l"
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                      />
                     )}
                   </NavLink>
                 );
@@ -444,18 +473,17 @@ export const Layout: React.FC = () => {
                         </button>
                       );
                     }
+                    const active = isLinkActive(item.to);
                     return (
                       <NavLink
                         key={item.label}
                         to={item.to || '/'}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={({ isActive }) =>
-                          `flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium ${
-                            isActive ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-                          }`
-                        }
+                        className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium ${
+                          active ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-slate-600 hover:bg-slate-50'
+                        }`}
                       >
-                        <Icon className="w-4 h-4 text-blue-600" />
+                        <Icon className={`w-4 h-4 ${active ? 'text-blue-600' : 'text-slate-500'}`} />
                         <span>{item.label}</span>
                       </NavLink>
                     );
