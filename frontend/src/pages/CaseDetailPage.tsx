@@ -2,102 +2,100 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiClient } from '../api/client';
-import { 
-  CaseDetail, 
-  EvidenceItem, 
-  TimelineEvent, 
-  IOCItem, 
-  IOCCorrelation, 
-  CorrelationGraphData, 
-  EvidenceSimilarity 
+import {
+  Case,
+  CaseDetail,
+  EvidenceItem,
+  TimelineEvent,
+  IOCItem,
+  IOCCorrelation,
+  CorrelationGraphData,
+  EvidenceSimilarity,
+  InvestigatorNote,
 } from '../types';
 import { Badge } from '../components/common/Badge';
-import { LoadingState } from '../components/common/LoadingState';
 import { EmptyState } from '../components/common/EmptyState';
-import { SyntheticGalleryModal } from '../components/common/SyntheticGalleryModal';
-import { EvidenceTimelineComponent } from '../components/investigation/EvidenceTimelineComponent';
-import { EvidenceIntegrityComponent } from '../components/investigation/EvidenceIntegrityComponent';
 import { IOCTableAndCorrelation } from '../components/investigation/IOCTableAndCorrelation';
 import { CorrelationGraphComponent } from '../components/investigation/CorrelationGraphComponent';
+import { EvidenceTimelineComponent } from '../components/investigation/EvidenceTimelineComponent';
+import { EvidenceIntegrityComponent } from '../components/investigation/EvidenceIntegrityComponent';
 import { EvidenceSimilarityComponent } from '../components/investigation/EvidenceSimilarityComponent';
 import { InvestigatorNotesComponent } from '../components/investigation/InvestigatorNotesComponent';
 import { InvestigatorCopilotComponent } from '../components/investigation/InvestigatorCopilotComponent';
+import { SyntheticGalleryModal } from '../components/common/SyntheticGalleryModal';
 import { ModelEvaluationModal } from '../components/investigation/ModelEvaluationModal';
 import { useAuth } from '../context/AuthContext';
 import {
-  FolderLock,
   ArrowLeft,
-  FileCheck2,
   Upload,
   FileText,
+  Clock,
+  Network,
+  Cpu,
+  ShieldCheck,
+  Activity,
+  Layers,
+  Sparkles,
+  MessageSquare,
+  Bot,
   Copy,
   Check,
-  Download,
-  Cpu,
-  MessageSquare,
+  X,
   AlertCircle,
+  FileCheck2,
+  FileCode,
   FileAudio,
   FileVideo,
-  FileCode,
-  FileImage,
-  Clock,
-  ShieldCheck,
-  X,
-  Sparkles,
-  Network,
-  Layers,
-  Bot,
-  Activity,
+  File,
   ChevronDown,
-  ChevronUp,
-  Eye,
-  ShieldAlert
+  Download,
+  FolderLock
 } from 'lucide-react';
+
+type TabType = 'evidence' | 'timeline' | 'iocs' | 'graph' | 'similarity' | 'notes' | 'copilot';
 
 export const CaseDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, isAdmin, isInvestigator, isReviewer, isDemo } = useAuth();
+  const { isAdmin, isInvestigator, isReviewer, isDemo } = useAuth();
 
   const [caseData, setCaseData] = useState<CaseDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [copiedHash, setCopiedHash] = useState<string | null>(null);
-  const [showDemoModal, setShowDemoModal] = useState(false);
-  const [showEvaluationModal, setShowEvaluationModal] = useState(false);
-
-  // Tabs state
-  type TabType = 'evidence' | 'timeline' | 'iocs' | 'graph' | 'similarity' | 'notes' | 'copilot';
   const [activeTab, setActiveTab] = useState<TabType>('evidence');
 
-  // Investigation datasets
+  // Sub-data states
   const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[]>([]);
   const [timelineLoading, setTimelineLoading] = useState(false);
 
   const [caseIOCs, setCaseIOCs] = useState<IOCItem[]>([]);
-  const [caseCorrelations, setCaseCorrelations] = useState<IOCCorrelation[]>([]);
+  const [caseCorrelations, setCaseCorrelations] = useState<any>([]);
   const [iocsLoading, setIocsLoading] = useState(false);
 
-  const [graphData, setGraphData] = useState<CorrelationGraphData>({ nodes: [], edges: [], total_nodes: 0, total_edges: 0 });
+  const [graphData, setGraphData] = useState<CorrelationGraphData>({
+    nodes: [],
+    edges: [],
+    total_nodes: 0,
+    total_edges: 0,
+  });
   const [graphLoading, setGraphLoading] = useState(false);
 
   const [similarities, setSimilarities] = useState<EvidenceSimilarity[]>([]);
   const [similarityLoading, setSimilarityLoading] = useState(false);
 
-  // Inline integrity check drawer per evidence item
-  const [expandedIntegrityId, setExpandedIntegrityId] = useState<string | null>(null);
-
-  // Status update
-  const [statusUpdateLoading, setStatusUpdateLoading] = useState(false);
-
-  // Upload modal
+  // Modals & UI Controls
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  // Report generation
+  const [showDemoModal, setShowDemoModal] = useState(false);
+  const [showEvaluationModal, setShowEvaluationModal] = useState(false);
+
+  const [statusUpdateLoading, setStatusUpdateLoading] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   const [reportSuccess, setReportSuccess] = useState<string | null>(null);
+  const [copiedHash, setCopiedHash] = useState<string | null>(null);
+  const [expandedIntegrityId, setExpandedIntegrityId] = useState<string | null>(null);
 
   const fetchCaseDetail = async () => {
     if (!id) return;
@@ -130,12 +128,12 @@ export const CaseDetailPage: React.FC = () => {
     try {
       const [iocsRes, corrRes] = await Promise.all([
         apiClient.get<IOCItem[]>(`/cases/${id}/iocs`),
-        apiClient.get<IOCCorrelation[]>(`/cases/${id}/correlations`),
+        apiClient.get<any>(`/cases/${id}/correlations`),
       ]);
-      setCaseIOCs(iocsRes.data);
+      setCaseIOCs(Array.isArray(iocsRes.data) ? iocsRes.data : []);
       setCaseCorrelations(corrRes.data);
     } catch (err) {
-      console.error('Failed to load IOCs', err);
+      console.error('Failed to load IOCs or correlations', err);
     } finally {
       setIocsLoading(false);
     }
@@ -148,7 +146,7 @@ export const CaseDetailPage: React.FC = () => {
       const res = await apiClient.get<CorrelationGraphData>(`/cases/${id}/correlation-graph`);
       setGraphData(res.data);
     } catch (err) {
-      console.error('Failed to load graph', err);
+      console.error('Failed to load correlation graph', err);
     } finally {
       setGraphLoading(false);
     }
@@ -161,7 +159,7 @@ export const CaseDetailPage: React.FC = () => {
       const res = await apiClient.get<EvidenceSimilarity[]>(`/cases/${id}/similar-evidence`);
       setSimilarities(res.data);
     } catch (err) {
-      console.error('Failed to load similarities', err);
+      console.error('Failed to load evidence similarities', err);
     } finally {
       setSimilarityLoading(false);
     }
@@ -169,11 +167,15 @@ export const CaseDetailPage: React.FC = () => {
 
   useEffect(() => {
     fetchCaseDetail();
-    fetchTimeline();
-    fetchIOCsAndCorrelations();
-    fetchGraph();
-    fetchSimilarities();
   }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    if (activeTab === 'timeline') fetchTimeline();
+    if (activeTab === 'iocs') fetchIOCsAndCorrelations();
+    if (activeTab === 'graph') fetchGraph();
+    if (activeTab === 'similarity') fetchSimilarities();
+  }, [activeTab, id]);
 
   const handleCopyHash = (hash: string) => {
     navigator.clipboard.writeText(hash);
@@ -239,9 +241,11 @@ export const CaseDetailPage: React.FC = () => {
     setReportLoading(true);
     setReportSuccess(null);
     try {
-      const res = await apiClient.post(`/cases/${caseData.id}/reports`);
-      setReportSuccess(`Official investigation report generated: ${res.data.file_name}`);
-      fetchTimeline();
+      const res = await apiClient.post(`/reports/generate`, {
+        case_id: caseData.id,
+        classification: 'OFFICIAL USE ONLY / FOR JUDICIAL SUBMISSION',
+      });
+      setReportSuccess(`Report ${res.data.report_number} generated successfully!`);
       setTimeout(() => setReportSuccess(null), 6000);
     } catch (err) {
       console.error('Failed to generate report', err);
@@ -268,22 +272,26 @@ export const CaseDetailPage: React.FC = () => {
   };
 
   const getEvidenceIcon = (type: string) => {
-    switch (type) {
-      case 'audio':
-        return <FileAudio className="w-4 h-4 text-cyan-400" />;
-      case 'video':
-        return <FileVideo className="w-4 h-4 text-purple-400" />;
+    switch (type.toLowerCase()) {
       case 'text':
-        return <FileCode className="w-4 h-4 text-blue-400" />;
-      case 'image':
-        return <FileImage className="w-4 h-4 text-emerald-400" />;
+        return <FileCode className="w-4 h-4 text-blue-600" />;
+      case 'audio':
+        return <FileAudio className="w-4 h-4 text-purple-600" />;
+      case 'video':
+        return <FileVideo className="w-4 h-4 text-sky-600" />;
       default:
-        return <FileText className="w-4 h-4 text-slate-400" />;
+        return <File className="w-4 h-4 text-slate-500" />;
     }
   };
 
   if (loading) {
-    return <LoadingState message="Loading investigative case file &amp; custody vault..." />;
+    return (
+      <div className="py-24 flex flex-col items-center justify-center bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+        <p className="text-sm font-semibold text-slate-700">Accessing case file record...</p>
+        <p className="text-xs text-slate-400 mt-1">Retrieving evidence digests and lifecycle audit trail</p>
+      </div>
+    );
   }
 
   if (!caseData) {
@@ -309,39 +317,39 @@ export const CaseDetailPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Back and Breadcrumb */}
+      {/* Back Button */}
       <div>
         <button
           onClick={() => navigate('/cases')}
-          className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-cyan-400 font-semibold transition cursor-pointer"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors cursor-pointer group"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
           <span>Back to Case Directory</span>
         </button>
       </div>
 
       {/* Case Header Banner */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
-        <div className="space-y-1">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+        <div className="space-y-1.5">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-xs font-bold text-cyan-400 px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-800/80">
+            <span className="font-mono text-xs font-bold text-blue-700 px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200">
               {caseData.case_number}
             </span>
             <Badge variant="priority" value={caseData.priority} />
             <Badge variant="status" value={caseData.status} />
           </div>
-          <h1 className="text-xl font-bold text-slate-100 mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1">
             {caseData.title}
           </h1>
         </div>
 
         {/* Role-Aware Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={() => setShowEvaluationModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-semibold shadow-sm transition cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold shadow-2xs transition cursor-pointer"
           >
-            <Activity className="w-3.5 h-3.5 text-cyan-400" />
+            <Activity className="w-3.5 h-3.5 text-blue-600" />
             <span>Model Evaluation</span>
           </button>
 
@@ -349,15 +357,15 @@ export const CaseDetailPage: React.FC = () => {
             <>
               <button
                 onClick={() => setShowDemoModal(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold shadow-sm transition cursor-pointer"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-semibold shadow-2xs transition cursor-pointer"
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
                 <span>Load Demo Sample</span>
               </button>
 
               <button
                 onClick={() => setShowUploadModal(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold shadow-sm transition cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition cursor-pointer"
               >
                 <Upload className="w-3.5 h-3.5" />
                 <span>Upload Evidence</span>
@@ -366,12 +374,12 @@ export const CaseDetailPage: React.FC = () => {
               <button
                 onClick={handleGenerateReport}
                 disabled={reportLoading}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-cyan-500/40 hover:bg-cyan-500/10 text-cyan-300 text-xs font-semibold shadow-sm transition disabled:opacity-50 cursor-pointer"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold shadow-2xs transition disabled:opacity-50 cursor-pointer"
               >
                 {reportLoading ? (
-                  <span className="w-3.5 h-3.5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+                  <span className="w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  <FileText className="w-3.5 h-3.5 text-cyan-400" />
+                  <FileText className="w-3.5 h-3.5 text-blue-600" />
                 )}
                 <span>Generate Certified PDF</span>
               </button>
@@ -382,16 +390,16 @@ export const CaseDetailPage: React.FC = () => {
             <>
               <button
                 onClick={() => setActiveTab('evidence')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-xs font-semibold shadow-sm transition cursor-pointer"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-semibold shadow-2xs transition cursor-pointer"
               >
-                <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
+                <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
                 <span>Verify Evidence Integrity</span>
               </button>
               <button
                 onClick={() => navigate('/reports')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-300 text-xs font-semibold shadow-sm transition cursor-pointer"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold shadow-2xs transition cursor-pointer"
               >
-                <FileText className="w-3.5 h-3.5 text-slate-400" />
+                <FileText className="w-3.5 h-3.5 text-slate-600" />
                 <span>Review Case Reports</span>
               </button>
             </>
@@ -400,9 +408,9 @@ export const CaseDetailPage: React.FC = () => {
           {isDemo && (
             <button
               onClick={() => setShowDemoModal(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold shadow-sm transition cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-semibold shadow-2xs transition cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
               <span>Load Synthetic Sample</span>
             </button>
           )}
@@ -416,15 +424,15 @@ export const CaseDetailPage: React.FC = () => {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center justify-between shadow-sm"
+            className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between shadow-xs"
           >
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-              <span>{reportSuccess}</span>
+              <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span className="font-medium">{reportSuccess}</span>
             </div>
             <button
               onClick={() => navigate('/reports')}
-              className="font-semibold text-cyan-400 hover:underline ml-4 cursor-pointer"
+              className="font-bold text-emerald-700 hover:text-emerald-900 underline ml-4 cursor-pointer"
             >
               View in Reports &rarr;
             </button>
@@ -433,13 +441,13 @@ export const CaseDetailPage: React.FC = () => {
       </AnimatePresence>
 
       {/* Case Overview Metadata Card */}
-      <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/40">
+      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
           <div>
             <div className="text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
               Complaint Category
             </div>
-            <div className="font-semibold text-slate-200 mt-1">{caseData.complaint_category}</div>
+            <div className="font-bold text-slate-900 text-sm mt-1">{caseData.complaint_category}</div>
           </div>
           <div>
             <div className="text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
@@ -449,66 +457,64 @@ export const CaseDetailPage: React.FC = () => {
               value={caseData.status}
               disabled={statusUpdateLoading}
               onChange={(e) => handleStatusChange(e.target.value)}
-              className="mt-1 bg-slate-950 border border-slate-800 text-slate-200 px-2 py-1 rounded text-xs font-semibold focus:outline-none focus:border-cyan-500 transition cursor-pointer"
+              className="mt-1 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl px-3 py-1.5 text-slate-800 font-semibold text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer shadow-2xs transition"
             >
-              <option value="open">Open</option>
               <option value="under_investigation">Under Investigation</option>
               <option value="awaiting_review">Awaiting Review</option>
-              <option value="resolved">Resolved</option>
               <option value="closed">Closed</option>
+              <option value="archived">Archived</option>
             </select>
           </div>
           <div>
-            <div className="text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
-              Lead Officer
-            </div>
-            <div className="font-semibold text-slate-200 mt-1">
-              {caseData.assigned_investigator_name || 'Insp. Rajesh Kumar'}
-            </div>
+            <div className="text-slate-500 font-semibold uppercase text-[10px] tracking-wider">Lead Officer</div>
+            <div className="font-semibold text-slate-900 text-sm mt-1">{caseData.assigned_investigator_name || 'Unassigned'}</div>
           </div>
           <div>
-            <div className="text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
-              Registration Date
-            </div>
-            <div className="font-mono text-slate-400 mt-1">
-              {new Date(caseData.created_at).toLocaleDateString()}
+            <div className="text-slate-500 font-semibold uppercase text-[10px] tracking-wider">Registration Date</div>
+            <div className="font-semibold text-slate-900 text-sm mt-1">
+              {new Date(caseData.created_at).toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}
             </div>
           </div>
         </div>
 
         {caseData.description && (
-          <div className="mt-3 pt-3 border-t border-slate-800/80 text-xs text-slate-300">
-            <span className="font-semibold text-slate-400 uppercase text-[10px] tracking-wider block mb-1">
+          <div className="pt-3 border-t border-slate-100">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1.5">
               Initial Complaint Synopsis:
             </span>
-            <div className="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80 leading-relaxed font-sans">
+            <div className="bg-slate-50/80 border border-slate-200/80 rounded-xl p-3 text-xs text-slate-700 font-mono leading-relaxed">
               {caseData.description}
             </div>
           </div>
         )}
       </div>
 
-      {/* Investigation Feature Navigation Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-slate-800 scrollbar-thin">
+      {/* Modern Segmented Navigation Tabs */}
+      <div className="bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200/80 flex items-center gap-1.5 overflow-x-auto shadow-2xs">
         {tabs.map((t) => {
-          const Icon = t.icon;
           const isActive = activeTab === t.id;
+          const Icon = t.icon;
+
           return (
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-t-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-slate-900 border-t-2 border-t-cyan-400 border-x border-slate-800 text-cyan-300 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
+                  ? 'bg-white text-blue-600 shadow-xs border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
             >
-              <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-cyan-400' : 'text-slate-500'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-blue-600' : 'text-slate-500'}`} />
               <span>{t.label}</span>
               {t.count !== undefined && (
                 <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                    isActive ? 'bg-cyan-500/20 text-cyan-300' : 'bg-slate-800 text-slate-400'
+                  className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono font-bold ${
+                    isActive ? 'bg-blue-50 text-blue-700' : 'bg-slate-200/70 text-slate-600'
                   }`}
                 >
                   {t.count}
@@ -520,16 +526,16 @@ export const CaseDetailPage: React.FC = () => {
       </div>
 
       {/* Tab Panels */}
-      <div className="pt-2">
+      <div className="pt-1">
         {/* TAB 1: EVIDENCE VAULT */}
         {activeTab === 'evidence' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold text-slate-200 flex items-center gap-2">
-                <FileCheck2 className="w-4 h-4 text-cyan-400" />
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <FileCheck2 className="w-4 h-4 text-blue-600" />
                 <span>Forensic Evidence Vault &amp; SHA-256 Digest Registry</span>
               </h2>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs font-medium text-slate-500">
                 {caseData.evidence_items.length} file{caseData.evidence_items.length !== 1 ? 's' : ''} logged
               </span>
             </div>
@@ -543,36 +549,36 @@ export const CaseDetailPage: React.FC = () => {
                 onAction={() => setShowUploadModal(true)}
               />
             ) : (
-              <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/40">
+              <div className="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-900/90 text-slate-400 uppercase font-mono text-[10px] tracking-wider border-b border-slate-800">
+                    <thead className="bg-slate-50/80 text-slate-500 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200/80">
                       <tr>
-                        <th className="py-2.5 px-3">File / Artifact</th>
-                        <th className="py-2.5 px-3">Type</th>
-                        <th className="py-2.5 px-3">Size</th>
-                        <th className="py-2.5 px-3">SHA-256 Digest</th>
-                        <th className="py-2.5 px-3">Processing Status</th>
-                        <th className="py-2.5 px-3 text-right">Forensic Actions</th>
+                        <th className="py-3 px-4">File / Artifact</th>
+                        <th className="py-3 px-4">Type</th>
+                        <th className="py-3 px-4">Size</th>
+                        <th className="py-3 px-4">SHA-256 Digest</th>
+                        <th className="py-3 px-4">Processing Status</th>
+                        <th className="py-3 px-4 text-right">Forensic Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/60 font-mono">
-                      {caseData.evidence_items.map((ev) => {
+                    <tbody className="divide-y divide-slate-100 font-mono">
+                      {caseData.evidence_items.map((ev: EvidenceItem) => {
                         const isIntegrityOpen = expandedIntegrityId === ev.id;
 
                         return (
                           <React.Fragment key={ev.id}>
-                            <tr className="hover:bg-slate-900/40 transition group">
-                              <td className="py-3 px-3">
-                                <div className="flex items-center gap-2 font-sans">
-                                  <div className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 group-hover:border-cyan-500/40 group-hover:text-cyan-400 transition">
+                            <tr className="hover:bg-slate-50/80 transition-colors group">
+                              <td className="py-3 px-4">
+                                <div className="flex items-center gap-2.5 font-sans">
+                                  <div className="p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 group-hover:border-blue-300 group-hover:text-blue-600 transition">
                                     {getEvidenceIcon(ev.evidence_type)}
                                   </div>
                                   <div>
-                                    <div className="font-semibold text-slate-200 flex items-center gap-1.5">
+                                    <div className="font-semibold text-slate-900 flex items-center gap-1.5">
                                       <span>{ev.original_filename}</span>
                                       {ev.original_filename.startsWith('[SYNTHETIC-DEMO]') && (
-                                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
                                           SYNTHETIC DEMO
                                         </span>
                                       )}
@@ -580,14 +586,14 @@ export const CaseDetailPage: React.FC = () => {
                                   </div>
                                 </div>
                               </td>
-                              <td className="py-3 px-3 uppercase text-slate-400">{ev.evidence_type}</td>
-                              <td className="py-3 px-3 text-slate-400">
+                              <td className="py-3 px-4 uppercase text-slate-600 font-semibold">{ev.evidence_type}</td>
+                              <td className="py-3 px-4 text-slate-500">
                                 {Math.round(ev.file_size / 1024)} KB
                               </td>
-                              <td className="py-3 px-3 text-[11px] text-slate-300">
+                              <td className="py-3 px-4 text-[11px]">
                                 <div className="flex items-center gap-1.5">
                                   <span
-                                    className="truncate max-w-[170px] bg-slate-900 px-2 py-0.5 rounded border border-slate-800"
+                                    className="truncate max-w-[170px] bg-slate-50 px-2 py-1 rounded-lg border border-slate-200 text-slate-700 font-mono"
                                     title={ev.sha256_hash}
                                   >
                                     {ev.sha256_hash.substring(0, 10)}...{ev.sha256_hash.substring(54)}
@@ -595,47 +601,48 @@ export const CaseDetailPage: React.FC = () => {
                                   <button
                                     onClick={() => handleCopyHash(ev.sha256_hash)}
                                     title="Copy SHA-256 Digest"
-                                    className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-cyan-300 transition cursor-pointer"
+                                    className="p-1 rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-600 transition cursor-pointer"
                                   >
                                     {copiedHash === ev.sha256_hash ? (
-                                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                      <Check className="w-3.5 h-3.5 text-emerald-600" />
                                     ) : (
                                       <Copy className="w-3.5 h-3.5" />
                                     )}
                                   </button>
                                 </div>
                               </td>
-                              <td className="py-3 px-3">
+                              <td className="py-3 px-4">
                                 <Badge variant="status" value={ev.processing_status} />
                               </td>
-                              <td className="py-3 px-3 text-right space-x-1.5 font-sans">
+                              <td className="py-3 px-4 text-right space-x-1.5 font-sans">
                                 <button
                                   onClick={() =>
                                     setExpandedIntegrityId(isIntegrityOpen ? null : ev.id)
                                   }
-                                  className={`px-2 py-1 rounded text-[11px] font-semibold inline-flex items-center gap-1 border transition cursor-pointer ${
+                                  className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold inline-flex items-center gap-1 border transition cursor-pointer ${
                                     isIntegrityOpen
-                                      ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
-                                      : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
+                                      ? 'bg-blue-50 text-blue-700 border-blue-200'
+                                      : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                                   }`}
                                 >
-                                  <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                                   <span>{isIntegrityOpen ? 'Close Hash' : 'Verify Hash'}</span>
                                 </button>
 
                                 <button
                                   onClick={() => navigate(`/analysis?evidence_id=${ev.id}`)}
-                                  className="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-500/40 font-semibold text-[11px] inline-flex items-center gap-1 transition cursor-pointer"
+                                  className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-semibold text-[11px] inline-flex items-center gap-1 transition cursor-pointer"
                                 >
-                                  <Cpu className="w-3 h-3" />
+                                  <Cpu className="w-3.5 h-3.5" />
                                   <span>Analyze</span>
                                 </button>
 
                                 <button
                                   onClick={() => handleDownloadEvidence(ev.id, ev.original_filename)}
-                                  className="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-[11px] inline-flex items-center gap-1 transition cursor-pointer"
+                                  title="Download Original Evidence Artifact"
+                                  className="px-2 py-1 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-[11px] inline-flex items-center gap-1 transition cursor-pointer"
                                 >
-                                  <Download className="w-3 h-3" />
+                                  <Download className="w-3.5 h-3.5" />
                                 </button>
                               </td>
                             </tr>
@@ -643,7 +650,7 @@ export const CaseDetailPage: React.FC = () => {
                             {/* Expandable Evidence Integrity Row */}
                             {isIntegrityOpen && (
                               <tr>
-                                <td colSpan={6} className="p-3 bg-slate-900/80 border-b border-slate-800">
+                                <td colSpan={6} className="p-4 bg-slate-50/70 border-b border-slate-200">
                                   <EvidenceIntegrityComponent
                                     evidenceId={ev.id}
                                     filename={ev.original_filename}
@@ -706,36 +713,38 @@ export const CaseDetailPage: React.FC = () => {
       {/* Upload Evidence Modal */}
       <AnimatePresence>
         {showUploadModal && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="w-full max-w-md bg-slate-900 border border-cyan-500/40 rounded-2xl p-6 shadow-2xl space-y-4"
+              className="w-full max-w-md bg-white border border-slate-200 rounded-2xl p-6 shadow-2xl space-y-4"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                <h2 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-                  <Upload className="w-4 h-4 text-cyan-400" />
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600">
+                    <Upload className="w-4 h-4" />
+                  </div>
                   <span>Upload Digital Evidence to Case</span>
                 </h2>
                 <button
                   onClick={() => setShowUploadModal(false)}
-                  className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition cursor-pointer"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               {uploadError && (
-                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-400" />
+                <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
                   <span>{uploadError}</span>
                 </div>
               )}
 
               <form onSubmit={handleUploadEvidence} className="space-y-4">
-                <div className="border-2 border-dashed border-slate-700 hover:border-cyan-500/60 rounded-2xl p-6 text-center bg-slate-950/60 transition">
+                <div className="border-2 border-dashed border-slate-200 hover:border-blue-400 rounded-2xl p-6 text-center bg-slate-50/50 hover:bg-blue-50/20 transition">
                   <input
                     type="file"
                     id="evidence-file"
@@ -743,23 +752,23 @@ export const CaseDetailPage: React.FC = () => {
                     onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
                   />
                   <label htmlFor="evidence-file" className="cursor-pointer block">
-                    <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mx-auto mb-2">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-2 shadow-2xs">
                       <Upload className="w-5 h-5" />
                     </div>
                     {selectedFile ? (
                       <div className="text-xs">
-                        <span className="font-bold text-slate-200 block truncate font-mono">
+                        <span className="font-bold text-slate-900 block truncate font-mono">
                           {selectedFile.name}
                         </span>
-                        <span className="text-slate-400 font-mono mt-1 block">
+                        <span className="text-slate-500 font-mono mt-1 block">
                           {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
                         </span>
                       </div>
                     ) : (
-                      <div className="text-xs text-slate-400">
-                        <span className="text-cyan-400 font-bold underline">Select evidence file</span>{' '}
+                      <div className="text-xs text-slate-600">
+                        <span className="text-blue-600 font-bold underline">Select evidence file</span>{' '}
                         or drag &amp; drop
-                        <p className="text-[11px] text-slate-500 mt-1">
+                        <p className="text-[11px] text-slate-400 mt-1">
                           Audio (WAV, MP3), Video (MP4), Image (PNG, JPG), Text (TXT)
                         </p>
                       </div>
@@ -767,28 +776,28 @@ export const CaseDetailPage: React.FC = () => {
                   </label>
                 </div>
 
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-400 flex items-start gap-2">
-                  <ShieldCheck className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+                <div className="p-3 rounded-xl bg-blue-50/60 border border-blue-100 text-xs text-slate-600 flex items-start gap-2">
+                  <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-semibold text-slate-300 block">
+                    <span className="font-bold text-slate-800 block">
                       Cryptographic Hashing Guarantee
                     </span>
-                    A SHA-256 digest is immediately computed and logged to the immutable timeline.
+                    A SHA-256 digest is computed on ingest and logged to the immutable case chain of custody.
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-800">
+                <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-100">
                   <button
                     type="button"
                     onClick={() => setShowUploadModal(false)}
-                    className="px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800 text-xs font-semibold transition cursor-pointer"
+                    className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-semibold transition cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={uploadLoading || !selectedFile}
-                    className="px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-sm transition disabled:opacity-50 cursor-pointer"
+                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-2 shadow-xs transition disabled:opacity-50 cursor-pointer"
                   >
                     {uploadLoading ? 'Computing Hash & Ingesting...' : 'Ingest to Vault'}
                   </button>

@@ -28,36 +28,36 @@ export const EvidenceTimelineComponent: React.FC<EvidenceTimelineProps> = ({ eve
   const getEventIcon = (eventType: string) => {
     switch (eventType) {
       case 'evidence_uploaded':
-        return <Upload className="w-4 h-4 text-cyan-400" />;
+        return <Upload className="w-3.5 h-3.5 text-blue-600" />;
       case 'hash_generated':
       case 'integrity_verified':
-        return <Hash className="w-4 h-4 text-emerald-400" />;
+        return <Hash className="w-3.5 h-3.5 text-emerald-600" />;
       case 'evidence_validated':
-        return <ShieldCheck className="w-4 h-4 text-blue-400" />;
+        return <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" />;
       case 'analysis_started':
-        return <Play className="w-4 h-4 text-amber-400" />;
+        return <Play className="w-3.5 h-3.5 text-amber-600" />;
       case 'analysis_completed':
-        return <CheckCircle2 className="w-4 h-4 text-emerald-400" />;
+        return <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />;
       case 'investigator_reviewed':
-        return <Eye className="w-4 h-4 text-purple-400" />;
+        return <Eye className="w-3.5 h-3.5 text-purple-600" />;
       case 'note_added':
       case 'annotation_added':
-        return <MessageSquare className="w-4 h-4 text-blue-400" />;
+        return <MessageSquare className="w-3.5 h-3.5 text-sky-600" />;
       case 'report_generated':
-        return <FileText className="w-4 h-4 text-cyan-400" />;
+        return <FileText className="w-3.5 h-3.5 text-blue-600" />;
       case 'integrity_mismatch':
-        return <AlertTriangle className="w-4 h-4 text-rose-400" />;
+        return <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />;
       default:
-        return <Clock className="w-4 h-4 text-slate-400" />;
+        return <Clock className="w-3.5 h-3.5 text-slate-500" />;
     }
   };
 
   const getEventBadgeColor = (eventType: string) => {
-    if (eventType.includes('mismatch')) return 'border-rose-500/30 bg-rose-500/10 text-rose-400';
-    if (eventType.includes('completed') || eventType.includes('verified')) return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400';
-    if (eventType.includes('started')) return 'border-amber-500/30 bg-amber-500/10 text-amber-400';
-    if (eventType.includes('reviewed')) return 'border-purple-500/30 bg-purple-500/10 text-purple-400';
-    return 'border-cyan-500/30 bg-cyan-500/10 text-cyan-400';
+    if (eventType.includes('mismatch')) return 'border-rose-200 bg-rose-50 text-rose-700';
+    if (eventType.includes('completed') || eventType.includes('verified')) return 'border-emerald-200 bg-emerald-50 text-emerald-700';
+    if (eventType.includes('started')) return 'border-amber-200 bg-amber-50 text-amber-700';
+    if (eventType.includes('reviewed')) return 'border-purple-200 bg-purple-50 text-purple-700';
+    return 'border-blue-200 bg-blue-50 text-blue-700';
   };
 
   const toggleExpand = (id: string) => {
@@ -66,20 +66,22 @@ export const EvidenceTimelineComponent: React.FC<EvidenceTimelineProps> = ({ eve
 
   if (loading) {
     return (
-      <div className="py-12 flex flex-col items-center justify-center text-slate-400">
-        <div className="w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin mb-3"></div>
-        <p className="text-xs">Loading evidence audit trail...</p>
+      <div className="py-12 flex flex-col items-center justify-center text-slate-500">
+        <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+        <p className="text-xs font-medium">Loading evidence audit trail...</p>
       </div>
     );
   }
 
   if (!events || events.length === 0) {
     return (
-      <div className="py-10 px-4 text-center border border-slate-800/80 rounded-xl bg-slate-900/30">
-        <Info className="w-8 h-8 text-slate-500 mx-auto mb-2" />
-        <p className="text-sm text-slate-300 font-medium">No timeline events recorded yet</p>
-        <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-          Audit events are automatically recorded upon evidence upload, hashing, model analysis, investigator notes, and report generation.
+      <div className="py-12 px-6 text-center border border-slate-200 rounded-2xl bg-white shadow-xs">
+        <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 mx-auto mb-3">
+          <Info className="w-6 h-6" />
+        </div>
+        <h4 className="text-sm text-slate-800 font-semibold">No timeline events recorded yet</h4>
+        <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+          Audit events are automatically recorded upon evidence upload, SHA-256 computation, neural model analysis, investigator notes, and report generation.
         </p>
       </div>
     );
@@ -87,14 +89,14 @@ export const EvidenceTimelineComponent: React.FC<EvidenceTimelineProps> = ({ eve
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800/80">
-        <span className="font-semibold uppercase tracking-wider text-slate-300">
+      <div className="flex items-center justify-between text-xs text-slate-500 pb-2 border-b border-slate-200/80">
+        <span className="font-bold uppercase tracking-wider text-slate-800">
           Evidence Lifecycle Timeline ({events.length} Event{events.length !== 1 ? 's' : ''})
         </span>
-        <span className="text-[11px] text-slate-500">Chronological Audit Sequence</span>
+        <span className="text-[11px] text-slate-400">Chronological Audit Sequence</span>
       </div>
 
-      <div className="relative pl-6 space-y-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-cyan-500/40 before:via-slate-700 before:to-slate-800">
+      <div className="relative pl-6 space-y-4 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-blue-500 before:via-slate-200 before:to-slate-200">
         {events.map((event, idx) => {
           const isExpanded = expandedEventId === event.id;
           const formattedDate = new Date(event.created_at).toLocaleString();
@@ -102,48 +104,48 @@ export const EvidenceTimelineComponent: React.FC<EvidenceTimelineProps> = ({ eve
           return (
             <motion.div 
               key={event.id || idx}
-              initial={{ opacity: 0, x: -10 }}
+              initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: idx * 0.04, duration: 0.2 }}
+              transition={{ delay: idx * 0.03, duration: 0.2 }}
               className="relative group"
             >
               {/* Event node dot */}
-              <div className="absolute -left-[30px] top-1 w-6 h-6 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center shadow-md group-hover:border-cyan-400 transition-colors">
+              <div className="absolute -left-[30px] top-3 w-6 h-6 rounded-full bg-white border-2 border-blue-500 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
                 {getEventIcon(event.event_type)}
               </div>
 
               {/* Event card */}
               <div 
                 onClick={() => toggleExpand(event.id)}
-                className={`p-3.5 rounded-lg border transition-all cursor-pointer ${
+                className={`p-4 rounded-xl border transition-all cursor-pointer ${
                   isExpanded 
-                    ? 'bg-slate-900/90 border-cyan-500/40 shadow-lg shadow-cyan-950/20' 
-                    : 'bg-slate-900/40 border-slate-800/80 hover:bg-slate-800/50 hover:border-slate-700'
+                    ? 'bg-white border-blue-400 shadow-sm ring-2 ring-blue-500/10' 
+                    : 'bg-white border-slate-200/90 hover:border-slate-300 hover:shadow-xs'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-semibold text-slate-100 group-hover:text-cyan-300 transition-colors">
+                      <span className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                         {event.title}
                       </span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full border font-mono uppercase tracking-wider ${getEventBadgeColor(event.event_type)}`}>
+                      <span className={`text-[10px] px-2.5 py-0.5 rounded-full border font-mono uppercase font-semibold tracking-wider ${getEventBadgeColor(event.event_type)}`}>
                         {event.event_type.replace(/_/g, ' ')}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-300 leading-relaxed">
+                    <p className="text-xs text-slate-600 leading-relaxed">
                       {event.description}
                     </p>
                   </div>
 
                   <div className="flex items-center gap-2 text-right shrink-0">
-                    <span className="text-[11px] font-mono text-slate-400">
+                    <span className="text-[11px] font-mono text-slate-500 font-medium">
                       {formattedDate}
                     </span>
                     {isExpanded ? (
-                      <ChevronUp className="w-4 h-4 text-slate-400" />
+                      <ChevronUp className="w-4 h-4 text-slate-500" />
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-slate-500 group-hover:text-slate-300" />
+                      <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-slate-600" />
                     )}
                   </div>
                 </div>
@@ -155,33 +157,33 @@ export const EvidenceTimelineComponent: React.FC<EvidenceTimelineProps> = ({ eve
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="mt-3 pt-3 border-t border-slate-800/80 text-xs space-y-2 overflow-hidden"
+                      className="mt-3 pt-3 border-t border-slate-100 text-xs space-y-2 overflow-hidden"
                     >
-                      <div className="grid grid-cols-2 gap-2 text-[11px]">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] bg-slate-50 p-2.5 rounded-lg border border-slate-100">
                         <div>
-                          <span className="text-slate-500">Event ID:</span>{' '}
-                          <span className="font-mono text-slate-300">{event.id}</span>
+                          <span className="text-slate-500 font-medium">Event ID:</span>{' '}
+                          <span className="font-mono text-slate-800 font-semibold">{event.id}</span>
                         </div>
                         {event.evidence_id && (
                           <div>
-                            <span className="text-slate-500">Evidence ID:</span>{' '}
-                            <span className="font-mono text-slate-300">{event.evidence_id}</span>
+                            <span className="text-slate-500 font-medium">Evidence ID:</span>{' '}
+                            <span className="font-mono text-slate-800 font-semibold">{event.evidence_id}</span>
                           </div>
                         )}
                         {event.user_id && (
                           <div>
-                            <span className="text-slate-500">Actor ID:</span>{' '}
-                            <span className="font-mono text-slate-300">{event.user_id}</span>
+                            <span className="text-slate-500 font-medium">Actor ID:</span>{' '}
+                            <span className="font-mono text-slate-800 font-semibold">{event.user_id}</span>
                           </div>
                         )}
                       </div>
 
                       {event.metadata_json && Object.keys(event.metadata_json).length > 0 && (
                         <div className="mt-2">
-                          <span className="text-[11px] text-slate-400 font-semibold block mb-1">
-                            Event Context & Metadata:
+                          <span className="text-[11px] text-slate-700 font-bold block mb-1">
+                            Event Context &amp; Metadata:
                           </span>
-                          <pre className="p-2 rounded bg-black/40 border border-slate-800 text-[11px] font-mono text-cyan-300 overflow-x-auto max-h-32">
+                          <pre className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-[11px] font-mono text-cyan-300 overflow-x-auto max-h-36">
                             {JSON.stringify(event.metadata_json, null, 2)}
                           </pre>
                         </div>
