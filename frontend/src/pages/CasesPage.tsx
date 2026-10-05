@@ -51,7 +51,7 @@ export const CasesPage: React.FC = () => {
 
   // IOC state
   const [caseIOCs, setCaseIOCs] = useState<IOCItem[]>([]);
-  const [caseCorrelations, setCaseCorrelations] = useState<IOCCorrelation[]>([]);
+  const [caseCorrelations, setCaseCorrelations] = useState<any>([]);
   const [iocsLoading, setIocsLoading] = useState(false);
 
   // Correlation Graph state
@@ -106,9 +106,9 @@ export const CasesPage: React.FC = () => {
       try {
         const [iocsRes, corrRes] = await Promise.all([
           apiClient.get<IOCItem[]>(`/cases/${selectedCaseId}/iocs`),
-          apiClient.get<IOCCorrelation[]>(`/cases/${selectedCaseId}/correlations`),
+          apiClient.get<any>(`/cases/${selectedCaseId}/correlations`),
         ]);
-        setCaseIOCs(iocsRes.data);
+        setCaseIOCs(Array.isArray(iocsRes.data) ? iocsRes.data : []);
         setCaseCorrelations(corrRes.data);
       } catch (err) {
         console.error('Failed to load IOCs', err);

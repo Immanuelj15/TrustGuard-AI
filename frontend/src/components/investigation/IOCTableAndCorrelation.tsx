@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IOCItem, IOCCorrelation } from '../../types';
 import { 
@@ -17,18 +17,39 @@ import {
 } from 'lucide-react';
 
 interface IOCTableAndCorrelationProps {
-  iocs: IOCItem[];
-  correlations: IOCCorrelation[];
+  iocs?: IOCItem[];
+  correlations?: IOCCorrelation[] | any;
   loading?: boolean;
   onSelectEvidence?: (evidenceId: string) => void;
 }
 
 export const IOCTableAndCorrelation: React.FC<IOCTableAndCorrelationProps> = ({
-  iocs,
-  correlations,
+  iocs = [],
+  correlations = [],
   loading,
   onSelectEvidence,
 }) => {
+  const safeIocs = useMemo<IOCItem[]>(() => (Array.isArray(iocs) ? iocs : []), [iocs]);
+
+  const safeCorrelations = useMemo<IOCCorrelation[]>(() => {
+    if (Array.isArray(correlations)) {
+      return correlations;
+    }
+    if (correlations && typeof correlations === 'object') {
+      const list = (correlations as any).shared_iocs || (correlations as any).correlations;
+      if (Array.isArray(list)) {
+        return list.map((s: any) => ({
+          ioc_type: s.ioc_type || 'IOC',
+          normalized_value: s.normalized_value || s.value || '',
+          count: s.evidence_count || (s.evidence_items ? s.evidence_items.length : 1),
+          evidence_ids: (s.evidence_items || []).map((e: any) => e.id),
+          evidence_filenames: (s.evidence_items || []).map((e: any) => e.filename),
+        }));
+      }
+    }
+    return [];
+  }, [correlations]);
+
   const [filterType, setFilterType] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCorrelation, setSelectedCorrelation] = useState<IOCCorrelation | null>(null);
@@ -80,15 +101,16 @@ export const IOCTableAndCorrelation: React.FC<IOCTableAndCorrelationProps> = ({
 
   // Find correlation count for an IOC normalized value
   const getCorrelationForIOC = (normVal: string) => {
-    return correlations.find((c) => c.normalized_value === normVal);
+    return safeCorrelations.find((c) => c.normalized_value === normVal);
   };
 
-  const filteredIOCs = iocs.filter((item) => {
-    const matchesType = filterType === 'ALL' || item.ioc_type.toUpperCase() === filterType;
+  const filteredIOCs = safeIocs.filter((item) => {
+    if (!item) return false;
+    const matchesType = filterType === 'ALL' || item.ioc_type?.toUpperCase() === filterType;
     const matchesSearch =
       !searchQuery ||
-      item.value.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.normalized_value.toLowerCase().includes(searchQuery.toLowerCase());
+      item.value?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.normalized_value?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesType && matchesSearch;
   });
 
@@ -152,7 +174,7 @@ export const IOCTableAndCorrelation: React.FC<IOCTableAndCorrelationProps> = ({
       </div>
 
       {/* Correlated Entities Highlight Card (if multi-evidence IOCs exist) */}
-      {correlations.filter((c) => c.count > 1).length > 0 && (
+      {safeCorrelations.filter((c) => c && c.count > 1).length > 0 && (
         <div className="p-3.5 rounded-lg border border-amber-500/30 bg-amber-500/5 space-y-2">
           <div className="flex items-center gap-2">
             <Network className="w-4 h-4 text-amber-400" />
@@ -161,8 +183,8 @@ export const IOCTableAndCorrelation: React.FC<IOCTableAndCorrelationProps> = ({
             </h5>
           </div>
           <div className="flex flex-wrap gap-2 pt-1">
-            {correlations
-              .filter((c) => c.count > 1)
+            {safeCorrelations
+              .filter((c) => c && c.count > 1)
               .map((corr) => (
                 <button
                   key={corr.normalized_value}
@@ -206,10 +228,10 @@ export const IOCTableAndCorrelation: React.FC<IOCTableAndCorrelationProps> = ({
               The identifier <strong className="text-slate-200 font-mono">{selectedCorrelation.normalized_value}</strong> was observed across the following evidence objects in this case:
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {selectedCorrelation.evidence_filenames.map((name, i) => (
+              {(selectedCorrelation.evidence_filenames || []).map((name, i) => (
                 <div
                   key={i}
-                  onClick={() => onSelectEvidence && onSelectEvidence(selectedCorrelation.evidence_ids[i])}
+                  onClick={() => onSelectEvidence && selectedCorrelation.evidence_ids?.[i] && onSelectEvidence(selectedCorrelation.evidence_ids[i])}
                   className="p-2.5 rounded-lg bg-slate-950 border border-slate-800 text-xs flex items-center justify-between hover:border-cyan-500/50 cursor-pointer transition-colors"
                 >
                   <span className="text-slate-300 font-mono flex items-center gap-2 truncate">
