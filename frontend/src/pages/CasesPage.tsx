@@ -168,13 +168,13 @@ export const CasesPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Sub-Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+      <div className="flex items-center gap-1.5 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200/80 w-fit shadow-2xs">
         <button
           onClick={() => navigate('/cases')}
           className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer ${
             activeTab === 'cases'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+              ? 'bg-white text-blue-600 shadow-xs border border-slate-200/80'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
           }`}
         >
           <FolderLock className="w-4 h-4" />
@@ -185,8 +185,8 @@ export const CasesPage: React.FC = () => {
           onClick={() => navigate('/cases?tab=iocs')}
           className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer ${
             activeTab === 'iocs'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+              ? 'bg-white text-blue-600 shadow-xs border border-slate-200/80'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
           }`}
         >
           <Binary className="w-4 h-4" />
@@ -197,8 +197,8 @@ export const CasesPage: React.FC = () => {
           onClick={() => navigate('/cases?tab=correlations')}
           className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer ${
             activeTab === 'correlations'
-              ? 'bg-blue-600 text-white shadow-xs'
-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+              ? 'bg-white text-blue-600 shadow-xs border border-slate-200/80'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
           }`}
         >
           <Network className="w-4 h-4" />
@@ -401,12 +401,15 @@ export const CasesPage: React.FC = () => {
 
             {/* Case Selector Dropdown */}
             {cases.length > 0 && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-500 uppercase text-[10px]">Case:</span>
+              <div className="flex items-center gap-2.5 bg-slate-50 border border-slate-200/90 rounded-2xl px-3 py-2 shadow-2xs">
+                <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
+                  <FolderLock className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Selected Case:</span>
+                </div>
                 <select
                   value={selectedCaseId}
                   onChange={(e) => setSelectedCaseId(e.target.value)}
-                  className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="bg-white border border-slate-200/80 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer shadow-2xs max-w-xs md:max-w-md truncate"
                 >
                   {cases.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -443,12 +446,15 @@ export const CasesPage: React.FC = () => {
 
             {/* Case Selector Dropdown */}
             {cases.length > 0 && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-500 uppercase text-[10px]">Target Case:</span>
+              <div className="flex items-center gap-2.5 bg-slate-50 border border-slate-200/90 rounded-2xl px-3 py-2 shadow-2xs">
+                <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
+                  <FolderLock className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Target Case:</span>
+                </div>
                 <select
                   value={selectedCaseId}
                   onChange={(e) => setSelectedCaseId(e.target.value)}
-                  className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="bg-white border border-slate-200/80 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer shadow-2xs max-w-xs md:max-w-md truncate"
                 >
                   {cases.map((c) => (
                     <option key={c.id} value={c.id}>
