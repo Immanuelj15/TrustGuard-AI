@@ -15,12 +15,17 @@ ALLOWED_EXTENSIONS = {
     "mp3": EvidenceType.AUDIO.value,
     "m4a": EvidenceType.AUDIO.value,
     "ogg": EvidenceType.AUDIO.value,
+    "opus": EvidenceType.AUDIO.value,
+    "aac": EvidenceType.AUDIO.value,
+    "flac": EvidenceType.AUDIO.value,
     "webm": EvidenceType.AUDIO.value,
+    "mpga": EvidenceType.AUDIO.value,
     # Video
     "mp4": EvidenceType.VIDEO.value,
     "mov": EvidenceType.VIDEO.value,
     "avi": EvidenceType.VIDEO.value,
     "mkv": EvidenceType.VIDEO.value,
+    "mpg": EvidenceType.VIDEO.value,
     # Images
     "jpg": EvidenceType.IMAGE.value,
     "jpeg": EvidenceType.IMAGE.value,
@@ -35,18 +40,32 @@ MAX_FILE_SIZE = 100 * 1024 * 1024  # 100 MB max
 
 def detect_evidence_type(filename: str, mime_type: str) -> str:
     ext = filename.split(".")[-1].lower() if "." in filename else ""
+    lower_fn = filename.lower()
+    lower_mime = mime_type.lower()
+
+    # Intelligent override: WhatsApp Audio and voice recordings with .mpeg/.mp3/.opus are Audio
+    if "audio" in lower_fn or "voice" in lower_fn or "recording" in lower_fn:
+        if ext in ("mpeg", "mpg", "mp3", "wav", "m4a", "ogg", "opus", "aac", "webm"):
+            return EvidenceType.AUDIO.value
+
     if ext in ALLOWED_EXTENSIONS:
         return ALLOWED_EXTENSIONS[ext]
-    
-    if "audio" in mime_type:
-        return EvidenceType.AUDIO.value
-    elif "video" in mime_type:
+
+    if ext == "mpeg":
+        # .mpeg could be audio or video; check filename or MIME
+        if "audio" in lower_fn or "audio" in lower_mime:
+            return EvidenceType.AUDIO.value
         return EvidenceType.VIDEO.value
-    elif "image" in mime_type:
+
+    if "audio" in lower_mime:
+        return EvidenceType.AUDIO.value
+    elif "video" in lower_mime:
+        return EvidenceType.VIDEO.value
+    elif "image" in lower_mime:
         return EvidenceType.IMAGE.value
-    elif "text" in mime_type:
+    elif "text" in lower_mime:
         return EvidenceType.TEXT.value
-    
+
     return EvidenceType.DOCUMENT.value
 
 def process_and_store_evidence(

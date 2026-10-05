@@ -974,7 +974,9 @@ export const AnalysisWorkspacePage: React.FC = () => {
                       ) : (
                         <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-500">
                           {selectedEvidence?.evidence_type === 'audio'
-                            ? 'No speech detected or audio transcription not requested for this artifact.'
+                            ? 'No speech detected or audio transcription could not be completed for this audio stream.'
+                            : selectedEvidence?.evidence_type === 'video'
+                            ? 'Video container telemetry recorded. For speech transcription & voice clone forensic biometrics, ingest audio track (.wav, .mp3, .m4a, .ogg).'
                             : 'Audio transcription not applicable to this text/document media item.'}
                         </div>
                       )}
