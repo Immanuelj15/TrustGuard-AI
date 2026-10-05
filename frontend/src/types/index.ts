@@ -125,10 +125,13 @@ export interface AuditLog {
 
 export interface DashboardSummary {
   total_cases: number;
+  total_evidence?: number;
   open_cases: number;
+  open_investigations?: number;
   cases_awaiting_review: number;
   evidence_analyzed: number;
   high_risk_findings: number;
+  iocs_found?: number;
   active_investigators: number;
 }
 
@@ -137,6 +140,7 @@ export interface DashboardCharts {
   cases_by_priority: Record<string, number>;
   evidence_by_type: Record<string, number>;
   risk_distribution: Record<string, number>;
+  ioc_frequency?: Record<string, number>;
   recent_activity: AuditLog[];
 }
 
@@ -171,4 +175,147 @@ export interface SyntheticManifest {
   };
   synthetic_data: boolean;
   warning: string;
+}
+
+export interface OpenRouterStatus {
+  enabled: boolean;
+  configured: boolean;
+  status: string;
+  model?: string;
+  base_url: string;
+  site_url?: string;
+  app_name: string;
+  disclaimer: string;
+}
+
+export interface SuspiciousIndicator {
+  indicator: string;
+  reason: string;
+  supporting_text?: string;
+}
+
+export interface EvidenceExplanation {
+  summary: string;
+  suspicious_indicators: SuspiciousIndicator[];
+  possible_social_engineering_tactics: string[];
+  recommended_investigation_steps: string[];
+  limitations: string[];
+  overall_assessment: 'LOW' | 'MEDIUM' | 'HIGH' | 'INCONCLUSIVE';
+  provider: string;
+  model_id?: string;
+  generated_at: string;
+  is_live_inference: boolean;
+  was_redacted: boolean;
+  redaction_notice?: string;
+  evidence_id?: string;
+  case_id?: string;
+}
+
+export interface TimelineEvent {
+  id: string;
+  case_id: string;
+  evidence_id?: string;
+  user_id?: string;
+  event_type: string;
+  title: string;
+  description: string;
+  metadata_json?: Record<string, any>;
+  created_at: string;
+}
+
+export interface IntegrityCheckResult {
+  evidence_id: string;
+  filename: string;
+  stored_hash: string;
+  computed_hash: string;
+  algorithm: string;
+  status: 'VERIFIED' | 'HASH_MISMATCH' | 'UNAVAILABLE';
+  checked_at: string;
+  disclaimer: string;
+}
+
+export interface IOCItem {
+  id: string;
+  case_id: string;
+  evidence_id?: string;
+  ioc_type: 'PHONE' | 'EMAIL' | 'URL' | 'DOMAIN' | 'IPV4' | 'UPI';
+  value: string;
+  normalized_value: string;
+  context_snippet?: string;
+  created_at: string;
+}
+
+export interface IOCCorrelation {
+  ioc_type: string;
+  normalized_value: string;
+  count: number;
+  evidence_ids: string[];
+  evidence_filenames: string[];
+}
+
+export interface GraphNode {
+  id: string;
+  label: string;
+  type: 'case' | 'evidence' | 'ioc';
+  subType?: string;
+}
+
+export interface GraphEdge {
+  source: string;
+  target: string;
+  relation: string;
+}
+
+export interface CorrelationGraphData {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  total_nodes: number;
+  total_edges: number;
+}
+
+export interface EvidenceSimilarity {
+  evidence_1_id: string;
+  evidence_1_name: string;
+  evidence_2_id: string;
+  evidence_2_name: string;
+  similarity_score: number;
+  relation_label: 'Very Similar' | 'Related' | 'Possibly Related' | 'Low Similarity';
+  is_exact_duplicate: boolean;
+  comparison_method: string;
+  disclaimer: string;
+}
+
+export interface CopilotResponse {
+  answer: string;
+  provider: string;
+  references: string[];
+  pii_redacted: boolean;
+  redaction_count?: number;
+  disclaimer: string;
+}
+
+export interface ModelMetric {
+  model_name: string;
+  model_id: string;
+  task: string;
+  evaluation_status: 'EVALUATED' | 'LIVE MODEL' | 'DEMO' | 'NOT EVALUATED';
+  accuracy?: number;
+  precision?: number;
+  recall?: number;
+  f1_score?: number;
+  confusion_matrix?: {
+    tn: number;
+    fp: number;
+    fn: number;
+    tp: number;
+  };
+  inference_latency_ms?: number;
+  dataset_description: string;
+  disclaimer: string;
+}
+
+export interface ModelEvaluationDashboardData {
+  timestamp: string;
+  models: ModelMetric[];
+  notes: string;
 }

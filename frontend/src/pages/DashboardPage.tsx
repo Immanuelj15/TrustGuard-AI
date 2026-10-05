@@ -77,6 +77,11 @@ export const DashboardPage: React.FC = () => {
     value: v
   })) : [];
 
+  const iocChartData = charts?.ioc_frequency ? Object.entries(charts.ioc_frequency).map(([k, v]) => ({
+    name: k.toUpperCase(),
+    count: v
+  })) : [];
+
   const PALETTE = ['#2563EB', '#38BDF8', '#818CF8', '#F59E0B', '#10B981', '#EC4899'];
 
   const containerVariants = {
@@ -93,6 +98,8 @@ export const DashboardPage: React.FC = () => {
     hidden: { opacity: 0, y: 12 },
     show: { opacity: 1, y: 0, transition: { duration: 0.3 } }
   };
+
+  const isDatabaseEmpty = !summary || (summary.total_cases === 0 && (summary.total_evidence ?? 0) === 0);
 
   return (
     <motion.div 
@@ -131,70 +138,82 @@ export const DashboardPage: React.FC = () => {
       </motion.div>
 
       {/* KPI Cards Grid */}
-      <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
         {/* Total Cases */}
         <div className="surface-card p-4">
           <div className="flex items-center justify-between text-slate-500 mb-2">
-            <span className="text-xs font-semibold tracking-wider uppercase">Total Cases</span>
+            <span className="text-[10px] font-bold tracking-wider uppercase">Total Cases</span>
             <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
               <FolderLock className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-slate-900">{summary?.total_cases || 0}</div>
-          <div className="text-[11px] text-slate-500 mt-1 font-medium">Logged cyber incidents</div>
+          <div className="text-2xl font-bold text-slate-900">{summary?.total_cases ?? 0}</div>
+          <div className="text-[10px] text-slate-500 mt-1 font-medium">Logged cyber incidents</div>
         </div>
 
-        {/* Active Open Cases */}
+        {/* Total Evidence */}
         <div className="surface-card p-4">
           <div className="flex items-center justify-between text-slate-500 mb-2">
-            <span className="text-xs font-semibold tracking-wider uppercase">Open Cases</span>
-            <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Clock className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl font-bold text-amber-600">{summary?.open_cases || 0}</div>
-          <div className="text-[11px] text-slate-500 mt-1 font-medium">Active investigation</div>
-        </div>
-
-        {/* Evidence Ingested */}
-        <div className="surface-card p-4">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
-            <span className="text-xs font-semibold tracking-wider uppercase">Evidence Files</span>
+            <span className="text-[10px] font-bold tracking-wider uppercase">Total Evidence</span>
             <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
               <FileCheck2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-sky-600">{summary?.evidence_analyzed || 0}</div>
-          <div className="text-[11px] text-slate-500 mt-1 font-medium">SHA-256 hashed items</div>
+          <div className="text-2xl font-bold text-sky-600">{summary?.total_evidence ?? summary?.evidence_analyzed ?? 0}</div>
+          <div className="text-[10px] text-slate-500 mt-1 font-medium">SHA-256 hashed items</div>
         </div>
 
-        {/* High Risk Flags */}
+        {/* Analyzed */}
         <div className="surface-card p-4">
           <div className="flex items-center justify-between text-slate-500 mb-2">
-            <span className="text-xs font-semibold tracking-wider uppercase">Risk Alerts</span>
+            <span className="text-[10px] font-bold tracking-wider uppercase">Analyzed</span>
+            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <Activity className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl font-bold text-emerald-600">{summary?.evidence_analyzed ?? 0}</div>
+          <div className="text-[10px] text-slate-500 mt-1 font-medium">Completed inspections</div>
+        </div>
+
+        {/* High Risk */}
+        <div className="surface-card p-4">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-[10px] font-bold tracking-wider uppercase">High-Risk</span>
             <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-rose-600">{summary?.high_risk_findings || 0}</div>
-          <div className="text-[11px] text-slate-500 mt-1 font-medium">Severe indicators flagged</div>
+          <div className="text-2xl font-bold text-rose-600">{summary?.high_risk_findings ?? 0}</div>
+          <div className="text-[10px] text-slate-500 mt-1 font-medium">Severe risk indicators</div>
         </div>
 
-        {/* Active Investigators */}
-        <div className="surface-card p-4 col-span-2 md:col-span-1">
+        {/* IOCs Found */}
+        <div className="surface-card p-4">
           <div className="flex items-center justify-between text-slate-500 mb-2">
-            <span className="text-xs font-semibold tracking-wider uppercase">Investigators</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <ShieldCheck className="w-4 h-4" />
+            <span className="text-[10px] font-bold tracking-wider uppercase">IOCs Found</span>
+            <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+              <Layers className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-emerald-600">{summary?.active_investigators || 0}</div>
-          <div className="text-[11px] text-slate-500 mt-1 font-medium">Authorized personnel</div>
+          <div className="text-2xl font-bold text-purple-600">{summary?.iocs_found ?? 0}</div>
+          <div className="text-[10px] text-slate-500 mt-1 font-medium">Extracted artifacts</div>
+        </div>
+
+        {/* Open Investigations */}
+        <div className="surface-card p-4">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-[10px] font-bold tracking-wider uppercase">Open Inquiries</span>
+            <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+              <Clock className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl font-bold text-amber-600">{summary?.open_investigations ?? summary?.open_cases ?? 0}</div>
+          <div className="text-[10px] text-slate-500 mt-1 font-medium">Active case workload</div>
         </div>
       </motion.div>
 
       {/* Visual Analytics Charts */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Cases Distribution by Status */}
         <div className="surface-card p-5">
           <div className="flex items-center justify-between mb-4">
@@ -224,7 +243,7 @@ export const DashboardPage: React.FC = () => {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <EmptyState title="No case data" message="Create cases to visualize status distribution" />
+              <EmptyState title="No case data" message="No investigation data available yet." />
             )}
           </div>
         </div>
@@ -269,7 +288,41 @@ export const DashboardPage: React.FC = () => {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <EmptyState title="No evidence logged" message="Upload evidence to view media breakdown" />
+              <EmptyState title="No evidence logged" message="No investigation data available yet." />
+            )}
+          </div>
+        </div>
+
+        {/* IOC Frequency by Type */}
+        <div className="surface-card p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <Layers className="w-4 h-4 text-purple-600" />
+              <span>Extracted IOC Frequency by Artifact Type</span>
+            </h2>
+            <span className="text-[11px] font-semibold text-slate-400 uppercase">Artifact Registry</span>
+          </div>
+          <div className="h-60">
+            {iocChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={iocChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <XAxis dataKey="name" stroke="#94A3B8" fontSize={11} tickLine={false} />
+                  <YAxis stroke="#94A3B8" fontSize={11} tickLine={false} allowDecimals={false} />
+                  <Tooltip
+                    contentStyle={{ 
+                      backgroundColor: '#FFFFFF', 
+                      borderColor: '#E2E8F0', 
+                      borderRadius: '12px',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                      fontSize: '12px',
+                      fontWeight: 500
+                    }}
+                  />
+                  <Bar dataKey="count" fill="#8B5CF6" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyState title="No IOCs logged" message="No investigation data available yet." />
             )}
           </div>
         </div>

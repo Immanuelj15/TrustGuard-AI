@@ -87,6 +87,8 @@ class Case(Base):
     evidence_items = relationship("Evidence", back_populates="case", cascade="all, delete-orphan")
     notes = relationship("InvestigatorNote", back_populates="case", cascade="all, delete-orphan")
     reports = relationship("GeneratedReport", back_populates="case", cascade="all, delete-orphan")
+    timeline_events = relationship("TimelineEvent", back_populates="case", cascade="all, delete-orphan")
+    iocs = relationship("IOC", back_populates="case", cascade="all, delete-orphan")
 
 class Evidence(Base):
     __tablename__ = "evidence"
@@ -107,6 +109,8 @@ class Evidence(Base):
     uploader = relationship("User")
     analysis_jobs = relationship("AnalysisJob", back_populates="evidence", cascade="all, delete-orphan")
     notes = relationship("InvestigatorNote", back_populates="evidence")
+    timeline_events = relationship("TimelineEvent", back_populates="evidence", cascade="all, delete-orphan")
+    iocs = relationship("IOC", back_populates="evidence", cascade="all, delete-orphan")
 
 class AnalysisJob(Base):
     __tablename__ = "analysis_jobs"
@@ -151,6 +155,39 @@ class InvestigatorNote(Base):
     case = relationship("Case", back_populates="notes")
     evidence = relationship("Evidence", back_populates="notes")
     user = relationship("User", back_populates="notes")
+
+class TimelineEvent(Base):
+    __tablename__ = "timeline_events"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    case_id = Column(String(36), ForeignKey("cases.id"), nullable=False, index=True)
+    evidence_id = Column(String(36), ForeignKey("evidence.id"), nullable=True, index=True)
+    user_id = Column(String(36), ForeignKey("users.id"), nullable=True)
+    event_type = Column(String(60), nullable=False, index=True) # EVIDENCE_UPLOADED, HASH_VERIFIED, ANALYSIS_STARTED, ANALYSIS_COMPLETED, INVESTIGATOR_REVIEWED, NOTE_ADDED, REPORT_GENERATED
+    title = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
+    metadata_json = Column(JSON, nullable=True, default=dict)
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False, index=True)
+
+    case = relationship("Case", back_populates="timeline_events")
+    evidence = relationship("Evidence", back_populates="timeline_events")
+    user = relationship("User")
+
+class IOC(Base):
+    __tablename__ = "iocs"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    case_id = Column(String(36), ForeignKey("cases.id"), nullable=False, index=True)
+    evidence_id = Column(String(36), ForeignKey("evidence.id"), nullable=False, index=True)
+    ioc_type = Column(String(30), nullable=False, index=True) # phone, email, url, domain, ipv4, ipv6, upi
+    value = Column(String(512), nullable=False)
+    normalized_value = Column(String(512), nullable=False, index=True)
+    context_snippet = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
+
+    case = relationship("Case", back_populates="iocs")
+    evidence = relationship("Evidence", back_populates="iocs")
+
 
 class CallerReport(Base):
     __tablename__ = "caller_reports"

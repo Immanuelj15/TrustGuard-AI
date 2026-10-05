@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 680" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="100%" stop-color="#0b132b"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#151e34"/>
+      <stop offset="100%" stop-color="#0d1527"/>
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="accentPurple" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <rect width="1100" height="680" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle Grid Pattern -->
+  <g stroke="#1e293b" stroke-width="0.7" opacity="0.35">
+    <line x1="0" y1="80" x2="1100" y2="80"/>
+    <line x1="0" y1="210" x2="1100" y2="210"/>
+    <line x1="0" y1="360" x2="1100" y2="360"/>
+    <line x1="0" y1="520" x2="1100" y2="520"/>
+    <line x1="280" y1="0" x2="280" y2="680"/>
+    <line x1="560" y1="0" x2="560" y2="680"/>
+    <line x1="840" y1="0" x2="840" y2="680"/>
+  </g>
+
+  <!-- Title Header -->
+  <text x="50" y="45" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">TrustGuard AI — System Architecture</text>
+  <text x="50" y="68" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13">Production-grade decoupled digital evidence analysis platform with verifiable cryptographic integrity</text>
+
+  <!-- Status pill -->
+  <rect x="910" y="32" width="140" height="26" rx="13" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <circle cx="925" cy="45" r="4" fill="#34d399"/>
+  <text x="936" y="49" fill="#a7f3d0" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">VERIFIED ARCHITECTURE</text>
+
+  <!-- LAYER 1: CLIENT PRESENTATION (LEFT COLUMN) -->
+  <rect x="40" y="100" width="225" height="540" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1.5"/>
+  <rect x="40" y="100" width="225" height="40" rx="12" fill="#1e293b"/>
+  <text x="55" y="125" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">1. PRESENTATION LAYER</text>
+  <text x="55" y="155" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">Vite 8 + React 19 + TypeScript</text>
+
+  <g transform="translate(55, 175)">
+    <!-- Box 1 -->
+    <rect width="195" height="52" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="22" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600">Investigation Workspace</text>
+    <text x="12" y="38" fill="#64748b" font-family="sans-serif" font-size="10">Multi-modal triage &amp; live tabs</text>
+
+    <!-- Box 2 -->
+    <rect y="64" width="195" height="52" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="86" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600">Evidence Ingestion Modal</text>
+    <text x="12" y="102" fill="#64748b" font-family="sans-serif" font-size="10">Drag-and-drop &amp; demo gallery</text>
+
+    <!-- Box 3 -->
+    <rect y="128" width="195" height="52" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="150" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600">Spectrogram &amp; Waveforms</text>
+    <text x="12" y="166" fill="#64748b" font-family="sans-serif" font-size="10">Audio telemetry visualization</text>
+
+    <!-- Box 4 -->
+    <rect y="192" width="195" height="52" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="214" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600">LLM Reasoning Assistant</text>
+    <text x="12" y="230" fill="#64748b" font-family="sans-serif" font-size="10">Investigator consent dialog &amp; tips</text>
+
+    <!-- Box 5 -->
+    <rect y="256" width="195" height="52" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="278" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600">Caller Intel &amp; Reports</text>
+    <text x="12" y="294" fill="#64748b" font-family="sans-serif" font-size="10">E.164 lookup &amp; PDF preview</text>
+
+    <!-- Box 6: Auth state -->
+    <rect y="320" width="195" height="42" rx="8" fill="#0b1329" stroke="#1d4ed8" stroke-width="1"/>
+    <text x="12" y="340" fill="#60a5fa" font-family="sans-serif" font-size="11" font-weight="600">Tailwind + Framer Motion</text>
+    <text x="12" y="353" fill="#64748b" font-family="sans-serif" font-size="9">Reactive blue-slate UI theme</text>
+  </g>
+
+  <!-- LAYER 2: API & GATEWAY (MIDDLE LEFT) -->
+  <rect x="295" y="100" width="240" height="540" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1.5"/>
+  <rect x="295" y="100" width="240" height="40" rx="12" fill="#1e293b"/>
+  <text x="310" y="125" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">2. FASTAPI GATEWAY</text>
+  <text x="310" y="155" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">Python 3.11+ / Async ASGI</text>
+
+  <g transform="translate(310, 175)">
+    <!-- Security / RBAC -->
+    <rect width="210" height="58" rx="8" fill="#0f172a" stroke="#0284c7" stroke-width="1"/>
+    <text x="12" y="22" fill="#38bdf8" font-family="sans-serif" font-size="12" font-weight="700">Auth &amp; RBAC Guard</text>
+    <text x="12" y="38" fill="#94a3b8" font-family="sans-serif" font-size="10">JWT Bearer | Investigator, Admin,</text>
+    <text x="12" y="50" fill="#94a3b8" font-family="sans-serif" font-size="10">Reviewer, Demo User</text>
+
+    <!-- Case & Evidence API -->
+    <rect y="70" width="210" height="58" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="92" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600">Case &amp; Evidence Service</text>
+    <text x="12" y="108" fill="#64748b" font-family="sans-serif" font-size="10">Priority triage (Low/Med/High/Crit)</text>
+    <text x="12" y="120" fill="#64748b" font-family="sans-serif" font-size="10">MIME header verification</text>
+
+    <!-- Integrity Hash -->
+    <rect y="140" width="210" height="58" rx="8" fill="#0f172a" stroke="#059669" stroke-width="1"/>
+    <text x="12" y="162" fill="#34d399" font-family="sans-serif" font-size="12" font-weight="700">Cryptographic Integrity</text>
+    <text x="12" y="178" fill="#94a3b8" font-family="sans-serif" font-size="10">SHA-256 Digest upon ingestion</text>
+    <text x="12" y="190" fill="#94a3b8" font-family="sans-serif" font-size="10">Audit logging with token redacting</text>
+
+    <!-- Caller Intel Service -->
+    <rect y="210" width="210" height="50" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="232" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600">Caller Reputation Service</text>
+    <text x="12" y="248" fill="#64748b" font-family="sans-serif" font-size="10">E.164 normalization &amp; fraud database</text>
+
+    <!-- Report Engine -->
+    <rect y="272" width="210" height="50" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="294" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600">Forensic ReportLab Engine</text>
+    <text x="12" y="310" fill="#64748b" font-family="sans-serif" font-size="10">Digitally certified PDF dossier compiler</text>
+
+    <!-- Synthetic Hub -->
+    <rect y="334" width="210" height="42" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="352" fill="#f1f5f9" font-family="sans-serif" font-size="11" font-weight="600">Synthetic Gallery Router</text>
+    <text x="12" y="366" fill="#64748b" font-family="sans-serif" font-size="9">530 pre-indexed test artifacts</text>
+  </g>
+
+  <!-- LAYER 3: AI & ANALYTICS PIPELINE (MIDDLE RIGHT) -->
+  <rect x="565" y="100" width="245" height="540" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1.5"/>
+  <rect x="565" y="100" width="245" height="40" rx="12" fill="#1e293b"/>
+  <text x="580" y="125" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">3. AI INFERENCE ENGINES</text>
+  <text x="580" y="155" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">Local Hugging Face + Hybrid Rules</text>
+
+  <g transform="translate(580, 175)">
+    <!-- Text BERT -->
+    <rect width="215" height="66" rx="8" fill="#0f172a" stroke="#2563eb" stroke-width="1.2"/>
+    <text x="12" y="20" fill="#60a5fa" font-family="sans-serif" font-size="12" font-weight="700">BERT Text Classifier</text>
+    <text x="12" y="36" fill="#94a3b8" font-family="sans-serif" font-size="10">mrm8488/bert-tiny-finetuned-sms</text>
+    <text x="12" y="50" fill="#64748b" font-family="sans-serif" font-size="9">+ Rule Engine: Digital Arrest / Extortion</text>
+    <text x="12" y="60" fill="#34d399" font-family="sans-serif" font-size="9" font-weight="600">Local Hugging Face (CPU/CUDA)</text>
+
+    <!-- Audio Whisper -->
+    <rect y="78" width="215" height="66" rx="8" fill="#0f172a" stroke="#0284c7" stroke-width="1.2"/>
+    <text x="12" y="98" fill="#38bdf8" font-family="sans-serif" font-size="12" font-weight="700">Whisper ASR Speech-to-Text</text>
+    <text x="12" y="114" fill="#94a3b8" font-family="sans-serif" font-size="10">openai/whisper-tiny</text>
+    <text x="12" y="128" fill="#64748b" font-family="sans-serif" font-size="9">Verbatim audio call transcription</text>
+    <text x="12" y="138" fill="#34d399" font-family="sans-serif" font-size="9" font-weight="600">Local Pure-Python Pipeline</text>
+
+    <!-- Acoustic Telemetry -->
+    <rect y="156" width="215" height="58" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="176" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600">Acoustic Signal Telemetry</text>
+    <text x="12" y="192" fill="#94a3b8" font-family="sans-serif" font-size="10">scipy &amp; numpy feature extraction</text>
+    <text x="12" y="204" fill="#64748b" font-family="sans-serif" font-size="9">Spectral centroid, SNR, zero-crossing</text>
+
+    <!-- Video Frame Heuristics -->
+    <rect y="226" width="215" height="58" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="246" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600">Video Container Telemetry</text>
+    <text x="12" y="262" fill="#94a3b8" font-family="sans-serif" font-size="10">OpenCV stream metadata &amp; face cues</text>
+    <text x="12" y="274" fill="#eab308" font-family="sans-serif" font-size="9">Transparent diagnostic limitations</text>
+
+    <!-- OpenRouter LLM Layer -->
+    <rect y="296" width="215" height="80" rx="8" fill="#0f172a" stroke="#7c3aed" stroke-width="1.2"/>
+    <text x="12" y="316" fill="#c084fc" font-family="sans-serif" font-size="12" font-weight="700">OpenRouter Cloud LLM</text>
+    <text x="12" y="332" fill="#94a3b8" font-family="sans-serif" font-size="10">meta-llama/llama-3.3-70b-instruct</text>
+    <text x="12" y="346" fill="#c084fc" font-family="sans-serif" font-size="9">PII Sanitized + Explicit Investigator Consent</text>
+    <text x="12" y="360" fill="#64748b" font-family="sans-serif" font-size="9">Explainable reasoning &amp; tactic summary</text>
+    <text x="12" y="370" fill="#38bdf8" font-family="sans-serif" font-size="8" font-weight="600">Optional Cloud Integration</text>
+  </g>
+
+  <!-- LAYER 4: DATA & STORAGE (RIGHT COLUMN) -->
+  <rect x="835" y="100" width="225" height="540" rx="12" fill="url(#cardGrad)" stroke="#1e293b" stroke-width="1.5"/>
+  <rect x="835" y="100" width="225" height="40" rx="12" fill="#1e293b"/>
+  <text x="850" y="125" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">4. PERSISTENCE &amp; DATA</text>
+  <text x="850" y="155" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">Dual Relational + Object Stores</text>
+
+  <g transform="translate(850, 175)">
+    <!-- Relational DB -->
+    <rect width="195" height="80" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="22" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600">SQLAlchemy 2.0 ORM</text>
+    <text x="12" y="40" fill="#38bdf8" font-family="sans-serif" font-size="10">PostgreSQL (Production)</text>
+    <text x="12" y="56" fill="#94a3b8" font-family="sans-serif" font-size="10">SQLite (Zero-config local dev)</text>
+    <text x="12" y="72" fill="#64748b" font-family="sans-serif" font-size="9">Cases, Evidence, Notes, Audits</text>
+
+    <!-- Blob Storage -->
+    <rect y="92" width="195" height="74" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="12" y="114" fill="#f1f5f9" font-family="sans-serif" font-size="12" font-weight="600">Object Storage</text>
+    <text x="12" y="132" fill="#38bdf8" font-family="sans-serif" font-size="10">MinIO (S3-compatible API)</text>
+    <text x="12" y="148" fill="#94a3b8" font-family="sans-serif" font-size="10">Local Filesystem Adapter</text>
+    <text x="12" y="160" fill="#64748b" font-family="sans-serif" font-size="9">Encapsulated evidence blobs</text>
+
+    <!-- Synthetic Dataset Gallery -->
+    <rect y="178" width="195" height="85" rx="8" fill="#0f172a" stroke="#0284c7" stroke-width="1"/>
+    <text x="12" y="200" fill="#38bdf8" font-family="sans-serif" font-size="12" font-weight="700">Synthetic Test Gallery</text>
+    <text x="12" y="218" fill="#94a3b8" font-family="sans-serif" font-size="10">530 Curated Samples:</text>
+    <text x="12" y="232" fill="#64748b" font-family="sans-serif" font-size="9">500 Text, 21 Audio, 6 Video,</text>
+    <text x="12" y="244" fill="#64748b" font-family="sans-serif" font-size="9">3 Multimodal Pairs</text>
+    <text x="12" y="256" fill="#34d399" font-family="sans-serif" font-size="8" font-weight="600">Zero Privacy Risk / Offline</text>
+
+    <!-- Audit Log -->
+    <rect y="275" width="195" height="60" rx="8" fill="#0f172a" stroke="#059669" stroke-width="1"/>
+    <text x="12" y="297" fill="#34d399" font-family="sans-serif" font-size="12" font-weight="700">Immutable Audit Logs</text>
+    <text x="12" y="315" fill="#94a3b8" font-family="sans-serif" font-size="10">Cryptographic action timeline</text>
+    <text x="12" y="327" fill="#64748b" font-family="sans-serif" font-size="9">Redacted query payloads</text>
+  </g>
+
+  <!-- Connective Arrows -->
+  <g stroke="#38bdf8" stroke-width="1.8" fill="none" opacity="0.75">
+    <!-- P1 to P2 -->
+    <path d="M 265 200 L 295 200" marker-end="url(#arrow)"/>
+    <path d="M 265 270 L 295 270" marker-end="url(#arrow)"/>
+    <path d="M 265 370 L 295 370" marker-end="url(#arrow)"/>
+
+    <!-- P2 to P3 -->
+    <path d="M 535 220 L 565 220" marker-end="url(#arrow)"/>
+    <path d="M 535 320 L 565 320" marker-end="url(#arrow)"/>
+    <path d="M 535 480 L 565 480" marker-end="url(#arrow)"/>
+
+    <!-- P2 to P4 -->
+    <path d="M 505 280 C 530 280, 545 42, 800 42 C 820 42, 835 150, 835 210" stroke-dasharray="4,4" opacity="0.3"/>
+    <path d="M 810 215 L 835 215" marker-end="url(#arrow)"/>
+    <path d="M 810 320 L 835 320" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- Arrow Marker Definition -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+  </defs>
+
+</svg>

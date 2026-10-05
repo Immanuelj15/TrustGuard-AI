@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgWf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="100%" stop-color="#0b152d"/>
+    </linearGradient>
+    <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#162238"/>
+      <stop offset="100%" stop-color="#0e1728"/>
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <marker id="wfArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+  </defs>
+
+  <rect width="1100" height="480" fill="url(#bgWf)"/>
+
+  <!-- Grid lines -->
+  <g stroke="#1e293b" stroke-width="0.7" opacity="0.3">
+    <line x1="0" y1="120" x2="1100" y2="120"/>
+    <line x1="0" y1="260" x2="1100" y2="260"/>
+    <line x1="0" y1="400" x2="1100" y2="400"/>
+  </g>
+
+  <!-- Title -->
+  <text x="50" y="45" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700">TrustGuard AI — End-to-End Evidence Investigation Workflow</text>
+  <text x="50" y="70" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13">Cryptographically verifiable sequence from evidence intake to certified forensic dossier compilation</text>
+
+  <!-- STEP 1: Case Creation -->
+  <g transform="translate(40, 110)">
+    <rect width="180" height="290" rx="12" fill="url(#nodeGrad)" stroke="#1e293b" stroke-width="1.5"/>
+    <rect width="180" height="32" rx="12" fill="#1e293b"/>
+    <text x="12" y="21" fill="#38bdf8" font-family="sans-serif" font-size="11" font-weight="700">PHASE 01</text>
+    <circle cx="160" cy="16" r="6" fill="#0284c7"/>
+    
+    <text x="14" y="55" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="700">Case Intake &amp; Triage</text>
+    <text x="14" y="80" fill="#94a3b8" font-family="sans-serif" font-size="10">• Role authentication (JWT)</text>
+    <text x="14" y="98" fill="#94a3b8" font-family="sans-serif" font-size="10">• Target incident category:</text>
+    <text x="24" y="114" fill="#64748b" font-family="sans-serif" font-size="9">- Digital Arrest Extortion</text>
+    <text x="24" y="128" fill="#64748b" font-family="sans-serif" font-size="9">- Authority Impersonation</text>
+    <text x="24" y="142" fill="#64748b" font-family="sans-serif" font-size="9">- Coercive Financial Transfer</text>
+    <text x="24" y="156" fill="#64748b" font-family="sans-serif" font-size="9">- Malicious APK Phishing</text>
+    <text x="14" y="178" fill="#94a3b8" font-family="sans-serif" font-size="10">• Priority tagging:</text>
+    <text x="24" y="194" fill="#34d399" font-family="sans-serif" font-size="9">Low / Medium / High / Critical</text>
+    <text x="14" y="218" fill="#94a3b8" font-family="sans-serif" font-size="10">• Case timeline initialized</text>
+    
+    <rect x="14" y="244" width="152" height="28" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="22" y="262" fill="#60a5fa" font-family="sans-serif" font-size="10" font-weight="600">Case ID: TG-2026-XXXX</text>
+  </g>
+
+  <!-- Flow 1 to 2 -->
+  <line x1="220" y1="250" x2="252" y2="250" stroke="#38bdf8" stroke-width="2" marker-end="url(#wfArrow)"/>
+
+  <!-- STEP 2: Evidence Intake & Integrity -->
+  <g transform="translate(255, 110)">
+    <rect width="180" height="290" rx="12" fill="url(#nodeGrad)" stroke="#1e293b" stroke-width="1.5"/>
+    <rect width="180" height="32" rx="12" fill="#1e293b"/>
+    <text x="12" y="21" fill="#38bdf8" font-family="sans-serif" font-size="11" font-weight="700">PHASE 02</text>
+    <circle cx="160" cy="16" r="6" fill="#059669"/>
+
+    <text x="14" y="55" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="700">Integrity Ingestion</text>
+    <text x="14" y="80" fill="#94a3b8" font-family="sans-serif" font-size="10">• Multi-format upload:</text>
+    <text x="24" y="96" fill="#64748b" font-family="sans-serif" font-size="9">Text SMS, Audio WAV, Video</text>
+    <text x="14" y="118" fill="#94a3b8" font-family="sans-serif" font-size="10">• Synthetic Gallery Ingestion:</text>
+    <text x="24" y="134" fill="#38bdf8" font-family="sans-serif" font-size="9">530 pre-calibrated samples</text>
+    <text x="14" y="156" fill="#94a3b8" font-family="sans-serif" font-size="10">• MIME &amp; magic byte check</text>
+    
+    <!-- SHA-256 Box -->
+    <rect x="14" y="174" width="152" height="54" rx="6" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+    <text x="20" y="192" fill="#a7f3d0" font-family="sans-serif" font-size="10" font-weight="700">SHA-256 Checksum</text>
+    <text x="20" y="206" fill="#6ee7b7" font-family="monospace" font-size="8">e3b0c44298fc1c149af...</text>
+    <text x="20" y="220" fill="#34d399" font-family="sans-serif" font-size="8">Tamper-evident verification</text>
+
+    <text x="14" y="250" fill="#94a3b8" font-family="sans-serif" font-size="10">• MinIO / Local storage save</text>
+    <text x="14" y="268" fill="#94a3b8" font-family="sans-serif" font-size="10">• Initial audit entry written</text>
+  </g>
+
+  <!-- Flow 2 to 3 -->
+  <line x1="435" y1="250" x2="467" y2="250" stroke="#38bdf8" stroke-width="2" marker-end="url(#wfArrow)"/>
+
+  <!-- STEP 3: Multi-Modal Analysis -->
+  <g transform="translate(470, 110)">
+    <rect width="180" height="290" rx="12" fill="url(#nodeGrad)" stroke="#1e293b" stroke-width="1.5"/>
+    <rect width="180" height="32" rx="12" fill="#1e293b"/>
+    <text x="12" y="21" fill="#38bdf8" font-family="sans-serif" font-size="11" font-weight="700">PHASE 03</text>
+    <circle cx="160" cy="16" r="6" fill="#7c3aed"/>
+
+    <text x="14" y="55" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="700">Multi-Modal Analysis</text>
+    
+    <rect x="14" y="70" width="152" height="42" rx="6" fill="#0f172a" stroke="#2563eb" stroke-width="1"/>
+    <text x="20" y="87" fill="#60a5fa" font-family="sans-serif" font-size="10" font-weight="700">Text: BERT + Rules</text>
+    <text x="20" y="101" fill="#94a3b8" font-family="sans-serif" font-size="8">mrm8488/bert-tiny + Indian lang</text>
+
+    <rect x="14" y="120" width="152" height="42" rx="6" fill="#0f172a" stroke="#0284c7" stroke-width="1"/>
+    <text x="20" y="137" fill="#38bdf8" font-family="sans-serif" font-size="10" font-weight="700">Audio: Whisper ASR</text>
+    <text x="20" y="151" fill="#94a3b8" font-family="sans-serif" font-size="8">openai/whisper-tiny verbatim STT</text>
+
+    <rect x="14" y="170" width="152" height="42" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="20" y="187" fill="#f1f5f9" font-family="sans-serif" font-size="10" font-weight="600">Acoustic Signal Analysis</text>
+    <text x="20" y="201" fill="#94a3b8" font-family="sans-serif" font-size="8">scipy spectral centroid &amp; SNR</text>
+
+    <rect x="14" y="220" width="152" height="42" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="20" y="237" fill="#f1f5f9" font-family="sans-serif" font-size="10" font-weight="600">Cross-Modal Pipeling</text>
+    <text x="20" y="251" fill="#34d399" font-family="sans-serif" font-size="8">Audio transcript &rarr; text scam engine</text>
+  </g>
+
+  <!-- Flow 3 to 4 -->
+  <line x1="650" y1="250" x2="682" y2="250" stroke="#38bdf8" stroke-width="2" marker-end="url(#wfArrow)"/>
+
+  <!-- STEP 4: Explainability & LLM -->
+  <g transform="translate(685, 110)">
+    <rect width="180" height="290" rx="12" fill="url(#nodeGrad)" stroke="#1e293b" stroke-width="1.5"/>
+    <rect width="180" height="32" rx="12" fill="#1e293b"/>
+    <text x="12" y="21" fill="#38bdf8" font-family="sans-serif" font-size="11" font-weight="700">PHASE 04</text>
+    <circle cx="160" cy="16" r="6" fill="#d97706"/>
+
+    <text x="14" y="55" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="700">Risk Synthesis &amp; AI</text>
+    <text x="14" y="78" fill="#94a3b8" font-family="sans-serif" font-size="10">• Composite Risk Score (0-100)</text>
+    <text x="14" y="96" fill="#94a3b8" font-family="sans-serif" font-size="10">• Model provenance badge</text>
+    <text x="14" y="114" fill="#94a3b8" font-family="sans-serif" font-size="10">• Transparent limitations</text>
+
+    <!-- OpenRouter LLM Block -->
+    <rect x="14" y="130" width="152" height="96" rx="6" fill="#0f172a" stroke="#7c3aed" stroke-width="1"/>
+    <text x="20" y="148" fill="#c084fc" font-family="sans-serif" font-size="10" font-weight="700">OpenRouter LLM (Optional)</text>
+    <text x="20" y="164" fill="#a855f7" font-family="sans-serif" font-size="9">1. Explicit Consent Dialog</text>
+    <text x="20" y="178" fill="#a855f7" font-family="sans-serif" font-size="9">2. Local PII Redaction</text>
+    <text x="20" y="192" fill="#94a3b8" font-family="sans-serif" font-size="8">   (Phones, emails, cards, OTPs)</text>
+    <text x="20" y="206" fill="#a855f7" font-family="sans-serif" font-size="9">3. Llama 3.3 70B Tactic Summary</text>
+    <text x="20" y="218" fill="#38bdf8" font-family="sans-serif" font-size="8">4. Investigator next-step actions</text>
+
+    <text x="14" y="248" fill="#94a3b8" font-family="sans-serif" font-size="10">• Human-in-the-loop review</text>
+    <text x="14" y="266" fill="#94a3b8" font-family="sans-serif" font-size="10">• Custom investigator notes</text>
+  </g>
+
+  <!-- Flow 4 to 5 -->
+  <line x1="865" y1="250" x2="897" y2="250" stroke="#38bdf8" stroke-width="2" marker-end="url(#wfArrow)"/>
+
+  <!-- STEP 5: Report & Dossier -->
+  <g transform="translate(900, 110)">
+    <rect width="160" height="290" rx="12" fill="url(#nodeGrad)" stroke="#1e293b" stroke-width="1.5"/>
+    <rect width="160" height="32" rx="12" fill="#1e293b"/>
+    <text x="12" y="21" fill="#38bdf8" font-family="sans-serif" font-size="11" font-weight="700">PHASE 05</text>
+    <circle cx="140" cy="16" r="6" fill="#10b981"/>
+
+    <text x="14" y="55" fill="#f1f5f9" font-family="sans-serif" font-size="13" font-weight="700">Certified Dossier</text>
+    <text x="14" y="80" fill="#94a3b8" font-family="sans-serif" font-size="10">• ReportLab PDF Engine</text>
+    <text x="14" y="100" fill="#94a3b8" font-family="sans-serif" font-size="10">• Included Elements:</text>
+    <text x="20" y="118" fill="#64748b" font-family="sans-serif" font-size="9">- Case metadata</text>
+    <text x="20" y="132" fill="#64748b" font-family="sans-serif" font-size="9">- SHA-256 hashes</text>
+    <text x="20" y="146" fill="#64748b" font-family="sans-serif" font-size="9">- ASR transcripts</text>
+    <text x="20" y="160" fill="#64748b" font-family="sans-serif" font-size="9">- AI model attribution</text>
+    <text x="20" y="174" fill="#64748b" font-family="sans-serif" font-size="9">- Risk score breakdowns</text>
+    <text x="20" y="188" fill="#64748b" font-family="sans-serif" font-size="9">- Investigator notes</text>
+    <text x="20" y="202" fill="#64748b" font-family="sans-serif" font-size="9">- Legal disclaimers</text>
+    
+    <rect x="14" y="222" width="132" height="48" rx="6" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+    <text x="20" y="242" fill="#34d399" font-family="sans-serif" font-size="10" font-weight="700">Digital Sign-off</text>
+    <text x="20" y="258" fill="#94a3b8" font-family="sans-serif" font-size="8">Court-ready structured note</text>
+  </g>
+
+  <!-- Bottom Legend / Note -->
+  <rect x="40" y="420" width="1020" height="38" rx="8" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+  <text x="55" y="444" fill="#e2e8f0" font-family="sans-serif" font-size="11" font-weight="600">LEGAL &amp; FORENSIC BOUNDARY:</text>
+  <text x="260" y="444" fill="#94a3b8" font-family="sans-serif" font-size="11">TrustGuard AI serves as an investigative decision-support platform. Cryptographic hashes verify file immutability; AI confidence scores do not establish legal guilt.</text>
+
+</svg>

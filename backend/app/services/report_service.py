@@ -58,6 +58,24 @@ def generate_case_report(db: Session, case_id: str, user: User) -> GeneratedRepo
 
     risk_profile = compute_case_aggregated_risk(db, case_id)
 
+    # Fetch IOCs, timeline events, and correlations
+    from app.services.ioc_service import get_case_iocs
+    from app.services.timeline_service import get_case_timeline, record_timeline_event
+    from app.services.correlation_service import get_case_correlations
+
+    iocs_list = get_case_iocs(db, case_id)
+    timeline_objs = get_case_timeline(db, case_id)
+    timeline_data = [
+        {
+            "event_type": t.event_type,
+            "title": t.title,
+            "description": t.description,
+            "created_at": t.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        for t in timeline_objs
+    ]
+    correlations_data = get_case_correlations(db, case_id)
+
     case_dict = {
         "case_number": case.case_number,
         "title": case.title,
@@ -74,7 +92,10 @@ def generate_case_report(db: Session, case_id: str, user: User) -> GeneratedRepo
         analysis_results=analysis_data,
         risk_profile=risk_profile,
         investigator_notes=notes_data,
-        generated_by_user=user.full_name
+        generated_by_user=user.full_name,
+        iocs_list=iocs_list,
+        timeline_events=timeline_data,
+        correlations=correlations_data
     )
 
     report_id = str(uuid.uuid4())
@@ -98,12 +119,24 @@ def generate_case_report(db: Session, case_id: str, user: User) -> GeneratedRepo
         report_metadata_json={
             "risk_level": risk_profile.get("overall_risk_level"),
             "risk_score": risk_profile.get("overall_risk_score"),
-            "evidence_count": len(evidence_items)
+            "evidence_count": len(evidence_items),
+            "ioc_count": len(iocs_list)
         }
     )
     db.add(report)
     db.commit()
     db.refresh(report)
+
+    # Record in Timeline
+    record_timeline_event(
+        db,
+        case_id=case_id,
+        user_id=user.id,
+        event_type="REPORT_GENERATED",
+        title="Forensic PDF Dossier Generated",
+        description=f"Exported certified dossier {filename}.",
+        metadata={"report_id": report.id, "filename": filename}
+    )
 
     log_audit_event(
         db,

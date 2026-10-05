@@ -115,6 +115,18 @@ def add_investigator_note(db: Session, case_id: str, note_in: InvestigatorNoteCr
     db.commit()
     db.refresh(note)
 
+    from app.services.timeline_service import record_timeline_event
+    record_timeline_event(
+        db,
+        case_id=case_id,
+        evidence_id=note_in.evidence_id,
+        user_id=user.id,
+        event_type="NOTE_ADDED",
+        title="Investigator Note Attached",
+        description=note_in.note[:100] + ("..." if len(note_in.note) > 100 else ""),
+        metadata={"note_id": note.id}
+    )
+
     log_audit_event(
         db,
         action="INVESTIGATOR_NOTE_ADDED",

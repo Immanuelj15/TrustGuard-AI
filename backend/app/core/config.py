@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 import os
@@ -41,6 +41,16 @@ class Settings(BaseSettings):
     # Operational Modes
     DEMO_MODE: bool = Field(default=True)
     ENVIRONMENT: str = Field(default="development")
+
+    # OpenRouter LLM Layer (Optional reasoning and explanation layer)
+    OPENROUTER_API_KEY: Optional[str] = Field(default=None)
+    OPENROUTER_MODEL: Optional[str] = Field(default=None)
+    OPENROUTER_BASE_URL: str = Field(default="https://openrouter.ai/api/v1")
+    OPENROUTER_ENABLED: bool = Field(default=False)
+    OPENROUTER_TIMEOUT_SECONDS: int = Field(default=30)
+    OPENROUTER_MAX_RETRIES: int = Field(default=2)
+    OPENROUTER_SITE_URL: Optional[str] = Field(default=None)
+    OPENROUTER_APP_NAME: str = Field(default="TrustGuard AI")
 
     model_config = SettingsConfigDict(
         env_file=".env",

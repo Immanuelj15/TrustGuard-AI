@@ -3,11 +3,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import Base, engine, SessionLocal
-from app.api.v1 import auth, cases, evidence, analysis, caller, reports, audit, dashboard, demo, models
+from app.api.v1 import auth, cases, evidence, analysis, caller, reports, audit, dashboard, demo, models, llm, investigation
 from app.core.security import get_password_hash
 from app.models import (
     User, UserRole, Case, Evidence, AnalysisJob, AnalysisResult,
-    CallerReport, InvestigatorNote, CaseStatus, PriorityLevel, EvidenceType
+    CallerReport, InvestigatorNote, TimelineEvent, IOC, CaseStatus, PriorityLevel, EvidenceType
 )
 from datetime import datetime, timezone
 
@@ -59,7 +59,6 @@ def init_db_and_seed():
             db.commit()
             db.refresh(c1)
 
-            # Evidence for Case 1
             e1 = Evidence(
                 case_id=c1.id,
                 original_filename="whatsapp_cbi_threat_notice.txt",
@@ -74,6 +73,13 @@ def init_db_and_seed():
             db.add(e1)
             db.commit()
             db.refresh(e1)
+
+            from app.core.storage import storage_client
+            storage_client.save_bytes(
+                e1.stored_object_key,
+                b"This is CBI Officer Sharma from Crime Branch. An arrest warrant has been issued in your name regarding contraband courier consignment #CB-9912. Immediately transfer Rs 4,50,000 for verification to escrow bank account.",
+                content_type="text/plain"
+            )
 
             # Analysis Job for e1
             j1 = AnalysisJob(
@@ -200,6 +206,8 @@ app.include_router(audit.router, prefix=settings.API_V1_STR)
 app.include_router(dashboard.router, prefix=settings.API_V1_STR)
 app.include_router(demo.router, prefix=settings.API_V1_STR)
 app.include_router(models.router, prefix=f"{settings.API_V1_STR}/models", tags=["Model Registry"])
+app.include_router(llm.router, prefix=settings.API_V1_STR)
+app.include_router(investigation.router, prefix=settings.API_V1_STR)
 
 @app.get("/api/v1/health", tags=["Health"])
 def health_check():

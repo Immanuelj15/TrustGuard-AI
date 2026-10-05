@@ -199,15 +199,88 @@ class AuditLogOut(BaseModel):
 # --- Dashboard Schemas ---
 class DashboardSummary(BaseModel):
     total_cases: int
+    total_evidence: int = 0
     open_cases: int
+    open_investigations: int = 0
     cases_awaiting_review: int
     evidence_analyzed: int
     high_risk_findings: int
+    iocs_found: int = 0
     active_investigators: int
 
 class DashboardCharts(BaseModel):
     cases_by_status: Dict[str, int]
     cases_by_priority: Dict[str, int]
     evidence_by_type: Dict[str, int]
-    risk_distribution: Dict[str, int]
+    risk_distribution: Optional[Dict[str, int]] = None
+    ioc_frequency: Optional[Dict[str, int]] = None
     recent_activity: List[AuditLogOut]
+
+# --- LLM / OpenRouter Schemas ---
+from .llm import (
+    OpenRouterStatusOut,
+    ExplainEvidenceRequest,
+    CaseSummaryRequest,
+    SuspiciousIndicator,
+    EvidenceExplanationResponse,
+    CaseSummaryResponse
+)
+
+# --- Timeline & Investigation Schemas ---
+class TimelineEventOut(BaseModel):
+    id: str
+    case_id: str
+    evidence_id: Optional[str] = None
+    user_id: Optional[str] = None
+    event_type: str
+    title: str
+    description: Optional[str] = None
+    metadata_json: Optional[Dict[str, Any]] = None
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+class IntegrityCheckOut(BaseModel):
+    evidence_id: str
+    case_id: str
+    original_filename: str
+    algorithm: str = "SHA-256"
+    original_hash: str
+    computed_hash: Optional[str] = None
+    integrity_status: str  # VERIFIED, HASH_MISMATCH, UNAVAILABLE
+    status: Optional[str] = None
+    file_size_bytes: int
+    verified_at: str
+    detail: str
+    disclaimer: str
+
+class IOCOut(BaseModel):
+    ioc_type: str
+    value: str
+    normalized_value: str
+    occurrences: int = 1
+    evidence_ids: List[str] = []
+    first_seen: Optional[str] = None
+    sample_context: Optional[str] = None
+
+class CopilotQueryRequest(BaseModel):
+    question: str = Field(..., min_length=2, max_length=500)
+    investigator_consent: bool = False
+
+class CopilotQueryResponse(BaseModel):
+    answer: str
+    provider: str
+    model: Optional[str] = None
+    references: List[str] = []
+    disclaimer: str
+
+class RedactionPreviewRequest(BaseModel):
+    text: Optional[str] = None
+
+class RedactionPreviewResponse(BaseModel):
+    original_text: str
+    redacted_text: str
+    redacted_count: int
+    redacted_items: List[Dict[str, Any]]
+    disclaimer: str
+

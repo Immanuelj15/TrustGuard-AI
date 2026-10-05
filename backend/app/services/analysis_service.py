@@ -53,15 +53,32 @@ def create_and_run_analysis(
     db.commit()
     db.refresh(job)
 
+    from app.services.timeline_service import record_timeline_event
+    from app.services.ioc_service import extract_and_store_iocs
+
+    record_timeline_event(
+        db,
+        case_id=evidence.case_id,
+        evidence_id=evidence.id,
+        user_id=user.id,
+        event_type="ANALYSIS_STARTED",
+        title=f"Analysis Started: {atype.upper()}",
+        description=f"Initiated {atype} inspection with {job.model_name}.",
+        metadata={"job_id": job.id, "analysis_type": atype}
+    )
+
     # Perform analysis
     try:
+        text_for_iocs = ""
         if atype == "text":
             raw_bytes = storage_client.get_bytes(evidence.stored_object_key)
             text_content = raw_bytes.decode("utf-8", errors="replace") if raw_bytes else ""
             analysis_output = text_service.analyze(text_content)
+            text_for_iocs = text_content
         elif atype == "audio":
             local_path = storage_client.get_local_path(evidence.stored_object_key)
             analysis_output = audio_service.analyze(local_path or "", is_demo_mode=settings.DEMO_MODE)
+            text_for_iocs = analysis_output.get("findings", {}).get("transcript", "")
         elif atype == "video":
             local_path = storage_client.get_local_path(evidence.stored_object_key)
             analysis_output = video_service.analyze(local_path or "", is_demo_mode=settings.DEMO_MODE)
@@ -69,6 +86,7 @@ def create_and_run_analysis(
             raw_bytes = storage_client.get_bytes(evidence.stored_object_key)
             text_content = raw_bytes.decode("utf-8", errors="replace") if raw_bytes else ""
             analysis_output = text_service.analyze(text_content)
+            text_for_iocs = text_content
 
         # Update Job
         job.status = AnalysisStatus.COMPLETED.value
@@ -93,6 +111,30 @@ def create_and_run_analysis(
         evidence.processing_status = "analyzed"
         db.commit()
         db.refresh(job)
+
+        # Extract and persist IOCs if text/transcript is available
+        if text_for_iocs:
+            try:
+                extract_and_store_iocs(db, case_id=evidence.case_id, evidence_id=evidence.id, text=text_for_iocs)
+            except Exception as e:
+                pass
+
+        # Record timeline event
+        record_timeline_event(
+            db,
+            case_id=evidence.case_id,
+            evidence_id=evidence.id,
+            user_id=user.id,
+            event_type="ANALYSIS_COMPLETED",
+            title=f"Analysis Completed ({atype.upper()}): {result.risk_level} ({result.risk_score}/100)",
+            description=f"Completed with {job.model_name}. Risk score: {result.risk_score}.",
+            metadata={
+                "job_id": job.id,
+                "analysis_type": atype,
+                "risk_level": result.risk_level,
+                "risk_score": result.risk_score
+            }
+        )
 
         log_audit_event(
             db,

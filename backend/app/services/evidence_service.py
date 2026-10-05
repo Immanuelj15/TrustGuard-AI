@@ -112,6 +112,24 @@ def process_and_store_evidence(
     db.commit()
     db.refresh(evidence)
 
+    # Record in Evidence Timeline
+    from app.services.timeline_service import record_timeline_event
+    record_timeline_event(
+        db,
+        case_id=case_id,
+        evidence_id=evidence.id,
+        user_id=user.id,
+        event_type="EVIDENCE_UPLOADED",
+        title=f"Evidence Ingested: {filename}",
+        description=f"File ingested into vault. Cryptographic SHA-256 digest recorded.",
+        metadata={
+            "filename": filename,
+            "sha256": sha256_hash,
+            "file_size": file_size,
+            "evidence_type": evidence_type
+        }
+    )
+
     log_audit_event(
         db,
         action="EVIDENCE_UPLOADED",

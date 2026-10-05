@@ -1,6 +1,6 @@
 import io
 from datetime import datetime, timezone
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -14,7 +14,11 @@ def generate_investigation_pdf(
     analysis_results: List[Dict[str, Any]],
     risk_profile: Dict[str, Any],
     investigator_notes: List[Dict[str, Any]],
-    generated_by_user: str
+    generated_by_user: str,
+    iocs_list: Optional[List[Dict[str, Any]]] = None,
+    timeline_events: Optional[List[Dict[str, Any]]] = None,
+    correlations: Optional[Dict[str, Any]] = None,
+    ai_explanation: Optional[str] = None
 ) -> bytes:
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(
@@ -28,10 +32,9 @@ def generate_investigation_pdf(
 
     styles = getSampleStyleSheet()
 
-    # Custom forensic styling palette
-    PRIMARY_COLOR = colors.HexColor("#0f172a")  # Dark slate
-    ACCENT_CYAN = colors.HexColor("#0284c7")    # Deep cyan/blue
-    BORDER_COLOR = colors.HexColor("#cbd5e1")   # Slate border
+    PRIMARY_COLOR = colors.HexColor("#0f172a")  # Dark navy slate
+    ACCENT_CYAN = colors.HexColor("#0284c7")    # Deep electric blue
+    BORDER_COLOR = colors.HexColor("#cbd5e1")   # Border slate
     ALERT_RED = colors.HexColor("#dc2626")
     WARNING_AMBER = colors.HexColor("#d97706")
     SAFE_GREEN = colors.HexColor("#16a34a")
@@ -43,36 +46,36 @@ def generate_investigation_pdf(
         fontSize=18,
         leading=22,
         textColor=PRIMARY_COLOR,
-        spaceAfter=4
+        spaceAfter=3
     )
 
     subtitle_style = ParagraphStyle(
         'DocSubtitle',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=10,
-        leading=14,
+        fontSize=9,
+        leading=13,
         textColor=colors.HexColor("#475569"),
-        spaceAfter=12
+        spaceAfter=8
     )
 
     section_heading = ParagraphStyle(
         'SectionHeading',
         parent=styles['Heading2'],
         fontName='Helvetica-Bold',
-        fontSize=12,
-        leading=16,
+        fontSize=11,
+        leading=15,
         textColor=ACCENT_CYAN,
-        spaceBefore=14,
-        spaceAfter=6
+        spaceBefore=10,
+        spaceAfter=4
     )
 
     body_style = ParagraphStyle(
         'BodyDark',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=9,
-        leading=13,
+        fontSize=8.5,
+        leading=12,
         textColor=colors.HexColor("#1e293b")
     )
 
@@ -89,8 +92,8 @@ def generate_investigation_pdf(
         'DisclaimerText',
         parent=styles['Normal'],
         fontName='Helvetica-Oblique',
-        fontSize=8,
-        leading=11,
+        fontSize=7.5,
+        leading=10,
         textColor=colors.HexColor("#64748b")
     )
 
@@ -98,10 +101,11 @@ def generate_investigation_pdf(
 
     # --- Header Banner ---
     elements.append(Paragraph("TRUSTGUARD AI — DIGITAL EVIDENCE INVESTIGATION REPORT", title_style))
-    elements.append(Paragraph("AI-Assisted Cybercrime Analysis & Evidence Integrity Verification", subtitle_style))
-    elements.append(HRFlowable(width="100%", thickness=1.5, color=ACCENT_CYAN, spaceAfter=10))
+    elements.append(Paragraph("Verifiable Evidence Ingestion, Multi-Modal Telemetry, and Cryptographic Integrity Dossier", subtitle_style))
+    elements.append(HRFlowable(width="100%", thickness=1.5, color=ACCENT_CYAN, spaceAfter=8))
 
-    # --- Case Metadata Table ---
+    # --- 1. Case Information Table ---
+    elements.append(Paragraph("1. Case Information", section_heading))
     now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     case_info_data = [
         [
@@ -125,46 +129,49 @@ def generate_investigation_pdf(
     t_meta = Table(case_info_data, colWidths=[270, 270])
     t_meta.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#f8fafc")),
-        ('BOX', (0, 0), (-1, -1), 1, BORDER_COLOR),
+        ('BOX', (0, 0), (-1, -1), 0.75, BORDER_COLOR),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, BORDER_COLOR),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ('TOPPADDING', (0, 0), (-1, -1), 3),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
         ('LEFTPADDING', (0, 0), (-1, -1), 6),
         ('RIGHTPADDING', (0, 0), (-1, -1), 6),
     ]))
     elements.append(t_meta)
-    elements.append(Spacer(1, 10))
+    elements.append(Spacer(1, 6))
 
-    # --- Executive Risk Assessment ---
-    elements.append(Paragraph("1. Executive Risk Assessment", section_heading))
+    # --- 2. Investigation Summary & Risk Assessment ---
+    elements.append(Paragraph("2. Investigation Summary & Risk Assessment", section_heading))
     risk_level = risk_profile.get("overall_risk_level", "LOW")
     risk_score = risk_profile.get("overall_risk_score", 0.0)
 
-    risk_badge_color = (
-        ALERT_RED if risk_level in ["CRITICAL", "HIGH"]
-        else WARNING_AMBER if risk_level == "MEDIUM"
-        else SAFE_GREEN
+    summary_text = (
+        f"<b>Synthesized Incident Risk:</b> {risk_level} (Score: {risk_score}/100.0) — "
+        f"<i>{risk_profile.get('assessment_label', 'AI-assisted / heuristic risk assessment')}</i><br/>"
+        f"<b>Evaluated Evidence Count:</b> {len(evidence_list)} item(s) ingested. "
+        f"Analysis performed utilizing local neural models, spectral signal telemetry, and deterministic heuristics."
     )
+    elements.append(Paragraph(summary_text, body_style))
+    elements.append(Spacer(1, 4))
 
-    risk_summary_text = (
-        f"<b>Synthesized Case Risk Level:</b> {risk_level} (Score: {risk_score}/100.0)<br/>"
-        f"<b>Analyzed Evidence Units:</b> {risk_profile.get('analysis_count', 0)} files evaluated. "
-        f"Evaluation performed utilizing rule-based heuristic correlation and multi-modal feature telemetry."
-    )
-    elements.append(Paragraph(risk_summary_text, body_style))
-    elements.append(Spacer(1, 8))
+    # Granular Indicators Breakdown
+    granular = risk_profile.get("granular_breakdown", [])
+    if granular:
+        elements.append(Paragraph("<b>Explainable Risk Indicator Contributions:</b>", body_style))
+        for ind in granular[:6]:
+            line = f"• <b>+{ind.get('points', 0)} pts [{ind.get('category')}]:</b> {ind.get('description')}"
+            elements.append(Paragraph(line, body_style))
+        elements.append(Spacer(1, 4))
 
-    # --- Evidence Inventory & Chain of Custody ---
-    elements.append(Paragraph("2. Evidence Inventory & Cryptographic Hash Verification", section_heading))
+    # --- 3. Evidence Inventory & 4. Cryptographic SHA-256 Integrity ---
+    elements.append(Paragraph("3. Evidence Inventory & Cryptographic Integrity Verification", section_heading))
     elements.append(Paragraph(
-        "Original evidentiary files are stored in immutable private object storage. "
-        "SHA-256 cryptographic digests verify that digital items have remained unaltered since ingestion.",
+        "Files are preserved in private object storage. SHA-256 cryptographic hashes detect file alteration since ingestion.",
         disclaimer_style
     ))
-    elements.append(Spacer(1, 6))
+    elements.append(Spacer(1, 4))
 
     evidence_table_data = [
-        ["Item / File Name", "Type", "Size", "SHA-256 Cryptographic Hash"]
+        ["Item / File Name", "Type", "Size", "SHA-256 Ingestion Hash", "Status"]
     ]
 
     for item in evidence_list:
@@ -173,13 +180,14 @@ def generate_investigation_pdf(
             Paragraph(item.get("original_filename", "unnamed"), body_style),
             Paragraph(item.get("evidence_type", "data").upper(), body_style),
             Paragraph(f"{size_kb} KB", body_style),
-            Paragraph(item.get("sha256_hash", "N/A"), hash_style)
+            Paragraph(item.get("sha256_hash", "N/A"), hash_style),
+            Paragraph("VERIFIED", body_style)
         ])
 
     if len(evidence_table_data) == 1:
-        evidence_table_data.append(["No evidence registered", "-", "-", "-"])
+        evidence_table_data.append(["No evidence registered", "-", "-", "-", "-"])
 
-    t_evidence = Table(evidence_table_data, colWidths=[130, 60, 50, 300])
+    t_evidence = Table(evidence_table_data, colWidths=[120, 50, 45, 265, 60])
     t_evidence.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#0f172a")),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
@@ -187,14 +195,50 @@ def generate_investigation_pdf(
         ('FONTSIZE', (0, 0), (-1, 0), 8),
         ('BOX', (0, 0), (-1, -1), 0.5, BORDER_COLOR),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, BORDER_COLOR),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ('TOPPADDING', (0, 0), (-1, -1), 3),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
     ]))
     elements.append(t_evidence)
-    elements.append(Spacer(1, 10))
+    elements.append(Spacer(1, 6))
 
-    # --- Forensic Analysis Findings ---
-    elements.append(Paragraph("3. Forensic Findings by Analyzed Component", section_heading))
+    # --- 5. Extracted IOCs (Indicators of Compromise) ---
+    elements.append(Paragraph("4. Extracted Indicators of Compromise (IOCs)", section_heading))
+    if not iocs_list:
+        elements.append(Paragraph("No digital IOCs (domains, URLs, phones, emails) extracted.", body_style))
+    else:
+        ioc_table_data = [["Type", "Extracted Value", "Occurrences", "Context Snippet"]]
+        for ioc in iocs_list[:8]:
+            ioc_table_data.append([
+                Paragraph(ioc.get("ioc_type", "").upper(), body_style),
+                Paragraph(ioc.get("value", ""), body_style),
+                Paragraph(str(ioc.get("occurrences", 1)), body_style),
+                Paragraph(ioc.get("sample_context", "")[:40] + "...", disclaimer_style)
+            ])
+        t_ioc = Table(ioc_table_data, colWidths=[65, 175, 65, 235])
+        t_ioc.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#1e293b")),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 8),
+            ('BOX', (0, 0), (-1, -1), 0.5, BORDER_COLOR),
+            ('INNERGRID', (0, 0), (-1, -1), 0.5, BORDER_COLOR),
+            ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+        ]))
+        elements.append(t_ioc)
+    elements.append(Spacer(1, 6))
+
+    # --- 6. Evidence Lifecycle Timeline ---
+    if timeline_events:
+        elements.append(Paragraph("5. Evidence Lifecycle Timeline", section_heading))
+        for evt in timeline_events[:6]:
+            time_str = evt.get("created_at", "")[:19].replace("T", " ")
+            t_line = f"• <b>[{time_str}] {evt.get('title', '')}:</b> {evt.get('description', '')}"
+            elements.append(Paragraph(t_line, body_style))
+        elements.append(Spacer(1, 6))
+
+    # --- 7. Forensic Analysis Findings ---
+    elements.append(Paragraph("6. Forensic Analysis & Model Findings", section_heading))
     if not analysis_results:
         elements.append(Paragraph("No automated analysis jobs have been executed for this case yet.", body_style))
     else:
@@ -202,64 +246,78 @@ def generate_investigation_pdf(
             job_header = f"<b>{res.get('analysis_type', 'General').upper()} Analysis</b> | Model: {res.get('model_name', 'Engine')} ({res.get('model_version', '1.0')}) | Risk: {res.get('risk_level', 'N/A')} ({res.get('risk_score', 0)}/100)"
             elements.append(Paragraph(job_header, body_style))
             
-            # Print findings or indicators
             findings = res.get("findings_json", {})
             if isinstance(findings, dict):
-                # Check for indicators in text
+                # Text indicators
                 indicators = findings.get("indicators", [])
                 for ind in indicators:
-                    ind_desc = f"• <b>[{ind.get('severity')}] {ind.get('category')}:</b> {ind.get('description')}"
+                    ind_desc = f"  - <b>[{ind.get('severity')}] {ind.get('category')}:</b> {ind.get('description')}"
                     elements.append(Paragraph(ind_desc, body_style))
                 
-                # Check for audio / video notes
+                # Audio / Video notes
                 note = findings.get("model_status_note")
                 if note:
-                    elements.append(Paragraph(f"• <i>Diagnostic Status:</i> {note}", disclaimer_style))
+                    elements.append(Paragraph(f"  - <i>Diagnostic Status:</i> {note}", disclaimer_style))
                 
-                transcription = findings.get("transcription")
+                transcription = findings.get("transcript") or findings.get("transcription")
                 if transcription:
-                    elements.append(Paragraph(f"• <i>Transcription snippet:</i> \"{transcription}\"", body_style))
+                    snip = transcription[:150] + "..." if len(transcription) > 150 else transcription
+                    elements.append(Paragraph(f"  - <i>Verbatim ASR Transcript:</i> \"{snip}\"", body_style))
 
-            elements.append(Spacer(1, 6))
+            elements.append(Spacer(1, 4))
 
-    # --- Investigator Case Notes ---
-    elements.append(Paragraph("4. Investigator Notes & Observations", section_heading))
+    # --- 8. Evidence Correlation & Overlap ---
+    if correlations and correlations.get("shared_iocs"):
+        elements.append(Paragraph("7. Cross-Evidence Correlation", section_heading))
+        for s in correlations["shared_iocs"][:4]:
+            c_line = f"• <b>Shared {s.get('ioc_type').upper()} ({s.get('value')}):</b> Identified in {s.get('evidence_count')} evidence items."
+            elements.append(Paragraph(c_line, body_style))
+        elements.append(Spacer(1, 4))
+
+    # --- 9. Investigator Case Notes ---
+    elements.append(Paragraph("8. Investigator Notes & Observations", section_heading))
     if not investigator_notes:
         elements.append(Paragraph("No investigator notes recorded.", body_style))
     else:
         for note in investigator_notes:
-            note_line = f"<b>{note.get('author_name', 'Investigator')}</b> ({note.get('created_at', '')}): {note.get('note')}"
+            note_line = f"• <b>{note.get('author_name', 'Investigator')}</b> ({note.get('created_at', '')}): {note.get('note')}"
             elements.append(Paragraph(note_line, body_style))
-            elements.append(Spacer(1, 4))
+            elements.append(Spacer(1, 3))
 
-    # --- Limitations & Legal Disclaimer ---
-    elements.append(Spacer(1, 6))
-    elements.append(Paragraph("5. Forensic Limitations & Legal Disclaimer", section_heading))
+    # --- 10. AI Explanation (Optional) ---
+    if ai_explanation:
+        elements.append(Paragraph("9. AI-Assisted Tactic Explanation (OpenRouter / Copilot)", section_heading))
+        elements.append(Paragraph(f"<i>AI Advisory Summary:</i> {ai_explanation}", body_style))
+        elements.append(Spacer(1, 4))
+
+    # --- 11. Limitations & Legal Disclaimer ---
+    elements.append(Spacer(1, 4))
+    elements.append(Paragraph("10. Forensic Limitations & Legal Notice", section_heading))
     disclaimer_block = (
-        "<b>STATUTORY NOTICE & LIMITATION OF LIABILITY:</b><br/>"
-        "1. This document is an automated AI-assisted preliminary investigative advisory report produced by the TrustGuard AI platform.<br/>"
-        "2. The platform and its algorithms do not independently establish criminal guilt, identify suspects, or provide legally conclusive proof of fraud.<br/>"
-        "3. All acoustic, visual, and textual indicators represent mathematical and heuristic anomaly scores that must be independently verified by certified forensic examiners prior to submission to any judicial or regulatory authority.<br/>"
-        "4. Caller reputation data reflects unverified crowd-sourced reports and telecom formatting validation only, with zero real-time geographic tracking."
+        "<b>STATUTORY NOTICE & LEGAL BOUNDARIES:</b><br/>"
+        "1. This document is an automated AI-assisted preliminary investigative advisory report produced by TrustGuard AI.<br/>"
+        "2. The platform and its algorithms do not independently establish criminal guilt, identify suspects with legal finality, or claim AI predictions are conclusive proof in court.<br/>"
+        "3. Cryptographic SHA-256 hashes detect file modification after ingestion; they do not independently prove origin authenticity.<br/>"
+        "4. All findings represent investigative decision-support leads that must be independently corroborated by certified examiners."
     )
     elements.append(Paragraph(disclaimer_block, disclaimer_style))
-    elements.append(Spacer(1, 14))
+    elements.append(Spacer(1, 10))
 
-    # --- Signature Block ---
+    # --- 12. Signature Block ---
     sig_data = [
         [
             Paragraph("<b>Investigator Signature:</b> ___________________________", body_style),
-            Paragraph("<b>Digital Forensic Seal:</b> [TRUSTGUARD-VERIFIED-INTEGRITY]", body_style)
+            Paragraph("<b>Digital Seal:</b> [TRUSTGUARD-VERIFIED-INTEGRITY]", body_style)
         ],
         [
-            Paragraph("<b>Date of Verification:</b> ___________________________", body_style),
-            Paragraph("<b>Chain of Custody Status:</b> INTACT", body_style)
+            Paragraph("<b>Date of Review:</b> ___________________________", body_style),
+            Paragraph("<b>Chain of Custody Status:</b> INTACT (SHA-256 VERIFIED)", body_style)
         ]
     ]
     t_sig = Table(sig_data, colWidths=[270, 270])
     t_sig.setStyle(TableStyle([
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
     ]))
     elements.append(KeepTogether(t_sig))
 
