@@ -18,6 +18,7 @@ import {
   FileSpreadsheet,
   AlertCircle,
   Binary,
+  Fingerprint,
   Network,
   Eye,
   Tag,
@@ -189,7 +190,7 @@ export const CasesPage: React.FC = () => {
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
           }`}
         >
-          <Binary className="w-4 h-4" />
+          <Fingerprint className="w-4 h-4" />
           <span>IOC Explorer</span>
         </button>
 
@@ -391,7 +392,7 @@ export const CasesPage: React.FC = () => {
           <div className="pb-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-                <Binary className="w-6 h-6 text-blue-600" />
+                <Fingerprint className="w-6 h-6 text-blue-600" />
                 <span>Indicators of Compromise (IOC) Explorer</span>
               </h1>
               <p className="text-xs sm:text-sm text-slate-500 mt-0.5">

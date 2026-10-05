@@ -23,6 +23,7 @@ import {
   Eye,
   Network,
   Binary,
+  Fingerprint,
   Layers
 } from 'lucide-react';
 import { ModelEvaluationModal } from './investigation/ModelEvaluationModal';
@@ -163,7 +164,7 @@ export const Layout: React.FC = () => {
       {
         title: 'INTELLIGENCE',
         items: [
-          { to: '/cases?tab=iocs', label: 'IOC Explorer', icon: Binary },
+          { to: '/cases?tab=iocs', label: 'IOC Explorer', icon: Fingerprint },
           { to: '/cases?tab=correlations', label: 'Evidence Correlation', icon: Network },
           { to: '/caller-check', label: 'Caller Threat Intel', icon: PhoneCall }
         ]
@@ -252,8 +253,9 @@ export const Layout: React.FC = () => {
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 flex-shrink-0 z-20 shadow-xs">
         {/* Brand Header */}
         <div className="flex items-center gap-3 px-6 h-16 border-b border-slate-200">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-500/20">
-            <Shield className="w-5 h-5" />
+          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-sm shadow-blue-500/25 border border-blue-400/20">
+            <Shield className="w-5 h-5 text-white drop-shadow-xs" />
+            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-cyan-400 rounded-full border-2 border-white shadow-2xs" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
