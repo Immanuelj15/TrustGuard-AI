@@ -59,7 +59,10 @@ def process_and_store_evidence(
     if not case:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Case not found")
 
-    filename = file.filename or "unnamed_evidence"
+    raw_name = file.filename or "unnamed_evidence"
+    filename = os.path.basename(raw_name.replace('\\', '/'))
+    if not filename or filename in ('.', '..'):
+        filename = "unnamed_evidence"
     ext = filename.split(".")[-1].lower() if "." in filename else ""
     if ext not in ALLOWED_EXTENSIONS and not any(k in (file.content_type or "") for k in ["audio", "video", "image", "text"]):
         raise HTTPException(
@@ -71,6 +74,12 @@ def process_and_store_evidence(
     hasher = hashlib.sha256()
     content = file.file.read()
     file_size = len(content)
+
+    if file_size == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Uploaded evidence file is empty (0 bytes). Cannot ingest empty evidence."
+        )
 
     if file_size > MAX_FILE_SIZE:
         raise HTTPException(

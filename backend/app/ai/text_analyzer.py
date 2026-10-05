@@ -34,8 +34,8 @@ INDICATOR_RULES = [
         "severity": "HIGH",
         "weight": 25.0,
         "patterns": [
-            r"\b(transfer|send|pay|deposit)\s+(?:(?:rs\.?|inr|\$|€|£)?\s*\d+[\d,.]*\s+)?(immediately|urgently|within\s+\d+\s*(minutes|hours|mins))\b",
-            r"\b(account\s+will\s+be\s+(suspended|blocked|frozen|deactivated|closed))\b",
+            r"\b(transfer|send|pay|deposit)\b.*?(?:rs\.?|inr|₹|\$|€|£)?\s*\d+[\d,.]*.*?\b(immediately|urgently|now|within\s+\d+\s*(minutes|hours|mins))\b",
+            r"\baccount\s+(?:is|will\s+be|has\s+been)?\s*(?:temporarily\s+)?(suspended|blocked|frozen|deactivated|closed|restricted)\b",
             r"\b(turant|jaldi)\s+(paise|bhejo|transfer karo)\b",
             r"\b(udane|panam)\s+(anuppu|katta vendum)\b"
         ],
@@ -60,7 +60,8 @@ INDICATOR_RULES = [
         "weight": 20.0,
         "patterns": [
             r"\b(gift\s*card|crypto|bitcoin|usdt|telegram\s*wallet)\b",
-            r"\b[a-zA-Z0-9.\-_]{2,256}@(oksbi|okhdfcbank|okaxis|paytm|ybl|apl)\b"  # Suspicious unverified UPI strings
+            r"\b(?:upi|escrow)\s+(?:id\s+)?(?:handle\s+)?([a-zA-Z0-9.\-_]{2,64}@[a-zA-Z0-9.\-_]+|[a-zA-Z0-9.\-_]+)\b",
+            r"\b[a-zA-Z0-9.\-_]{2,256}@(oksbi|okhdfcbank|okaxis|paytm|ybl|apl|upi|axl|ibl)\b"
         ],
         "description": "Unconventional or obfuscated payment channels often used in cyber fraud."
     },

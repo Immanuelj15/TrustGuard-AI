@@ -27,6 +27,12 @@ from app.core.storage import storage_client
 
 router = APIRouter(tags=["Investigation Features"])
 
+def _require_case(db: Session, case_id: str) -> Case:
+    case = db.query(Case).filter(Case.id == case_id).first()
+    if not case:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Case '{case_id}' not found")
+    return case
+
 # --- 1. Evidence & Case Timeline ---
 @router.get("/cases/{case_id}/timeline", response_model=List[TimelineEventOut])
 def api_get_case_timeline(
@@ -34,6 +40,7 @@ def api_get_case_timeline(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    _require_case(db, case_id)
     return get_case_timeline(db, case_id=case_id)
 
 @router.get("/evidence/{evidence_id}/timeline", response_model=List[TimelineEventOut])
@@ -88,6 +95,7 @@ def api_get_case_iocs(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    _require_case(db, case_id)
     return get_case_iocs(db, case_id=case_id)
 
 @router.get("/evidence/{evidence_id}/iocs", response_model=List[IOCOut])
@@ -118,6 +126,7 @@ def api_get_case_correlations(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    _require_case(db, case_id)
     return get_case_correlations(db, case_id=case_id)
 
 @router.get("/cases/{case_id}/correlation-graph")
@@ -126,6 +135,7 @@ def api_get_correlation_graph(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    _require_case(db, case_id)
     return build_correlation_graph(db, case_id=case_id)
 
 
@@ -136,6 +146,7 @@ def api_get_evidence_similarity(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    _require_case(db, case_id)
     return calculate_evidence_similarity(db, case_id=case_id)
 
 
@@ -146,6 +157,7 @@ def api_get_case_risk_profile(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    _require_case(db, case_id)
     return compute_case_aggregated_risk(db, case_id=case_id)
 
 
@@ -279,6 +291,7 @@ def api_case_copilot(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    _require_case(db, case_id)
     return query_case_copilot(
         db,
         case_id=case_id,
