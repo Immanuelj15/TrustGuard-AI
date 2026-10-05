@@ -6,6 +6,7 @@ import { Case } from '../types';
 import { Badge } from '../components/common/Badge';
 import { LoadingState } from '../components/common/LoadingState';
 import { EmptyState } from '../components/common/EmptyState';
+import { useAuth } from '../context/AuthContext';
 import {
   FolderLock,
   PlusCircle,
@@ -16,7 +17,9 @@ import {
   AlertCircle,
   Calendar,
   Layers,
-  FileText
+  FileText,
+  Eye,
+  ShieldCheck
 } from 'lucide-react';
 
 const COMPLAINT_CATEGORIES = [
@@ -31,6 +34,7 @@ const COMPLAINT_CATEGORIES = [
 ];
 
 export const CasesPage: React.FC = () => {
+  const { user, isAdmin, isInvestigator, isReviewer, isDemo } = useAuth();
   const [cases, setCases] = useState<Case[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchParams] = useSearchParams();
@@ -38,12 +42,12 @@ export const CasesPage: React.FC = () => {
 
   // Filters
   const [search, setSearch] = useState(searchParams.get('search') || '');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'all');
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
 
   // Modal
-  const [showCreateModal, setShowCreateModal] = useState(searchParams.get('new') === 'true');
+  const [showCreateModal, setShowCreateModal] = useState(searchParams.get('new') === 'true' && (isAdmin || isInvestigator));
   const [newTitle, setNewTitle] = useState('');
   const [newCategory, setNewCategory] = useState(COMPLAINT_CATEGORIES[1]);
   const [newPriority, setNewPriority] = useState('medium');
@@ -109,20 +113,47 @@ export const CasesPage: React.FC = () => {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
             <FolderLock className="w-6 h-6 text-blue-600" />
-            <span>Case Management Registry</span>
+            <span>
+              {isReviewer ? 'Case Oversight & Review Registry' : 'Case Management Registry'}
+            </span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-            Digital evidence repository, case chronology, and official cyber investigation registry.
+            {isReviewer
+              ? 'Assigned cybercrime investigations awaiting peer review, chain of custody validation, and audit sign-off.'
+              : 'Digital evidence repository, case chronology, and official cyber investigation registry.'}
           </p>
         </div>
 
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition self-start sm:self-auto"
-        >
-          <PlusCircle className="w-4 h-4" />
-          <span>Register New Case</span>
-        </button>
+        {/* Role-Specific Action Controls */}
+        {isAdmin || (isInvestigator && !isDemo) ? (
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition self-start sm:self-auto"
+          >
+            <PlusCircle className="w-4 h-4" />
+            <span>Register New Case</span>
+          </button>
+        ) : isReviewer ? (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setStatusFilter(statusFilter === 'awaiting_review' ? 'all' : 'awaiting_review')}
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold shadow-xs transition ${
+                statusFilter === 'awaiting_review'
+                  ? 'bg-teal-700 text-white'
+                  : 'bg-teal-600 hover:bg-teal-700 text-white'
+              }`}
+            >
+              <Eye className="w-4 h-4" />
+              <span>{statusFilter === 'awaiting_review' ? 'Showing Review Queue' : 'Filter Review Queue'}</span>
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 font-semibold">
+              SYNTHETIC CASE REPOSITORY (DEMO)
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Filter and Search Bar */}

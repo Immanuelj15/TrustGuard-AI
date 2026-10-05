@@ -218,3 +218,18 @@ def health_check():
         "storage_type": settings.STORAGE_TYPE,
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
+
+from typing import List
+from sqlalchemy.orm import Session
+from fastapi import Depends
+from app.core.database import get_db
+from app.services.auth_service import require_role
+from app.schemas import UserOut
+
+@app.get(f"{settings.API_V1_STR}/users", response_model=List[UserOut], tags=["Users"])
+def get_users_admin(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role([UserRole.ADMIN.value]))
+):
+    return db.query(User).order_by(User.created_at.desc()).all()
+

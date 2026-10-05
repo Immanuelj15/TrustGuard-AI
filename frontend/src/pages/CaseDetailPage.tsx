@@ -23,6 +23,7 @@ import { EvidenceSimilarityComponent } from '../components/investigation/Evidenc
 import { InvestigatorNotesComponent } from '../components/investigation/InvestigatorNotesComponent';
 import { InvestigatorCopilotComponent } from '../components/investigation/InvestigatorCopilotComponent';
 import { ModelEvaluationModal } from '../components/investigation/ModelEvaluationModal';
+import { useAuth } from '../context/AuthContext';
 import {
   FolderLock,
   ArrowLeft,
@@ -48,12 +49,15 @@ import {
   Bot,
   Activity,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Eye,
+  ShieldAlert
 } from 'lucide-react';
 
 export const CaseDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user, isAdmin, isInvestigator, isReviewer, isDemo } = useAuth();
 
   const [caseData, setCaseData] = useState<CaseDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -331,7 +335,7 @@ export const CaseDetailPage: React.FC = () => {
           </h1>
         </div>
 
-        {/* Global Action Buttons */}
+        {/* Role-Aware Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setShowEvaluationModal(true)}
@@ -341,34 +345,67 @@ export const CaseDetailPage: React.FC = () => {
             <span>Model Evaluation</span>
           </button>
 
-          <button
-            onClick={() => setShowDemoModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold shadow-sm transition cursor-pointer"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Load Demo Sample</span>
-          </button>
+          {(isAdmin || (isInvestigator && !isDemo)) && (
+            <>
+              <button
+                onClick={() => setShowDemoModal(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold shadow-sm transition cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>Load Demo Sample</span>
+              </button>
 
-          <button
-            onClick={() => setShowUploadModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold shadow-sm transition cursor-pointer"
-          >
-            <Upload className="w-3.5 h-3.5" />
-            <span>Upload Evidence</span>
-          </button>
+              <button
+                onClick={() => setShowUploadModal(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold shadow-sm transition cursor-pointer"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Upload Evidence</span>
+              </button>
 
-          <button
-            onClick={handleGenerateReport}
-            disabled={reportLoading}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-cyan-500/40 hover:bg-cyan-500/10 text-cyan-300 text-xs font-semibold shadow-sm transition disabled:opacity-50 cursor-pointer"
-          >
-            {reportLoading ? (
-              <span className="w-3.5 h-3.5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <FileText className="w-3.5 h-3.5 text-cyan-400" />
-            )}
-            <span>Generate Certified PDF</span>
-          </button>
+              <button
+                onClick={handleGenerateReport}
+                disabled={reportLoading}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-cyan-500/40 hover:bg-cyan-500/10 text-cyan-300 text-xs font-semibold shadow-sm transition disabled:opacity-50 cursor-pointer"
+              >
+                {reportLoading ? (
+                  <span className="w-3.5 h-3.5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <FileText className="w-3.5 h-3.5 text-cyan-400" />
+                )}
+                <span>Generate Certified PDF</span>
+              </button>
+            </>
+          )}
+
+          {isReviewer && (
+            <>
+              <button
+                onClick={() => setActiveTab('evidence')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-xs font-semibold shadow-sm transition cursor-pointer"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
+                <span>Verify Evidence Integrity</span>
+              </button>
+              <button
+                onClick={() => navigate('/reports')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-300 text-xs font-semibold shadow-sm transition cursor-pointer"
+              >
+                <FileText className="w-3.5 h-3.5 text-slate-400" />
+                <span>Review Case Reports</span>
+              </button>
+            </>
+          )}
+
+          {isDemo && (
+            <button
+              onClick={() => setShowDemoModal(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold shadow-sm transition cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>Load Synthetic Sample</span>
+            </button>
+          )}
         </div>
       </div>
 

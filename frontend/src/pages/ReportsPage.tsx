@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiClient } from '../api/client';
 import { Case, GeneratedReport } from '../types';
+import { useAuth } from '../context/AuthContext';
 import { Badge } from '../components/common/Badge';
 import { LoadingState } from '../components/common/LoadingState';
 import { EmptyState } from '../components/common/EmptyState';
@@ -17,6 +18,9 @@ import {
 } from 'lucide-react';
 
 export const ReportsPage: React.FC = () => {
+  const { isAdmin, isInvestigator, isReviewer, isDemo } = useAuth();
+  const canGenerateReport = isAdmin || isInvestigator;
+
   const [cases, setCases] = useState<Case[]>([]);
   const [selectedCaseId, setSelectedCaseId] = useState<string>('');
   const [reports, setReports] = useState<GeneratedReport[]>([]);
@@ -58,7 +62,7 @@ export const ReportsPage: React.FC = () => {
   }, [selectedCaseId]);
 
   const handleGenerate = async () => {
-    if (!selectedCaseId) return;
+    if (!selectedCaseId || !canGenerateReport) return;
     setGenerating(true);
     setSuccessMsg(null);
     try {
@@ -93,14 +97,29 @@ export const ReportsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="pb-4 border-b border-slate-200">
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-          <FileText className="w-6 h-6 text-blue-600" />
-          <span>Investigation Reports Repository</span>
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-          Digitally certified investigation advisory reports, evidence exhibits, and court-ready documentation.
-        </p>
+      <div className="pb-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
+            <FileText className="w-6 h-6 text-blue-600" />
+            <span>Investigation Reports Repository</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+            Digitally certified investigation advisory reports, evidence exhibits, and court-ready documentation.
+          </p>
+        </div>
+
+        {isReviewer && (
+          <span className="px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 border border-purple-200 text-xs font-semibold flex items-center gap-1.5 self-start sm:self-auto">
+            <ShieldCheck className="w-3.5 h-3.5 text-purple-600" />
+            <span>Reviewer Mode — PDF Audit & Inspection</span>
+          </span>
+        )}
+        {isDemo && (
+          <span className="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold flex items-center gap-1.5 self-start sm:self-auto">
+            <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
+            <span>Demo Mode — Synthetic Advisory Reports</span>
+          </span>
+        )}
       </div>
 
       <AnimatePresence>
@@ -136,23 +155,31 @@ export const ReportsPage: React.FC = () => {
           </select>
         </div>
 
-        <button
-          onClick={handleGenerate}
-          disabled={generating || !selectedCaseId}
-          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow-sm transition disabled:opacity-50"
-        >
-          {generating ? (
-            <>
-              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>Compiling PDF Report...</span>
-            </>
-          ) : (
-            <>
-              <PlusCircle className="w-4 h-4" />
-              <span>Generate New Investigation PDF</span>
-            </>
-          )}
-        </button>
+        {canGenerateReport ? (
+          <button
+            onClick={handleGenerate}
+            disabled={generating || !selectedCaseId}
+            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow-sm transition disabled:opacity-50"
+          >
+            {generating ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span>Compiling PDF Report...</span>
+              </>
+            ) : (
+              <>
+                <PlusCircle className="w-4 h-4" />
+                <span>Generate New Investigation PDF</span>
+              </>
+            )}
+          </button>
+        ) : (
+          <div className="text-right">
+            <span className="text-xs text-slate-500 bg-slate-50 border border-slate-200 px-3 py-2 rounded-xl inline-block font-medium">
+              Report compilation restricted to Investigators and Admins
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Reports Table */}
@@ -167,8 +194,8 @@ export const ReportsPage: React.FC = () => {
             icon={FileText}
             title="No PDF reports generated for this case yet"
             message="Compile a verified investigation report containing chain of custody, evidence hashes, and AI cues."
-            actionLabel="Generate Report Now"
-            onAction={handleGenerate}
+            actionLabel={canGenerateReport ? "Generate Report Now" : undefined}
+            onAction={canGenerateReport ? handleGenerate : undefined}
           />
         ) : (
           <div className="overflow-x-auto">

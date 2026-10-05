@@ -1,11 +1,12 @@
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import create_access_token
 from app.schemas import UserCreate, UserLogin, UserOut, Token
-from app.services.auth_service import authenticate_user, create_user, get_current_user
+from app.services.auth_service import authenticate_user, create_user, get_current_user, require_role
 from app.services.audit_service import log_audit_event
-from app.models import User
+from app.models import User, UserRole
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -52,3 +53,11 @@ def login(login_data: UserLogin, db: Session = Depends(get_db)):
 @router.get("/me", response_model=UserOut)
 def get_current_user_profile(current_user: User = Depends(get_current_user)):
     return current_user
+
+@router.get("/users", response_model=List[UserOut])
+def list_system_users(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role([UserRole.ADMIN.value]))
+):
+    return db.query(User).order_by(User.created_at.desc()).all()
+

@@ -99,6 +99,23 @@ export const CallerReputationPage: React.FC = () => {
         </button>
       </div>
 
+      {/* DEMO / INFORMATIONAL Notice Banner (Section 19) */}
+      <div className="p-4 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-950 text-xs flex items-start gap-3 shadow-2xs">
+        <Info className="w-5 h-5 flex-shrink-0 text-amber-600 mt-0.5" />
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-[11px] uppercase tracking-wider text-amber-900 bg-amber-200/70 px-2 py-0.5 rounded">
+              DEMO / INFORMATIONAL
+            </span>
+            <span className="font-semibold text-slate-700">Telecom Threat Intelligence Advisory</span>
+          </div>
+          <p className="text-[11px] text-slate-600 leading-relaxed">
+            Data provided is derived solely from ITU E.164 parsing, national numbering plans, and user-submitted incident registries. 
+            TrustGuard AI does <strong>not</strong> provide GPS tracking, real-time subscriber identity, criminal records, or guaranteed scam classification.
+          </p>
+        </div>
+      </div>
+
       {/* Lookup Search Card */}
       <div className="surface-card p-6 space-y-4">
         <form onSubmit={handleCheck} className="flex flex-col sm:flex-row gap-3">

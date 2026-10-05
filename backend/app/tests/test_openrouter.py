@@ -231,6 +231,8 @@ def test_live_openrouter_smoke_test(auth_headers):
         json={"user_consent": True},
         headers=auth_headers
     )
+    if res.status_code == 502 and "network connection" in res.text:
+        pytest.skip(f"Live OpenRouter unreachable due to temporary network outage: {res.text}")
     assert res.status_code == 200, res.text
     data = res.json()
     assert "summary" in data and len(data["summary"]) > 0

@@ -18,7 +18,7 @@ client = TestClient(app)
 def admin_token():
     res = client.post("/api/v1/auth/login", json={
         "email": "admin@trustguard.ai",
-        "password": "AdminPassword@2026"
+        "password": "Admin@TrustGuard2026"
     })
     assert res.status_code == 200, f"Admin login failed: {res.text}"
     return res.json()["access_token"]
@@ -152,6 +152,28 @@ def test_role_based_access_viewer_cannot_create_case():
         "priority": "low"
     }, headers=viewer_headers)
     assert create_res.status_code == 403, f"Expected 403 Forbidden for viewer, got {create_res.status_code}"
+
+def test_admin_users_endpoint_authorization(admin_headers, investigator_headers):
+    # Admin can list users
+    admin_res = client.get("/api/v1/users", headers=admin_headers)
+    assert admin_res.status_code == 200
+    users = admin_res.json()
+    assert len(users) >= 4
+    emails = [u["email"] for u in users]
+    assert "admin@trustguard.ai" in emails
+
+    # Investigator is forbidden (403)
+    inv_res = client.get("/api/v1/users", headers=investigator_headers)
+    assert inv_res.status_code == 403
+
+    # Demo User is forbidden (403)
+    demo_login = client.post("/api/v1/auth/login", json={
+        "email": "demo@trustguard.ai",
+        "password": "Demo@2026"
+    }).json()
+    demo_headers = {"Authorization": f"Bearer {demo_login['access_token']}"}
+    demo_res = client.get("/api/v1/users", headers=demo_headers)
+    assert demo_res.status_code == 403
 
 # ==============================================================================
 # PHASE 7 & 8: CASE MANAGEMENT & EVIDENCE UPLOAD VALIDATION
