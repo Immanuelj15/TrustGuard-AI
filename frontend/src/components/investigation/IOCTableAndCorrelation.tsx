@@ -407,12 +407,12 @@ export const IOCTableAndCorrelation: React.FC<IOCTableAndCorrelationProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {filteredIOCs.map((ioc) => {
+                {filteredIOCs.map((ioc, idx) => {
                   const corr = getCorrelationForIOC(ioc.normalized_value);
                   const isCorrelated = corr && corr.count > 1;
 
                   return (
-                    <tr key={ioc.id} className="hover:bg-slate-50/80 transition-colors group">
+                    <tr key={ioc.id ? `ioc-${ioc.id}-${idx}` : `ioc-${ioc.ioc_type}-${ioc.normalized_value}-${idx}`} className="hover:bg-slate-50/80 transition-colors group">
                       <td className="py-3 px-4 whitespace-nowrap">
                         <span
                           className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-semibold ${getIOCTypeBadgeClass(

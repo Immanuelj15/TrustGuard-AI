@@ -256,11 +256,13 @@ export interface IOCCorrelation {
 export interface GraphNode {
   id: string;
   label: string;
-  type: 'case' | 'evidence' | 'ioc';
+  type: string;
   subType?: string;
+  value?: string;
 }
 
 export interface GraphEdge {
+  id?: string;
   source: string;
   target: string;
   relation: string;
